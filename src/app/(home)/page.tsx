@@ -42,10 +42,14 @@ export default function Home() {
 
     return (
         <main className="container-1280 px">
-            <section className="flex justify-around my-5 py-5 border-2 border-solid rounded-xl">
+            <section className="grid grid-rows-2 my-5 p-5 gap-6 border-2 border-solid rounded-xl">
                 <strong className="text-xl md:text-3xl">내 가치</strong>
-                <strong className="text-xl md:text-3xl">102,040,000 원</strong>
+                <span>
+                    <strong className="text-xl md:text-4xl text-amber-500">102,040,000</strong>
+                    <strong className="text-xl md:text-3xl"> 원</strong>
+                </span>
             </section>
+            <hr className="border-solid border-4" />
             <section className="my-5 py-5 border-2 border-solid rounded-xl">
                 <article className="grid grid-cols-2 gap-4 px-4">
                     <button
