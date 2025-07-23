@@ -3,6 +3,9 @@ import Image from "next/image";
 export default function Product() {
     const gnbCategory = [
         {
+            name: "전체",
+        },
+        {
             name: "가전제품",
         },
         {
@@ -13,43 +16,62 @@ export default function Product() {
         },
     ];
 
-    const productList = [
-        {
-            name: "제품1",
-        },
-        {
-            name: "제품2",
-        },
-        {
-            name: "제품3",
-        },
-        {
-            name: "제품4",
-        },
-    ];
-
     const locationList = [
         {
-            name: "내 자취방",
-            productCount: 0,
-            shareCount: 0,
-            productList: [
-                { name: "제품1", price: 10000 },
-                { name: "제품2", price: 20000 },
-                { name: "제품3", price: 30000 },
-                { name: "제품4", price: 40000 },
-            ],
+            name: "레인보우 RGB 키보드1",
+            price: 10000,
+            marketPrice: 10000,
+            location: "내 자취방",
+            description: "레인보우 RGB 키보드1 입니다.",
         },
         {
-            name: "회사 책상",
-            productCount: 0,
-            shareCount: 0,
-            productList: [
-                { name: "제품1", price: 10000 },
-                { name: "제품2", price: 20000 },
-                { name: "제품3", price: 30000 },
-                { name: "제품4", price: 40000 },
-            ],
+            name: "레인보우 RGB 키보드2",
+            price: 20000,
+            marketPrice: 10000,
+            location: "내 자취방",
+            description: "레인보우 RGB 키보드2 입니다.",
+        },
+        {
+            name: "레인보우 RGB 키보드3",
+            price: 30000,
+            marketPrice: 10000,
+            location: "내 자취방",
+            description: "레인보우 RGB 키보드3 입니다.",
+        },
+        {
+            name: "레인보우 RGB 키보드4",
+            price: 40000,
+            marketPrice: 10000,
+            location: "내 자취방",
+            description: "레인보우 RGB 키보드4 입니다.",
+        },
+        {
+            name: "레인보우 RGB 키보드1",
+            price: 10000,
+            marketPrice: 10000,
+            location: "본가",
+            description: "레인보우 RGB 키보드1 입니다.",
+        },
+        {
+            name: "레인보우 RGB 키보드2",
+            price: 20000,
+            marketPrice: 10000,
+            location: "본가",
+            description: "레인보우 RGB 키보드2 입니다.",
+        },
+        {
+            name: "레인보우 RGB 키보드3",
+            price: 30000,
+            marketPrice: 10000,
+            location: "본가",
+            description: "레인보우 RGB 키보드3 입니다.",
+        },
+        {
+            name: "레인보우 RGB 키보드4",
+            price: 40000,
+            marketPrice: 10000,
+            location: "본가",
+            description: "레인보우 RGB 키보드4 입니다.",
         },
     ];
 
@@ -60,7 +82,7 @@ export default function Product() {
                 <ul className="container-1280 px flex gap-2 py-3">
                     {gnbCategory.map((category) => (
                         <li key={category.name}>
-                            <button className="lg:text-base text-sm border-[1px] border-gray-200 border-solid rounded-full px-4 py-2">
+                            <button className="lg:text-base text-sm rounded-full px-4 py-2 text-brand-2 bg-brand-3">
                                 {category.name}
                             </button>
                         </li>
@@ -69,65 +91,57 @@ export default function Product() {
             </nav>
 
             <div className="container-1280 px">
-                {/* 제품 정보 리스트 */}
-                <ul className="grid xl:grid-cols-4 lg:grid-cols-2 grid-1 lg:gap-4 gap-3 pt-10">
-                    {productList.map((product) => (
-                        <li key={product.name} className="border-[1px] border-gray-200 border-solid rounded-lg p-8">
-                            <div>
-                                <strong className="text-xl">{product.name}</strong>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-
-                {/* 공간 분류 */}
-                <div className="border-t-[1px] border-gray-200 border-solid lg:pt-20 pt-10 lg:mt-20 mt-10">
-                    <ul className="flex flex-col gap-20">
-                        {locationList.map((location) => (
-                            <li key={location.name}>
-                                <div className="flex lg:flex-row flex-col justify-between lg:items-end gap-2">
-                                    <h2 className="lg:text-3xl text-2xl font-bold">{location.name}</h2>
-                                    <div className="flex gap-4 lg:text-base text-sm">
-                                        <div>
-                                            <span>제품 수 : </span>
-                                            <span>{location.productCount}개</span>
-                                        </div>
-                                        <div>
-                                            <span>공유중인 사람 : </span>
-                                            <span>{location.shareCount}개</span>
-                                        </div>
-                                    </div>
+                <div className="lg:pt-20 pt-10">
+                    {/* 공간 분류 리스트 */}
+                    <ul className="grid lg:grid-cols-2 grid-1 gap-x-5 lg:gap-y-12 gap-y-4 lg:mt-5">
+                        {locationList.map((product, index) => (
+                            <li
+                                key={product.name}
+                                style={{
+                                    borderTop: index === 0 ? "0px none" : "",
+                                    paddingTop: index === 0 ? "0px" : "",
+                                }}
+                                className="overflow-hidden flex items-start gap-5 border-solid md:border-t-[0px] border-t-[1px] border-gray-200 pt-4"
+                            >
+                                <div className="overflow-hidden md:min-w-[200px] min-w-[100px] lg:rounded-xl rounded-md">
+                                    <Image
+                                        src="https://placehold.co/200x200.jpg"
+                                        width={200}
+                                        height={200}
+                                        className="w-full h-full object-cover"
+                                        alt="물건 썸네일"
+                                    />
                                 </div>
+                                <div className="flex flex-col lg:gap-3 gap-2 w-full">
+                                    {/* 물건 이름 */}
+                                    <strong className="lg:text-xl text-lg">{product.name}</strong>
 
-                                {/* 리스트 */}
-                                <ul className="grid lg:grid-cols-2 grid-1 gap-4 mt-5">
-                                    {location.productList.map((product) => (
-                                        <li
-                                            key={product.name}
-                                            className="overflow-hidden flex md:flex-row flex-col items-start border-[1px] border-gray-200 border-solid rounded-2xl"
-                                        >
-                                            <Image
-                                                src="https://placehold.co/200x200.jpg"
-                                                width={200}
-                                                height={200}
-                                                className="md:w-[200px] w-full"
-                                                alt="제품 썸네일"
-                                            />
-                                            <div className="flex flex-col gap-2 p-8">
-                                                <strong className="lg:text-xl text-lg">{product.name}</strong>
-                                                <div className="lg:text-xl text-lg mt-auto">
-                                                    <strong>{product.price.toLocaleString()}</strong>
-                                                    <span>원</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+                                    {/* 물건 위치, 구매가격, 시세 */}
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-fit leading-none lg:text-base text-xs rounded-full lg:py-2 lg:px-3 py-1 px-2 text-white bg-brand-2">
+                                            {product.location}
+                                        </div>
+                                        <strong className="lg:text-xl text-sm">
+                                            {product.price.toLocaleString()}원
+                                        </strong>
+                                        <strong className="lg:text-lg text-xs text-brand-2">
+                                            {product.marketPrice.toLocaleString()}원
+                                        </strong>
+                                    </div>
+                                    <p className="opacity-50 lg:text-base text-xs lg:mt-4 mt-2">
+                                        {product.description}
+                                    </p>
+                                </div>
                             </li>
                         ))}
                     </ul>
                 </div>
             </div>
+
+            {/* 플로팅 버튼 */}
+            {/* <div>
+                <button></button>
+            </div> */}
         </div>
     );
 }

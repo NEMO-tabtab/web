@@ -7,6 +7,12 @@
     --foreground: #171717;
 }
 
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --background: #0a0a0a;
@@ -19,11 +25,14 @@ body {
     background: var(--background);
     font-family: Arial, Helvetica, sans-serif;
 }
-
-@layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
+label {
+    cursor: pointer;
+}
+input[type="checkbox"] {
+    display: none;
+}
+textarea {
+    resize: none;
 }
 
 .container-1280 {
@@ -35,4 +44,16 @@ body {
 
 .container-1280.px {
     @apply px-4;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title-type-1 {
+    @apply lg:text-3xl text-xl font-bold;
+}
+.input-type-1 {
+    @apply lg:text-base text-sm border-solid border-gray-200 border-[1px] rounded-md p-3;
 }
