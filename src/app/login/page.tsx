@@ -2,7 +2,7 @@ import Image from "next/image";
 
 function login() {
   return (
-    <main className="h-screen bg-maincolor flex flex-col justify-center items-center">
+    <main className="h-screen bg-brand-3 flex flex-col justify-center items-center">
       <article className="w-1/2 h-3/4 flex justify-center items-center">
         <Image
           src="/logo.png"
