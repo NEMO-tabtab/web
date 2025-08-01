@@ -43,8 +43,8 @@ export default function AddProduct() {
         <div className="container-1280 px lg:py-20 py-10">
             {/* 이미지 등록 */}
             <ul className="grid grid-cols-3 lg:gap-4 gap-2">
-                {productThumbnailSrcList.map((src) => (
-                    <li className="overflow-hidden rounded-xl" key={src}>
+                {productThumbnailSrcList.map((src, index) => (
+                    <li className="overflow-hidden rounded-xl" key={index}>
                         <Image
                             src={src}
                             width={300}
