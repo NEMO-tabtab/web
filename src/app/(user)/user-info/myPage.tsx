@@ -12,8 +12,8 @@ type User = {
 };
 
 export default function MyPage({ user }: { user: User }) {
-    console.log(user);
     const [activeTab, setActiveTab] = useState<"category" | "group">("category");
+    // 더미 데이터 추후 실제 데이터로 교체해야함
     const DUMMYDATA = [
         { name: "테스트1", count: 1 },
         { name: "테스트3", count: 2 },
