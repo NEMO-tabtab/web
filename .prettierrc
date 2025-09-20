@@ -3,5 +3,6 @@
     "printWidth": 120,
     "htmlWhitespaceSensitivity": "ignore",
     "bracketSameLine": false,
-    "singleAttributePerLine": false
+    "singleAttributePerLine": false,
+    "plugins": ["prettier-plugin-tailwindcss"]
 }
