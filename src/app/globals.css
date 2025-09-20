@@ -29,3 +29,7 @@ body {
 .container-1280.px {
     @apply px-4;
 }
+
+.flex-center {
+    @apply flex items-center justify-center;
+}
