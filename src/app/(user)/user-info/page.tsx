@@ -24,7 +24,7 @@ export default function MyPage() {
                             width={200}
                             height={200}
                             className="md:w-[200px] md:h-[200px] w-16 h-16 rounded-full"
-                            alt="제품 썸네일"
+                            alt="유저 썸네일"
                         />
                         <div className="grid grid-rows-2 md:gap-6">
                             <div className="md:text-2xl text-lg  font-semibold">닉네임</div>
