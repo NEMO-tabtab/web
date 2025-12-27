@@ -1,132 +1,113 @@
 import Image from "next/image";
+import Link from "next/link";
+import Filter from "../components/filter";
 
-export default function Product() {
+// 이미지
+import barcodeIcon from "../../assets/images/icon_barcode.png";
+
+// const getProductList = async () => {
+//     const response = await fetch(`http://localhost:8080/api/product/list`);
+//     return response;
+// };
+
+export default async function Product() {
+    // const productList = await getProductList();
+
+    const locationList = [
+        {
+            name: "본가",
+        },
+        {
+            name: "자취방",
+        },
+        {
+            name: "창고",
+        },
+    ];
     const gnbCategory = [
         {
             name: "가전제품",
         },
         {
-            name: "의류",
+            name: "가구",
         },
         {
-            name: "식품",
+            name: "컴퓨터",
+        },
+        {
+            name: "주방용품",
         },
     ];
 
     const productList = [
         {
-            name: "제품1",
+            title: "레인보우 RGB 키보드",
+            description: "나에게서 8개월 차",
+            location: "본가",
+            purchasePrice: 10000,
+            marketPrice: 10000,
+            imgUrl: "https://placehold.co/200x200.jpg",
         },
         {
-            name: "제품2",
-        },
-        {
-            name: "제품3",
-        },
-        {
-            name: "제품4",
-        },
-    ];
-
-    const locationList = [
-        {
-            name: "내 자취방",
-            productCount: 0,
-            shareCount: 0,
-            productList: [
-                { name: "제품1", price: 10000 },
-                { name: "제품2", price: 20000 },
-                { name: "제품3", price: 30000 },
-                { name: "제품4", price: 40000 },
-            ],
-        },
-        {
-            name: "회사 책상",
-            productCount: 0,
-            shareCount: 0,
-            productList: [
-                { name: "제품1", price: 10000 },
-                { name: "제품2", price: 20000 },
-                { name: "제품3", price: 30000 },
-                { name: "제품4", price: 40000 },
-            ],
+            title: "레인보우 RGB 키보드",
+            description: "나에게서 8개월 차",
+            location: "본가",
+            purchasePrice: 10000,
+            marketPrice: 10000,
+            imgUrl: "https://placehold.co/200x200.jpg",
         },
     ];
 
     return (
-        <div className="lg:pb-40 pb-20">
-            {/* 카테고리 필터 */}
-            <nav className="sticky z-10 lg:top-20 top-14 left-0 right-0 shadow-[inset_0_-1px_0_0_rgba(0,0,0,0.1)] bg-white">
-                <ul className="container-1280 px flex gap-2 py-3">
-                    {gnbCategory.map((category) => (
-                        <li key={category.name}>
-                            <button className="lg:text-base text-sm border-[1px] border-gray-200 border-solid rounded-full px-4 py-2">
-                                {category.name}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
+        <div className="pb-20 lg:pb-40">
+            <Filter locationList={locationList} gnbCategory={gnbCategory} />
 
-            <div className="container-1280 px">
-                {/* 제품 정보 리스트 */}
-                <ul className="grid xl:grid-cols-4 lg:grid-cols-2 grid-1 lg:gap-4 gap-3 pt-10">
-                    {productList.map((product) => (
-                        <li key={product.name} className="border-[1px] border-gray-200 border-solid rounded-lg p-8">
-                            <div>
-                                <strong className="text-xl">{product.name}</strong>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+            <div className="container-1280 px mt-10">
+                <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    {productList.map((product, index) => (
+                        <li className="border-b-[1px] border-gray-200 pb-5" key={index}>
+                            <Link className="flex items-start gap-5" href="">
+                                <div className="overflow-hidden rounded-lg md:w-[200px]">
+                                    <Image
+                                        src={product.imgUrl}
+                                        width={200}
+                                        height={200}
+                                        className="h-full w-full object-cover"
+                                        alt="제품 썸네일"
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <p className="text-lg lg:text-xl">{product.title}</p>
 
-                {/* 공간 분류 */}
-                <div className="border-t-[1px] border-gray-200 border-solid lg:pt-20 pt-10 lg:mt-20 mt-10">
-                    <ul className="flex flex-col gap-20">
-                        {locationList.map((location) => (
-                            <li key={location.name}>
-                                <div className="flex lg:flex-row flex-col justify-between lg:items-end gap-2">
-                                    <h2 className="lg:text-3xl text-2xl font-bold">{location.name}</h2>
-                                    <div className="flex gap-4 lg:text-base text-sm">
-                                        <div>
-                                            <span>제품 수 : </span>
-                                            <span>{location.productCount}개</span>
+                                    {/* 위치, 가격 정보 */}
+                                    <div className="flex items-end gap-3 font-bold">
+                                        <div className="flex-center w-fit rounded-full bg-brand-2 px-2 py-[2px] text-xs text-white">
+                                            본가
                                         </div>
-                                        <div>
-                                            <span>공유중인 사람 : </span>
-                                            <span>{location.shareCount}개</span>
+                                        <div className="leading-none">{product.marketPrice.toLocaleString()}원</div>
+                                        <div className="text-xs leading-none text-brand-2">
+                                            {product.purchasePrice.toLocaleString()}원
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* 리스트 */}
-                                <ul className="grid lg:grid-cols-2 grid-1 gap-4 mt-5">
-                                    {location.productList.map((product) => (
-                                        <li
-                                            key={product.name}
-                                            className="overflow-hidden flex md:flex-row flex-col items-start border-[1px] border-gray-200 border-solid rounded-2xl"
-                                        >
-                                            <Image
-                                                src="https://placehold.co/200x200.jpg"
-                                                width={200}
-                                                height={200}
-                                                className="md:w-[200px] w-full"
-                                                alt="제품 썸네일"
-                                            />
-                                            <div className="flex flex-col gap-2 p-8">
-                                                <strong className="lg:text-xl text-lg">{product.name}</strong>
-                                                <div className="lg:text-xl text-lg mt-auto">
-                                                    <strong>{product.price.toLocaleString()}</strong>
-                                                    <span>원</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                                    {product.description && (
+                                        <p className="text-xs text-black/50">{product.description}</p>
+                                    )}
+                                </div>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            {/* 플로팅 버튼 */}
+            <div className="fixed bottom-10 right-10 flex flex-col items-center gap-2">
+                <Link className="block" href="/add-product">
+                    <i className="xi-plus-circle-o text-5xl text-brand-2"></i>
+                </Link>
+                <Link className="flex-center h-10 w-10 rounded-full bg-brand-2" href="#">
+                    <Image className="h-auto w-[60%]" src={barcodeIcon} alt="필터" />
+                </Link>
             </div>
         </div>
     );
