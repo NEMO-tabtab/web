@@ -1,4 +1,7 @@
-import MyPage from "./myPage";
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
 
 type User = {
     userIdx: number;
@@ -8,12 +11,9 @@ type User = {
     address: string;
 };
 
-export default function MyPage() {
-   const res = await fetch(`http://localhost:8080/api/user/36`, {
-        cache: "no-store",
-    });
-    const user: User = await res.json();
+export default function MyPage({ user }: { user: User }) {
     const [activeTab, setActiveTab] = useState<"category" | "group">("category");
+    // 더미 데이터 추후 실제 데이터로 교체해야함
     const DUMMYDATA = [
         { name: "테스트1", count: 1 },
         { name: "테스트3", count: 2 },
@@ -33,12 +33,13 @@ export default function MyPage() {
                             width={200}
                             height={200}
                             className="md:w-[200px] md:h-[200px] w-16 h-16 rounded-full"
-                            alt="유저 썸네일"
+                            alt="프로필 이미지"
                         />
                         <div className="grid grid-rows-2 md:gap-6">
-                            <div className="md:text-2xl text-lg  font-semibold">닉네임</div>
-                            <div className="md:text-lg  text-sm text-gray-600">
-                                팔로워 <strong className="text-black">0</strong> · 팔로잉
+                            {/* 서버에서 받은 닉네임 출력 */}
+                            <div className="md:text-2xl text-lg font-semibold">{user.nickname}</div>
+                            <div className="md:text-lg text-sm text-gray-600">
+                                팔로워 <strong className="text-black">0</strong> · 팔로잉{" "}
                                 <strong className="text-black">0</strong>
                             </div>
                         </div>
@@ -83,7 +84,6 @@ export default function MyPage() {
                 </div>
             </section>
 
-            {/* 이 부분 큰 화면일때 grid-cols-2 를 수정하면 됨 */}
             <section className="grid lg:grid-cols-6 grid-cols-2 gap-4 px-4 py-6">
                 {DUMMYDATA.map((data, i) => (
                     <div key={i} className="bg-gray-200 rounded-lg p-4">
