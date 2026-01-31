@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Card } from "@/components/common/Card";
 import { Text } from "@/components/common/Typography";
 
 interface DataPoint {
@@ -34,7 +33,7 @@ export const LineChart = ({ data, color = "#F59E0B", height = 200 }: LineChartPr
 
     return (
         <div className="w-full" style={{ height }}>
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full overflow-visible">
                 {/* 그라데이션 정의 */}
                 <defs>
                     <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
@@ -70,7 +69,16 @@ export const LineChart = ({ data, color = "#F59E0B", height = 200 }: LineChartPr
                     // 마지막 점이거나 특정 조건일 때만 점 표시
                     if (i === data.length - 1) {
                         return (
-                            <circle key={i} cx={x} cy={y} r="3" fill="white" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                            <circle
+                                key={i}
+                                cx={x}
+                                cy={y}
+                                r="3"
+                                fill="white"
+                                stroke={color}
+                                strokeWidth="2"
+                                vectorEffect="non-scaling-stroke"
+                            />
                         );
                     }
                     return null;
@@ -78,13 +86,14 @@ export const LineChart = ({ data, color = "#F59E0B", height = 200 }: LineChartPr
             </svg>
 
             {/* X축 라벨 */}
-            <div className="flex justify-between mt-2 text-xs text-gray-400">
-                {data.map((d, i) => (
-                    // 공간 부족을 피하기 위해 일부 라벨만 표시 (예: 처음, 중간, 끝)
-                    (i === 0 || i === Math.floor(data.length / 2) || i === data.length - 1) && (
-                        <span key={i}>{d.label}</span>
-                    )
-                ))}
+            <div className="mt-2 flex justify-between text-xs text-gray-400">
+                {data.map(
+                    (d, i) =>
+                        // 공간 부족을 피하기 위해 일부 라벨만 표시 (예: 처음, 중간, 끝)
+                        (i === 0 || i === Math.floor(data.length / 2) || i === data.length - 1) && (
+                            <span key={i}>{d.label}</span>
+                        ),
+                )}
             </div>
         </div>
     );
@@ -101,15 +110,15 @@ export const DonutChart = ({ data, size = 160 }: DonutChartProps) => {
 
     return (
         <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-            <svg viewBox="0 0 100 100" className="transform -rotate-90 w-full h-full">
+            <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90 transform">
                 {data.map((item, i) => {
                     const percentage = item.value / total;
-                    const dashArray = percentage * 314; // 2 * PI * R (R=50) -> but using r=40 so 2*PI*40 ≈ 251.3
+                    // const dashArray = percentage * 314; // 2 * PI * R (R=50) -> but using r=40 so 2*PI*40 ≈ 251.3
                     // r=40일 때 둘레는 약 251.3
                     const r = 40;
                     const circumference = 2 * Math.PI * r;
                     const strokeDasharray = `${percentage * circumference} ${circumference}`;
-                    const strokeDashoffset = -currentAngle * circumference; // 누적 각도만큼 오프셋
+                    // const strokeDashoffset = -currentAngle * circumference; // 누적 각도만큼 오프셋
 
                     // 다음 시작 각도 업데이트 (0~1 사이 값으로 누적)
                     currentAngle += percentage;
@@ -133,8 +142,12 @@ export const DonutChart = ({ data, size = 160 }: DonutChartProps) => {
                 })}
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <Text weight="bold" size="sm" color="text-gray-400">Total</Text>
-                <Text weight="bold" size="lg">100%</Text>
+                <Text weight="bold" size="sm" color="text-gray-400">
+                    Total
+                </Text>
+                <Text weight="bold" size="lg">
+                    100%
+                </Text>
             </div>
         </div>
     );
