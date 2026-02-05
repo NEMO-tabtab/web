@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { Heading, Text } from "@/components/common/Typography";
 import { LineChart, DonutChart } from "@/components/analysis/Charts";
@@ -33,9 +32,12 @@ export default function AnalysisPage() {
     const growthRate = ((growth / lastMonthAsset) * 100).toFixed(1);
 
     return (
-        <main className="max-w-3xl mx-auto px-4 py-8 pb-32 space-y-8">
+        <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 pb-32">
             <header className="flex items-center gap-4">
-                <button onClick={() => router.back()} className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+                <button
+                    onClick={() => router.back()}
+                    className="-ml-2 rounded-full p-2 text-gray-600 transition-colors hover:bg-gray-100"
+                >
                     <i className="xi-arrow-left text-xl"></i>
                 </button>
                 <div>
@@ -46,20 +48,24 @@ export default function AnalysisPage() {
 
             {/* 총 자산 요약 */}
             <section>
-                <Card className="bg-gradient-to-br from-gray-900 to-gray-800 text-white border-none shadow-xl">
+                <Card className="border-none bg-gradient-to-br from-gray-900 to-gray-800 text-white shadow-xl">
                     <div className="space-y-1">
-                        <Text size="sm" className="text-gray-400">총 자산 가치</Text>
+                        <Text size="sm" className="text-gray-400">
+                            총 자산 가치
+                        </Text>
                         <div className="flex items-baseline gap-2">
                             <span className="text-4xl font-bold tracking-tight">{totalAsset.toLocaleString()}</span>
                             <span className="text-xl text-gray-400">원</span>
                         </div>
                     </div>
                     <div className="mt-6 flex items-center gap-2">
-                        <div className="px-2 py-1 bg-green-500/20 text-green-400 rounded-lg text-sm font-medium flex items-center gap-1">
+                        <div className="flex items-center gap-1 rounded-lg bg-green-500/20 px-2 py-1 text-sm font-medium text-green-400">
                             <i className="xi-arrow-up"></i>
                             {growth.toLocaleString()}원 ({growthRate}%)
                         </div>
-                        <Text size="sm" className="text-gray-400">지난달 대비</Text>
+                        <Text size="sm" className="text-gray-400">
+                            지난달 대비
+                        </Text>
                     </div>
                 </Card>
             </section>
@@ -68,7 +74,7 @@ export default function AnalysisPage() {
             <section className="space-y-4">
                 <Heading level={4}>자산 변동 추이</Heading>
                 <Card>
-                    <div className="h-64 flex items-center justify-center">
+                    <div className="flex h-64 items-center justify-center">
                         <LineChart data={assetHistory} height={250} />
                     </div>
                 </Card>
@@ -78,15 +84,18 @@ export default function AnalysisPage() {
             <section className="space-y-4">
                 <Heading level={4}>카테고리별 비중</Heading>
                 <Card>
-                    <div className="flex flex-col md:flex-row items-center gap-8">
+                    <div className="flex flex-col items-center gap-8 md:flex-row">
                         <div className="flex-shrink-0">
                             <DonutChart data={categoryDistribution} size={200} />
                         </div>
                         <div className="w-full space-y-3">
                             {categoryDistribution.map((item, index) => (
-                                <div key={index} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors">
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-gray-50"
+                                >
                                     <div className="flex items-center gap-3">
-                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                                        <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
                                         <Text weight="medium">{item.label}</Text>
                                     </div>
                                     <div className="text-right">
@@ -106,25 +115,29 @@ export default function AnalysisPage() {
             <section className="space-y-4">
                 <Heading level={4}>인사이트</Heading>
                 <div className="grid gap-4">
-                    <Card padding="sm" className="bg-brand-50 border-brand-100 flex gap-4 items-start">
-                        <div className="p-2 bg-white rounded-full text-brand-500 shadow-sm mt-1">
+                    <Card padding="sm" className="flex items-start gap-4 border-brand-100 bg-brand-50">
+                        <div className="mt-1 rounded-full bg-white p-2 text-brand-500 shadow-sm">
                             <i className="xi-trending-up"></i>
                         </div>
                         <div>
-                            <Text weight="bold" className="text-brand-800">꾸준한 성장</Text>
-                            <Text size="sm" className="text-brand-600 mt-1">
-                                지난 6개월간 자산 가치가 평균 3.5%씩 증가하고 있어요.
-                                특히 전자기기 카테고리의 가치 상승이 두드러집니다.
+                            <Text weight="bold" className="text-brand-800">
+                                꾸준한 성장
+                            </Text>
+                            <Text size="sm" className="mt-1 text-brand-600">
+                                지난 6개월간 자산 가치가 평균 3.5%씩 증가하고 있어요. 특히 전자기기 카테고리의 가치
+                                상승이 두드러집니다.
                             </Text>
                         </div>
                     </Card>
-                    <Card padding="sm" className="bg-gray-50 border-gray-200 flex gap-4 items-start">
-                        <div className="p-2 bg-white rounded-full text-gray-500 shadow-sm mt-1">
+                    <Card padding="sm" className="flex items-start gap-4 border-gray-200 bg-gray-50">
+                        <div className="mt-1 rounded-full bg-white p-2 text-gray-500 shadow-sm">
                             <i className="xi-lightbulb-o"></i>
                         </div>
                         <div>
-                            <Text weight="bold" className="text-gray-800">포트폴리오 다각화 추천</Text>
-                            <Text size="sm" className="text-gray-600 mt-1">
+                            <Text weight="bold" className="text-gray-800">
+                                포트폴리오 다각화 추천
+                            </Text>
+                            <Text size="sm" className="mt-1 text-gray-600">
                                 전자기기 비중이 44%로 높습니다. 가구 등 감가상각이 적은 자산군을 늘려보시는 건 어떨까요?
                             </Text>
                         </div>
