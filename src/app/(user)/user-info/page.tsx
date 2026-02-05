@@ -1,12 +1,23 @@
-"use client";
-
+import MyPage from "./myPage";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { Heading, Text } from "@/components/common/Typography";
 
+type User = {
+    userIdx: number;
+    loginId: string;
+    name: string;
+    nickname: string;
+    address: string;
+};
+
 export default function MyPage() {
+   const res = await fetch(`http://localhost:8080/api/user/36`, {
+        cache: "no-store",
+    });
+    const user: User = await res.json();
     const [activeTab, setActiveTab] = useState<"category" | "group">("category");
 
     const categories = [
