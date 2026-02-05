@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Filter from "../components/filter";
-
+import { Suspense } from "react";
 // 이미지
 import barcodeIcon from "../../assets/images/icon_barcode.png";
 
@@ -60,8 +60,9 @@ export default async function Product() {
 
     return (
         <div className="pb-20 lg:pb-40">
-            <Filter locationList={locationList} gnbCategory={gnbCategory} />
-
+            <Suspense>
+                <Filter locationList={locationList} gnbCategory={gnbCategory} />
+            </Suspense>
             <div className="container-1280 px mt-10">
                 <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                     {productList.map((product, index) => (
@@ -81,11 +82,11 @@ export default async function Product() {
 
                                     {/* 위치, 가격 정보 */}
                                     <div className="flex items-end gap-3 font-bold">
-                                        <div className="flex-center w-fit rounded-full bg-brand-2 px-2 py-[2px] text-xs text-white">
+                                        <div className="flex-center bg-brand-2 w-fit rounded-full px-2 py-[2px] text-xs text-white">
                                             본가
                                         </div>
                                         <div className="leading-none">{product.marketPrice.toLocaleString()}원</div>
-                                        <div className="text-xs leading-none text-brand-2">
+                                        <div className="text-brand-2 text-xs leading-none">
                                             {product.purchasePrice.toLocaleString()}원
                                         </div>
                                     </div>
@@ -103,9 +104,9 @@ export default async function Product() {
             {/* 플로팅 버튼 */}
             <div className="fixed bottom-10 right-10 flex flex-col items-center gap-2">
                 <Link className="block" href="/add-product">
-                    <i className="xi-plus-circle-o text-5xl text-brand-2"></i>
+                    <i className="xi-plus-circle-o text-brand-2 text-5xl"></i>
                 </Link>
-                <Link className="flex-center h-10 w-10 rounded-full bg-brand-2" href="#">
+                <Link className="flex-center bg-brand-2 h-10 w-10 rounded-full" href="#">
                     <Image className="h-auto w-[60%]" src={barcodeIcon} alt="필터" />
                 </Link>
             </div>

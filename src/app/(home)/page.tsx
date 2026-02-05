@@ -4,17 +4,32 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/common/Button";
-import { Card } from "@/components/common/Card";
 import { Heading, Text } from "@/components/common/Typography";
 
 export default function Home() {
     const [selectedTab, setSelectedTab] = useState<1 | 2>(1);
 
     const itemList = [
-        { name: "맥북 프로 16인치", price: 3200000, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?auto=format&fit=crop&q=80&w=600" },
-        { name: "아이패드 에어 5", price: 920000, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=600" },
-        { name: "소니 헤드폰 WH-1000XM5", price: 450000, image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=600" },
-        { name: "로지텍 MX Master 3S", price: 139000, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&q=80&w=600" },
+        {
+            name: "맥북 프로 16인치",
+            price: 3200000,
+            image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?auto=format&fit=crop&q=80&w=600",
+        },
+        {
+            name: "아이패드 에어 5",
+            price: 920000,
+            image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=600",
+        },
+        {
+            name: "소니 헤드폰 WH-1000XM5",
+            price: 450000,
+            image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=600",
+        },
+        {
+            name: "로지텍 MX Master 3S",
+            price: 139000,
+            image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&q=80&w=600",
+        },
     ];
 
     const myProducts = [
@@ -29,26 +44,32 @@ export default function Home() {
     return (
         <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 md:px-8">
             {/* Hero Section: 내 가치 */}
-            <section className="animate-fade-in mb-10">
+            <section className="mb-10 animate-fade-in">
                 <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-500 to-brand-400 p-8 text-white shadow-glow md:p-12">
                     <div className="relative z-10 flex flex-col items-center justify-center space-y-2 text-center">
                         <Text size="lg" className="font-medium text-brand-50 opacity-90">
                             현재 나의 자산 가치
                         </Text>
                         <div className="flex flex-wrap items-baseline justify-center gap-2">
-                            <span className="text-5xl font-black tracking-tight md:text-7xl">
-                                102,040,000
-                            </span>
+                            <span className="text-5xl font-black tracking-tight md:text-7xl">102,040,000</span>
                             <span className="text-2xl font-bold text-brand-100 md:text-3xl">원</span>
                         </div>
                         <div className="mt-6 flex gap-3">
                             <Link href="/analysis">
-                                <Button variant="secondary" size="sm" className="rounded-full bg-white/20 text-white backdrop-blur-sm hover:bg-white/30">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="rounded-full bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"
+                                >
                                     📈 분석 보기
                                 </Button>
                             </Link>
                             <Link href="/add-product">
-                                <Button variant="secondary" size="sm" className="rounded-full bg-white text-brand-600 hover:bg-brand-50">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    className="rounded-full bg-white text-brand-600 hover:bg-brand-50"
+                                >
                                     + 자산 추가
                                 </Button>
                             </Link>
@@ -67,19 +88,21 @@ export default function Home() {
                     <div className="inline-flex rounded-full bg-neutral-100 p-1">
                         <button
                             onClick={() => setSelectedTab(1)}
-                            className={`rounded-full px-8 py-2.5 text-sm font-bold transition-all duration-200 ${selectedTab === 1
-                                ? "bg-white text-brand-600 shadow-sm"
-                                : "text-neutral-500 hover:text-neutral-700"
-                                }`}
+                            className={`rounded-full px-8 py-2.5 text-sm font-bold transition-all duration-200 ${
+                                selectedTab === 1
+                                    ? "bg-white text-brand-600 shadow-sm"
+                                    : "text-neutral-500 hover:text-neutral-700"
+                            }`}
                         >
                             카테고리별
                         </button>
                         <button
                             onClick={() => setSelectedTab(2)}
-                            className={`rounded-full px-8 py-2.5 text-sm font-bold transition-all duration-200 ${selectedTab === 2
-                                ? "bg-white text-brand-600 shadow-sm"
-                                : "text-neutral-500 hover:text-neutral-700"
-                                }`}
+                            className={`rounded-full px-8 py-2.5 text-sm font-bold transition-all duration-200 ${
+                                selectedTab === 2
+                                    ? "bg-white text-brand-600 shadow-sm"
+                                    : "text-neutral-500 hover:text-neutral-700"
+                            }`}
                         >
                             공간별
                         </button>
@@ -140,8 +163,12 @@ export default function Home() {
             <section className="animate-slide-up">
                 <div className="mb-6 flex items-end justify-between">
                     <div>
-                        <Heading level={3} className="text-neutral-900">내 보유 목록</Heading>
-                        <Text size="sm" className="mt-1 text-neutral-500">최근 등록한 물품들입니다.</Text>
+                        <Heading level={3} className="text-neutral-900">
+                            내 보유 목록
+                        </Heading>
+                        <Text size="sm" className="mt-1 text-neutral-500">
+                            최근 등록한 물품들입니다.
+                        </Text>
                     </div>
                     <Button variant="ghost" size="sm" className="text-brand-600 hover:bg-brand-50 hover:text-brand-700">
                         전체보기 <i className="xi-angle-right-min ml-1"></i>
@@ -165,9 +192,7 @@ export default function Home() {
                                     <p className="text-xs text-neutral-400">{product.category}</p>
                                 </div>
                             </div>
-                            <span className="font-bold text-brand-600">
-                                {product.price.toLocaleString()} 원
-                            </span>
+                            <span className="font-bold text-brand-600">{product.price.toLocaleString()} 원</span>
                         </div>
                     ))}
                 </div>
