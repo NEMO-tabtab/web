@@ -1,3 +1,5 @@
+import axios from "axios";
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Filter from "./components/Filter";
@@ -5,8 +7,6 @@ import Filter from "./components/Filter";
 // 이미지
 import barcodeIcon from "@/app/assets/images/icon_barcode.png";
 import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
-import axios from "axios";
-import { Suspense } from "react";
 
 const getProductList = async () => {
     try {
@@ -99,7 +99,7 @@ export default async function Product() {
 
             {/* 플로팅 버튼 */}
             <div className="fixed bottom-10 right-10 flex flex-col items-center gap-2">
-                <Link className="block" href="/add-product">
+                <Link className="block" href="/product/add">
                     <i className="xi-plus-circle-o text-brand-2 text-5xl"></i>
                 </Link>
                 <Link className="flex-center bg-brand-2 h-10 w-10 rounded-full" href="#">
