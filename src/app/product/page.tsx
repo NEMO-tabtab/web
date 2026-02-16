@@ -1,17 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
-import Filter from "../components/filter";
-import { Suspense } from "react";
-// 이미지
-import barcodeIcon from "../../assets/images/icon_barcode.png";
+import Filter from "./components/Filter";
 
-// const getProductList = async () => {
-//     const response = await fetch(`http://localhost:8080/api/product/list`);
-//     return response;
-// };
+// 이미지
+import barcodeIcon from "@/app/assets/images/icon_barcode.png";
+import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
+import axios from "axios";
+import { Suspense } from "react";
+
+const getProductList = async () => {
+    try {
+        const response = await axios.post(`http://localhost:8080/api/product/list`, {
+            page: 1,
+            size: 10,
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error:", error);
+        return null;
+    }
+};
 
 export default async function Product() {
-    // const productList = await getProductList();
+    const productList = await getProductList();
+
+    console.log(productList);
 
     const locationList = [
         {
@@ -39,25 +52,6 @@ export default async function Product() {
         },
     ];
 
-    const productList = [
-        {
-            title: "레인보우 RGB 키보드",
-            description: "나에게서 8개월 차",
-            location: "본가",
-            purchasePrice: 10000,
-            marketPrice: 10000,
-            imgUrl: "https://placehold.co/200x200.jpg",
-        },
-        {
-            title: "레인보우 RGB 키보드",
-            description: "나에게서 8개월 차",
-            location: "본가",
-            purchasePrice: 10000,
-            marketPrice: 10000,
-            imgUrl: "https://placehold.co/200x200.jpg",
-        },
-    ];
-
     return (
         <div className="pb-20 lg:pb-40">
             <Suspense>
@@ -65,12 +59,16 @@ export default async function Product() {
             </Suspense>
             <div className="container-1280 px mt-10">
                 <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                    {productList.map((product, index) => (
+                    {productList.content.map((product: any, index: number) => (
                         <li className="border-b-[1px] border-gray-200 pb-5" key={index}>
-                            <Link className="flex items-start gap-5" href="">
+                            <Link className="flex items-start gap-5" href="/product/edit/4">
                                 <div className="overflow-hidden rounded-lg md:w-[200px]">
                                     <Image
-                                        src={product.imgUrl}
+                                        src={
+                                            product.files.length > 0
+                                                ? `http://localhost:8080/${product.files[0].filePath}`
+                                                : defaultThumbnail
+                                        }
                                         width={200}
                                         height={200}
                                         className="h-full w-full object-cover"
@@ -78,22 +76,20 @@ export default async function Product() {
                                     />
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <p className="text-lg lg:text-xl">{product.title}</p>
+                                    <p className="text-lg lg:text-xl">{product.productNm}</p>
 
                                     {/* 위치, 가격 정보 */}
                                     <div className="flex items-end gap-3 font-bold">
                                         <div className="flex-center bg-brand-2 w-fit rounded-full px-2 py-[2px] text-xs text-white">
                                             본가
                                         </div>
-                                        <div className="leading-none">{product.marketPrice.toLocaleString()}원</div>
+                                        <div className="leading-none">{product.productValue.toLocaleString()}원</div>
                                         <div className="text-brand-2 text-xs leading-none">
-                                            {product.purchasePrice.toLocaleString()}원
+                                            {product.productPrice.toLocaleString()}원
                                         </div>
                                     </div>
 
-                                    {product.description && (
-                                        <p className="text-xs text-black/50">{product.description}</p>
-                                    )}
+                                    {product.content && <p className="text-xs text-black/50">{product.content}</p>}
                                 </div>
                             </Link>
                         </li>
