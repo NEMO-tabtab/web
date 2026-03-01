@@ -1,10 +1,9 @@
 "use client";
 
-import DetailPage from "../components/DetailPage";
+import ProductForm from "../components/ProductForm";
 
 export default function AddProduct() {
-
     return (
-        <DetailPage/>
+        <ProductForm mode="add" />
     );
 }

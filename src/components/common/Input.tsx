@@ -18,28 +18,20 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 )}
                 <div className="relative">
                     {icon && (
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                             {icon}
                         </div>
                     )}
                     <input
                         ref={ref}
-                        className={`
-              block w-full rounded-xl border-gray-200 bg-gray-50 text-gray-900 
-              focus:border-brand-500 focus:bg-white focus:ring-brand-500 
-              disabled:opacity-50 disabled:bg-gray-100
-              transition-colors duration-200
-              ${icon ? "pl-10" : "pl-4"} pr-4 py-3
-              ${error ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""}
-              ${className}
-            `}
+                        className={`block w-full rounded-xl border-gray-200 bg-gray-50 text-gray-900 transition-colors duration-200 focus:border-brand-500 focus:bg-white focus:ring-brand-500 disabled:bg-gray-100 disabled:opacity-50 ${icon ? "pl-10" : "pl-4"} py-3 pr-4 ${error ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""} ${className} `}
                         {...props}
                     />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
             </div>
         );
-    }
+    },
 );
 
 Input.displayName = "Input";

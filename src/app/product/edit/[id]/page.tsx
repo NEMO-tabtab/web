@@ -1,47 +1,53 @@
+"use client";
+
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import DetailPage from "@/app/product/components/DetailPage";
+import ProductForm, { ProductFormData } from "@/app/product/components/ProductForm";
 
-const editProduct = async (data: any) => {
+const fetchProductData = async (productId: string): Promise<ProductFormData | null> => {
     try {
-        const formData = new FormData();
-
-        // 각 필드를 FormData에 추가
-        Object.keys(data).forEach((key) => {
-            formData.append(key, data[key]);
-        });
-
-        const response = await axios.put(`http://localhost:8080/api/product`, data);
+        const response = await axios.get<ProductFormData>(`http://localhost:8080/api/product/${productId}`);
+        console.log(response.data);
         return response.data;
-    } catch (error: any) {
-        console.error("Error:", error);
+    } catch (error) {
+        console.error("제품 데이터 불러오기 실패:", error);
         return null;
     }
 };
 
-export default async function EditProduct() {
-    const dummyData = {
-        barcode: "1234567890123",
-        selTag: "노트북,애플,맥북",
-        prchPlace: "Apple Store",
-        productValue: 1200000,
-        brandNm: "Apple",
-        modelNm: "MacBook Pro 13",
-        information: "실버, 256GB SSD, 8GB RAM",
-        productNm: "api 테스트",
-        productIdx: 4,
-        status: "EXCELLENT",
-        prchDate: "2023-01-15",
-        serialNo: "MBP2023001",
-        spaceIdx: 1,
-        selCategory: "전자기기",
-        carrotYn: "N",
-        content: "2023년 구매한 MacBook Pro입니다.",
-        productPrice: 1500000,
-        productCnt: 1,
-    };
+export default function EditProduct() {
+    const params = useParams();
+    const productId = params.id as string;
+    const [productData, setProductData] = useState<ProductFormData | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const response = await editProduct(dummyData);
-    console.log(response);
+    useEffect(() => {
+        const loadProduct = async () => {
+            setIsLoading(true);
+            const data = await fetchProductData(productId);
+            setProductData(data);
+            setIsLoading(false);
+        };
 
-    return <DetailPage />;
+        loadProduct();
+    }, [productId]);
+
+    if (isLoading) {
+        return (
+            <div className="mx-auto max-w-3xl px-4 py-8 text-center">
+                <p>로딩 중...</p>
+            </div>
+        );
+    }
+
+    if (!productData) {
+        return (
+            <div className="mx-auto max-w-3xl px-4 py-8 text-center">
+                <p>제품을 찾을 수 없습니다.</p>
+            </div>
+        );
+    }
+
+    return <ProductForm mode="edit" productId={productId} initialData={productData} />;
 }
