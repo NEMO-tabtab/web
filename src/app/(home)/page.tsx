@@ -64,7 +64,7 @@ export default function Home() {
                                     📈 분석 보기
                                 </Button>
                             </Link>
-                            <Link href="/add-product">
+                            <Link href="/product/add">
                                 <Button
                                     variant="secondary"
                                     size="sm"
