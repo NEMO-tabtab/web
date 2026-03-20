@@ -14,7 +14,7 @@ type User = {
 };
 
 export default function MyPage() {
-   const res = await fetch(`http://3.38.247.4:8080/api/user/36`, {
+   const res = await fetch(`http://localhost:8080/api/user/36`, {
         cache: "no-store",
     });
     const user: User = await res.json();
