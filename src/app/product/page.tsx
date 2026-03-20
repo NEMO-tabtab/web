@@ -2,11 +2,20 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Text } from "@/components/common/Typography";
+import { ProductFormData } from "./components/ProductForm";
 // import Filter from "./components/Filter";
 
 // 이미지
 import barcodeIcon from "@/app/assets/images/icon_barcode.png";
 import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
+
+interface ProductFile {
+    filePath: string;
+}
+
+type Product = ProductFormData & {
+    files: ProductFile[];
+};
 
 const getProductList = async () => {
     try {
@@ -42,7 +51,7 @@ export default async function Product() {
 
                 {/* 제품 리스트 */}
                 <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
-                    {productList.content.map((product: any, index: number) => (
+                    {productList.content.map((product: Product, index: number) => (
                         <Link
                             key={index}
                             href={`/product/edit/${product.productIdx || 4}`}
