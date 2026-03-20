@@ -36,7 +36,7 @@ export default function EditProfileForm({ user }: { user: User }) {
     const toggleModal = () => setShowModal((prev) => !prev);
 
     const handleSubmit = async () => {
-        const res = await fetch(`http://localhost:8080/api/user/modify`, {
+        const res = await fetch(`http://3.38.247.4:8080/api/user/modify`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form),
