@@ -7,6 +7,7 @@ import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { Heading, Text } from "@/components/common/Typography";
 import { Input } from "@/components/common/Input";
+import Image from "next/image";
 
 const MAX_IMAGES = 3;
 
@@ -233,7 +234,7 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                             key={index}
                             className="group relative aspect-square overflow-hidden rounded-2xl border border-gray-200"
                         >
-                            <img src={image} alt={`제품 사진 ${index + 1}`} className="h-full w-full object-cover" />
+                            <Image src={image} alt={`제품 사진 ${index + 1}`} fill className="object-cover" />
                             <button
                                 type="button"
                                 onClick={() => handleImageRemove(index)}
