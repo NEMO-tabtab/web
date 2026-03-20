@@ -43,43 +43,63 @@ export default function Home() {
 
     return (
         <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 md:px-8">
-            {/* Hero Section: 내 가치 */}
-            <section className="mb-10 animate-fade-in">
-                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-500 to-brand-400 p-8 text-white shadow-glow md:p-12">
-                    <div className="relative z-10 flex flex-col items-center justify-center space-y-2 text-center">
-                        <Text size="lg" className="font-medium text-brand-50 opacity-90">
-                            현재 나의 자산 가치
-                        </Text>
-                        <div className="flex flex-wrap items-baseline justify-center gap-2">
-                            <span className="text-5xl font-black tracking-tight md:text-7xl">102,040,000</span>
-                            <span className="text-2xl font-bold text-brand-100 md:text-3xl">원</span>
+            {/* Hero Section: 내 가치 Dashboard */}
+            <section className="animate-fade-in relative z-10">
+                <div className="relative overflow-hidden rounded-[2rem] bg-white/60 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-3xl md:p-12 border border-neutral-200">
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-50 to-white/10 opacity-80" />
+                    <div className="relative z-10 flex flex-col">
+                        <div className="flex items-center justify-between mb-2">
+                            <Text size="sm" className="font-bold text-neutral-500">
+                                내 자산 요약
+                            </Text>
+                            {/*                        
+                                <i className="xi-angle-right-min text-neutral-400"></i>
+                            */}
                         </div>
-                        <div className="mt-6 flex gap-3">
-                            <Link href="/analysis">
+                        <div className="flex items-baseline gap-1 mb-6">
+                            <span className="text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl">
+                                102,040,000
+                            </span>
+                            <span className="text-xl font-bold text-neutral-500">원</span>
+                        </div>
+                        
+                        {/* 디테일 리스트 (토스 스타일 리스트) */}
+                        <div className="flex flex-col gap-3 rounded-[1.25rem] bg-white/80 p-5 shadow-sm backdrop-blur-md mb-6 border border-neutral-100">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-semibold text-neutral-500">총 자산 수</span>
+                                <span className="text-sm font-bold text-neutral-800">42개</span>
+                            </div>
+                            <div className="h-px w-full bg-neutral-100" />
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm font-semibold text-neutral-500">이번 달 증가</span>
+                                <span className="text-sm font-bold text-brand-500">+3개</span>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                            {/* <Link href="/analysis" className="block w-full">
                                 <Button
                                     variant="secondary"
-                                    size="sm"
-                                    className="rounded-full bg-white/20 text-white backdrop-blur-sm hover:bg-white/30"
+                                    className="w-full rounded-2xl bg-brand-50 text-brand-700 shadow-sm transition-all hover:bg-brand-100 hover:-translate-y-0.5"
                                 >
-                                    📈 분석 보기
+                                    <span className="text-sm font-bold">분석 보기</span>
                                 </Button>
-                            </Link>
-                            <Link href="/product/add">
+                            </Link> */}
+                            <Link href="/product/add" className="block w-full">
                                 <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    className="rounded-full bg-white text-brand-600 hover:bg-brand-50"
+                                    variant="primary"
+                                    className="w-full h-14 rounded-[1.25rem] bg-brand-600 text-white shadow-[0_4px_14px_0_rgb(0,118,255,0.39)] transition-all hover:bg-brand-700 hover:shadow-[0_6px_20px_rgba(0,118,255,0.23)] hover:-translate-y-0.5"
                                 >
-                                    + 자산 추가
+                                    <span className="text-base font-bold">+ 새 자산 추가하기</span>
                                 </Button>
                             </Link>
                         </div>
                     </div>
-                    {/* Decorative Circles */}
-                    <div className="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-                    <div className="absolute -bottom-10 -right-10 h-64 w-64 rounded-full bg-brand-300/20 blur-3xl" />
                 </div>
             </section>
+
+            {/* 레이아웃 구분을 위한 강력한 가로선 */}
+            <div className="my-10 h-px w-full bg-neutral-200" />
 
             {/* Main Content Area */}
             <section className="animate-slide-up space-y-8">
@@ -110,28 +130,31 @@ export default function Home() {
                 </div>
 
                 {/* Tab Content */}
-                <div className="min-h-[400px]">
+                <div className="min-h-[400px] mt-6 border-t border-neutral-200 pt-8">
                     {selectedTab === 1 && (
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                             {itemList.map((item, idx) => (
                                 <div
                                     key={idx}
-                                    className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                                    className="group relative cursor-pointer overflow-hidden rounded-[1.5rem] bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)] border border-neutral-100/50"
                                 >
-                                    <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
+                                    <div className="relative aspect-[4/3] overflow-hidden bg-neutral-50 p-4">
                                         <Image
                                             src={item.image}
                                             fill
-                                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 mix-blend-multiply"
                                             alt={item.name}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                                        <div className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm px-3 py-1 shadow-sm opacity-0 -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                                            <span className="text-xs font-bold text-brand-600">상세보기</span>
+                                        </div>
                                     </div>
-                                    <div className="p-5">
-                                        <h3 className="mb-1 text-lg font-bold text-neutral-900 group-hover:text-brand-600">
+                                    <div className="p-6">
+                                        <h3 className="mb-2 text-lg font-bold text-neutral-800 transition-colors group-hover:text-brand-600">
                                             {item.name}
                                         </h3>
-                                        <p className="text-xl font-extrabold text-brand-600">
+                                        <p className="text-2xl font-black text-brand-600">
                                             {item.price.toLocaleString()}
                                             <span className="ml-1 text-sm font-medium text-neutral-400">원</span>
                                         </p>
@@ -157,7 +180,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <hr className="my-12 border-neutral-100" />
+            <div className="my-12 h-px w-full bg-neutral-200" />
 
             {/* Bottom List Section */}
             <section className="animate-slide-up">
@@ -179,20 +202,29 @@ export default function Home() {
                     {myProducts.map((product, index) => (
                         <div
                             key={index}
-                            className="group flex items-center justify-between rounded-xl border border-neutral-100 bg-white p-4 transition-all duration-200 hover:border-brand-200 hover:shadow-md"
+                            className="group flex cursor-pointer items-center justify-between rounded-2xl border border-neutral-100/80 bg-white/70 backdrop-blur-md p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-brand-200"
                         >
                             <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-xl text-brand-500 transition-colors group-hover:bg-brand-100">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-xl text-brand-600 transition-transform group-hover:scale-110 group-hover:shadow-sm">
                                     📦
                                 </div>
-                                <div>
-                                    <p className="font-bold text-neutral-900 group-hover:text-brand-700">
+                                <div className="flex flex-col">
+                                    <p className="font-bold text-neutral-800 transition-colors group-hover:text-brand-700">
                                         {product.name}
                                     </p>
-                                    <p className="text-xs text-neutral-400">{product.category}</p>
+                                    <div className="mt-1 flex items-center gap-2">
+                                        <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-500">
+                                            {product.category}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <span className="font-bold text-brand-600">{product.price.toLocaleString()} 원</span>
+                            <div className="flex flex-col items-end">
+                                <span className="font-extrabold text-brand-600">{product.price.toLocaleString()}원</span>
+                                <span className="mt-1 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded flex items-center gap-1">
+                                    ✓ 보유 중
+                                </span>
+                            </div>
                         </div>
                     ))}
                 </div>
