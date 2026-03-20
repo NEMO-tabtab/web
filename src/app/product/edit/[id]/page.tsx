@@ -7,7 +7,7 @@ import ProductForm, { ProductFormData } from "@/app/product/components/ProductFo
 
 const fetchProductData = async (productId: string): Promise<ProductFormData | null> => {
     try {
-        const response = await axios.get<ProductFormData>(`http://localhost:8080/api/product/${productId}`);
+        const response = await axios.get<ProductFormData>(`http://3.38.247.4:8080/api/product/${productId}`);
         console.log(response.data);
         return response.data;
     } catch (error) {

@@ -10,7 +10,7 @@ import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg"
 
 const getProductList = async () => {
     try {
-        const response = await axios.post(`http://localhost:8080/api/product/list`, {
+        const response = await axios.post(`http://3.38.247.4:8080/api/product/list`, {
             page: 1,
             size: 10,
         });
@@ -55,7 +55,7 @@ export default async function Product() {
                                     <Image
                                         src={
                                             product.files.length > 0
-                                                ? `http://localhost:8080/${product.files[0].filePath}`
+                                                ? `http://3.38.247.4:8080/${product.files[0].filePath}`
                                                 : defaultThumbnail
                                         }
                                         fill
