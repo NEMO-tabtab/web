@@ -28,7 +28,8 @@
         "**/*.tsx",
         ".next/types/**/*.ts",
         "src/app/_(user)/user-info/page.tsx.dev",
-        "src/app/_(user)/user-edit/page.tsx.dev"
+        "src/app/_(user)/user-edit/page.tsx.dev",
+        "src/app/_(user)/user-info/page.tsx.bak"
     ],
     "exclude": ["node_modules"]
 }
