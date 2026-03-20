@@ -2,15 +2,24 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Text } from "@/components/common/Typography";
+import { ProductFormData } from "./components/ProductForm";
 // import Filter from "./components/Filter";
 
 // 이미지
 import barcodeIcon from "@/app/assets/images/icon_barcode.png";
 import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
 
+interface ProductFile {
+    filePath: string;
+}
+
+type Product = ProductFormData & {
+    files: ProductFile[];
+};
+
 const getProductList = async () => {
     try {
-        const response = await axios.post(`http://localhost:8080/api/product/list`, {
+        const response = await axios.post(`http://3.38.247.4:8080/api/product/list`, {
             page: 1,
             size: 10,
         });
@@ -41,7 +50,7 @@ export default async function Product() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
-                    {productList.content.map((product: any, index: number) => (
+                    {productList.content.map((product: Product, index: number) => (
                         <Link
                             key={index}
                             href={`/product/edit/${product.productIdx || 4}`}
@@ -53,7 +62,7 @@ export default async function Product() {
                                     <Image
                                         src={
                                             product.files.length > 0
-                                                ? `http://localhost:8080/${product.files[0].filePath}`
+                                                ? `http://3.38.247.4:8080/${product.files[0].filePath}`
                                                 : defaultThumbnail
                                         }
                                         fill

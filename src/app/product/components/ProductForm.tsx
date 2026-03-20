@@ -7,12 +7,13 @@ import { Button } from "@/components/common/Button";
 import { Card } from "@/components/common/Card";
 import { Heading, Text } from "@/components/common/Typography";
 import { Input } from "@/components/common/Input";
+import Image from "next/image";
 
 const MAX_IMAGES = 3;
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
 
-const PRODUCT_API_URL = "http://localhost:8080/api/product";
+const PRODUCT_API_URL = "http://3.38.247.4:8080/api/product";
 
 const FIELDS_TO_SEND = [
     "productIdx",
@@ -233,7 +234,7 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                             key={index}
                             className="group relative aspect-square overflow-hidden rounded-2xl border border-gray-200"
                         >
-                            <img src={image} alt={`제품 사진 ${index + 1}`} className="h-full w-full object-cover" />
+                            <Image src={image} alt={`제품 사진 ${index + 1}`} fill className="object-cover" />
                             <button
                                 type="button"
                                 onClick={() => handleImageRemove(index)}

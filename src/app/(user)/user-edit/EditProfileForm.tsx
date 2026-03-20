@@ -18,7 +18,7 @@ export default function EditProfileForm({ user }: { user: User }) {
     const [showModal, setShowModal] = useState(false);
     const [form, setForm] = useState({
         // 유저 인덱스 정보 하드코딩된거 페이지 연결 다 되고나면 처리해줘야함!!
-        userIdx: 36,
+        userIdx: 1,
         name: user.name,
         nickname: user.nickname,
         email: user.email,
@@ -36,7 +36,7 @@ export default function EditProfileForm({ user }: { user: User }) {
     const toggleModal = () => setShowModal((prev) => !prev);
 
     const handleSubmit = async () => {
-        const res = await fetch(`http://localhost:8080/api/user/modify`, {
+        const res = await fetch(`http://3.38.247.4:8080/api/user/modify`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form),
@@ -52,25 +52,25 @@ export default function EditProfileForm({ user }: { user: User }) {
     return (
         <div className="container-1280 px">
             {/* 프로필 이미지 */}
-            <section className="flex flex-col items-center mt-6">
-                <div className="relative md:w-[200px] md:h-[200px] w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-sm text-gray-600">
+            <section className="mt-6 flex flex-col items-center">
+                <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-sm text-gray-600 md:h-[200px] md:w-[200px]">
                     <Image
                         src="https://placehold.co/200x200.jpg"
                         width={200}
                         height={200}
-                        className="w-full h-full rounded-full"
+                        className="h-full w-full rounded-full"
                         alt="프로필 이미지"
                     />
-                    <button className="absolute bottom-0 right-0 md:w-12 md:h-12 w-6 h-6 bg-white border border-gray-300 rounded-full text-xs">
+                    <button className="absolute bottom-0 right-0 h-6 w-6 rounded-full border border-gray-300 bg-white text-xs md:h-12 md:w-12">
                         <i className="xi-pen md:text-2xl" />
                     </button>
                 </div>
-                <div className="mt-2 font-semibold text-lg">{form.name}</div>
+                <div className="mt-2 text-lg font-semibold">{form.name}</div>
             </section>
 
             {/* 수정 폼 */}
-            <form className="px-6 my-12 space-y-4">
-                <label className="block font-medium mb-1">
+            <form className="my-12 space-y-4 px-6">
+                <label className="mb-1 block font-medium">
                     이름 (닉네임) <span className="text-red-500">*</span>{" "}
                 </label>
                 <input
@@ -79,9 +79,9 @@ export default function EditProfileForm({ user }: { user: User }) {
                     value={form.nickname}
                     onChange={handleChange}
                     placeholder="닉네임"
-                    className="w-full h-10 bg-gray-200 rounded px-3"
+                    className="h-10 w-full rounded bg-gray-200 px-3"
                 />
-                <label className="block font-medium mb-1">
+                <label className="mb-1 block font-medium">
                     이메일 <span className="text-red-500">*</span>{" "}
                 </label>
                 <input
@@ -90,10 +90,10 @@ export default function EditProfileForm({ user }: { user: User }) {
                     value={form.email}
                     onChange={handleChange}
                     placeholder="이메일"
-                    className="w-full h-10 bg-gray-200 rounded px-3"
+                    className="h-10 w-full rounded bg-gray-200 px-3"
                 />
                 <div>
-                    <label className="block font-medium mb-1">성별</label>
+                    <label className="mb-1 block font-medium">성별</label>
                     <div className="flex gap-4">
                         <label className="flex items-center gap-2">
                             <input
@@ -124,7 +124,7 @@ export default function EditProfileForm({ user }: { user: User }) {
                     value={form.zipcode}
                     onChange={handleChange}
                     placeholder="우편번호"
-                    className="w-full h-10 bg-gray-200 rounded px-3"
+                    className="h-10 w-full rounded bg-gray-200 px-3"
                 />
                 <input
                     type="text"
@@ -132,7 +132,7 @@ export default function EditProfileForm({ user }: { user: User }) {
                     value={form.address}
                     onChange={handleChange}
                     placeholder="주소"
-                    className="w-full h-10 bg-gray-200 rounded px-3"
+                    className="h-10 w-full rounded bg-gray-200 px-3"
                 />
                 <input
                     type="text"
@@ -140,19 +140,19 @@ export default function EditProfileForm({ user }: { user: User }) {
                     value={form.addressSub}
                     onChange={handleChange}
                     placeholder="상세 주소"
-                    className="w-full h-10 bg-gray-200 rounded px-3"
+                    className="h-10 w-full rounded bg-gray-200 px-3"
                 />
             </form>
 
             {/* 버튼 */}
-            <div className="flex justify-around px-6 mt-4 space-x-4">
-                <button type="button" onClick={handleSubmit} className="flex-1 h-12 bg-gray-200 rounded font-semibold">
+            <div className="mt-4 flex justify-around space-x-4 px-6">
+                <button type="button" onClick={handleSubmit} className="h-12 flex-1 rounded bg-gray-200 font-semibold">
                     저장
                 </button>
                 <button
                     type="button"
                     onClick={() => window.history.back()}
-                    className="flex-1 h-12 bg-gray-200 rounded font-semibold"
+                    className="h-12 flex-1 rounded bg-gray-200 font-semibold"
                 >
                     취소
                 </button>
@@ -160,14 +160,14 @@ export default function EditProfileForm({ user }: { user: User }) {
 
             {/* 개인정보처리방침 모달 */}
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white w-[90%] max-w-md rounded-lg p-6 relative">
-                        <h2 className="text-lg font-bold mb-4">개인정보처리방침</h2>
-                        <div className="text-sm h-60 overflow-y-auto">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="relative w-[90%] max-w-md rounded-lg bg-white p-6">
+                        <h2 className="mb-4 text-lg font-bold">개인정보처리방침</h2>
+                        <div className="h-60 overflow-y-auto text-sm">
                             <p>- 수집 항목: 이름, 이메일, 주소 등</p>
                             <p>- 보유 기간: 회원 탈퇴 시까지</p>
                         </div>
-                        <button onClick={toggleModal} className="absolute top-2 right-3 text-gray-500 text-xl">
+                        <button onClick={toggleModal} className="absolute right-3 top-2 text-xl text-gray-500">
                             &times;
                         </button>
                     </div>

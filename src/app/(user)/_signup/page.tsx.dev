@@ -1,0 +1,142 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function SignupPage() {
+    const router = useRouter();
+
+    const [dataForm, setForm] = useState({
+        loginId: "",
+        password: "",
+        name: "",
+        nickname: "",
+        email: "",
+        gender: "",
+        zipcode: "",
+        address: "",
+        addressSub: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setForm({
+            ...dataForm,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const formData = new FormData();
+
+            Object.entries(dataForm).forEach(([key, value]) => {
+                formData.append(key, value as string);
+            });
+
+            const res = await fetch("http://3.38.247.4:8080/api/user/insert", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                throw new Error("회원가입 실패");
+            }
+
+            alert("회원가입 성공!");
+            router.push("/login");
+        } catch (error) {
+            alert("회원가입 중 오류 발생");
+        }
+    };
+
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-gray-100">
+            <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+                <h1 className="mb-6 text-center text-2xl font-bold">회원가입</h1>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <input
+                        name="loginId"
+                        placeholder="아이디"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="비밀번호"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <input
+                        name="name"
+                        placeholder="이름"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <input
+                        name="nickname"
+                        placeholder="닉네임"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <input
+                        name="email"
+                        placeholder="이메일"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <div>
+                        <p className="mb-2 font-medium">성별</p>
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-2">
+                                <input type="radio" name="gender" value="M" onChange={handleChange} />
+                                남자
+                            </label>
+
+                            <label className="flex items-center gap-2">
+                                <input type="radio" name="gender" value="F" onChange={handleChange} />
+                                여자
+                            </label>
+                        </div>
+                    </div>
+
+                    <input
+                        name="zipcode"
+                        placeholder="우편번호"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <input
+                        name="address"
+                        placeholder="주소"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <input
+                        name="addressSub"
+                        placeholder="상세주소"
+                        onChange={handleChange}
+                        className="w-full rounded-lg border p-3"
+                    />
+
+                    <button
+                        type="submit"
+                        className="w-full rounded-lg bg-black py-3 font-bold text-white hover:bg-gray-800"
+                    >
+                        회원가입
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
