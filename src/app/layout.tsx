@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
 import Header from "./components/Header";
 import BottomNavigation from "@/components/common/BottomNavigation";
+import FloatingMenu from "@/components/FloatingMenu";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -32,14 +33,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="ko" className={`${inter.variable} ${notoSansKr.variable}`}>
-            <body className="font-sans bg-gray-50 text-gray-900 antialiased min-h-screen flex flex-col">
+            <body className="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-900 antialiased">
                 <Header />
-                <div className="flex-1 pb-16 md:pb-0">
-                    {children}
-                </div>
+                <div className="flex-1 pb-16 md:pb-0">{children}</div>
                 <div className="md:hidden">
                     <BottomNavigation />
                 </div>
+                <FloatingMenu />
             </body>
         </html>
     );
