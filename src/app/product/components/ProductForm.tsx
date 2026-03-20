@@ -12,7 +12,7 @@ const MAX_IMAGES = 3;
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
 
-const PRODUCT_API_URL = "http://localhost:8080/api/product";
+const PRODUCT_API_URL = "http://3.38.247.4:8080/api/product";
 
 const FIELDS_TO_SEND = [
     "productIdx",
