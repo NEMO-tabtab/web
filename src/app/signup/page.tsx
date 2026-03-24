@@ -35,7 +35,7 @@ export default function SignupPage() {
                 formData.append(key, value as string);
             });
 
-            const res = await fetch("http://3.38.247.4:8080/api/user/insert", {
+            const res = await fetch("http://localhost:8080/api/user/insert", {
                 method: "POST",
                 body: formData,
             });
