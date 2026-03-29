@@ -2,44 +2,37 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Button } from "@/components/common/Button";
 import { Heading, Text } from "@/components/common/Typography";
+import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
 
 export default function Home() {
     const [selectedTab, setSelectedTab] = useState<1 | 2>(1);
+    const [products, setProducts] = useState<any[]>([]);
+    const [totalValue, setTotalValue] = useState<number>(0);
+    const [totalCount, setTotalCount] = useState<number>(0);
 
-    const itemList = [
-        {
-            name: "맥북 프로 16인치",
-            price: 3200000,
-            image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?auto=format&fit=crop&q=80&w=600",
-        },
-        {
-            name: "아이패드 에어 5",
-            price: 920000,
-            image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=600",
-        },
-        {
-            name: "소니 헤드폰 WH-1000XM5",
-            price: 450000,
-            image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=600",
-        },
-        {
-            name: "로지텍 MX Master 3S",
-            price: 139000,
-            image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&q=80&w=600",
-        },
-    ];
-
-    const myProducts = [
-        { name: "게이밍 데스크탑", price: 2500000, category: "전자기기" },
-        { name: "시디즈 의자", price: 350000, category: "가구" },
-        { name: "기계식 키보드", price: 180000, category: "전자기기" },
-        { name: "27인치 모니터", price: 450000, category: "전자기기" },
-        { name: "책상", price: 120000, category: "가구" },
-        { name: "스탠드 조명", price: 45000, category: "가구" },
-    ];
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.post(`http://3.38.247.4:8080/api/product/list`, {
+                    page: 1,
+                    size: 100,
+                });
+                const fetchedProducts = response.data?.content || [];
+                setProducts(fetchedProducts);
+                setTotalCount(response.data?.totalElements || fetchedProducts.length);
+                
+                const valueSum = fetchedProducts.reduce((sum: number, item: any) => sum + (item.productValue || item.productPrice || 0), 0);
+                setTotalValue(valueSum);
+            } catch (error) {
+                console.error("Failed to fetch products", error);
+            }
+        };
+        fetchProducts();
+    }, []);
 
     return (
         <main className="mx-auto max-w-7xl px-4 pb-24 pt-6 md:px-8">
@@ -58,7 +51,7 @@ export default function Home() {
                         </div>
                         <div className="flex items-baseline gap-1 mb-6">
                             <span className="text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl">
-                                102,040,000
+                                {totalValue.toLocaleString()}
                             </span>
                             <span className="text-xl font-bold text-neutral-500">원</span>
                         </div>
@@ -67,7 +60,7 @@ export default function Home() {
                         <div className="flex flex-col gap-3 rounded-[1.25rem] bg-white/80 p-5 shadow-sm backdrop-blur-md mb-6 border border-neutral-100">
                             <div className="flex justify-between items-center">
                                 <span className="text-sm font-semibold text-neutral-500">총 자산 수</span>
-                                <span className="text-sm font-bold text-neutral-800">42개</span>
+                                <span className="text-sm font-bold text-neutral-800">{totalCount}개</span>
                             </div>
                             <div className="h-px w-full bg-neutral-100" />
                             <div className="flex justify-between items-center">
@@ -133,17 +126,22 @@ export default function Home() {
                 <div className="min-h-[400px] mt-6 border-t border-neutral-200 pt-8">
                     {selectedTab === 1 && (
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                            {itemList.map((item, idx) => (
-                                <div
+                            {products.length > 0 ? products.map((item, idx) => {
+                                const imageUrl = item.files && item.files.length > 0 
+                                    ? `http://3.38.247.4:8080/${item.files[0].filePath}`
+                                    : defaultThumbnail;
+                                return (
+                                <Link
                                     key={idx}
-                                    className="group relative cursor-pointer overflow-hidden rounded-[1.5rem] bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)] border border-neutral-100/50"
+                                    href={`/product/edit/${item.productIdx || idx}`}
+                                    className="group relative cursor-pointer block overflow-hidden rounded-[1.5rem] bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)] border border-neutral-100/50"
                                 >
                                     <div className="relative aspect-[4/3] overflow-hidden bg-neutral-50 p-4">
                                         <Image
-                                            src={item.image}
+                                            src={imageUrl}
                                             fill
-                                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 mix-blend-multiply"
-                                            alt={item.name}
+                                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                            alt={item.productNm || "상품 이미지"}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                                         <div className="absolute top-4 left-4 z-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm px-3 py-1 shadow-sm opacity-0 -translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
@@ -151,16 +149,19 @@ export default function Home() {
                                         </div>
                                     </div>
                                     <div className="p-6">
-                                        <h3 className="mb-2 text-lg font-bold text-neutral-800 transition-colors group-hover:text-brand-600">
-                                            {item.name}
+                                        <h3 className="mb-2 text-lg font-bold text-neutral-800 transition-colors group-hover:text-brand-600 truncate">
+                                            {item.productNm}
                                         </h3>
                                         <p className="text-2xl font-black text-brand-600">
-                                            {item.price.toLocaleString()}
+                                            {(item.productValue || item.productPrice || 0).toLocaleString()}
                                             <span className="ml-1 text-sm font-medium text-neutral-400">원</span>
                                         </p>
                                     </div>
-                                </div>
-                            ))}
+                                </Link>
+                                );
+                            }) : (
+                                <div className="col-span-full py-16 text-center text-neutral-400">등록된 자산이 없습니다.</div>
+                            )}
                         </div>
                     )}
 
@@ -199,34 +200,37 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {myProducts.map((product, index) => (
-                        <div
+                    {products.length > 0 ? products.slice(0, 6).map((product, index) => (
+                        <Link
                             key={index}
+                            href={`/product/edit/${product.productIdx || index}`}
                             className="group flex cursor-pointer items-center justify-between rounded-2xl border border-neutral-100/80 bg-white/70 backdrop-blur-md p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-brand-200"
                         >
                             <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-xl text-brand-600 transition-transform group-hover:scale-110 group-hover:shadow-sm">
+                                <div className="flex shrink-0 h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-50 to-brand-100 text-xl text-brand-600 transition-transform group-hover:scale-110 group-hover:shadow-sm">
                                     📦
                                 </div>
-                                <div className="flex flex-col">
-                                    <p className="font-bold text-neutral-800 transition-colors group-hover:text-brand-700">
-                                        {product.name}
+                                <div className="flex flex-col overflow-hidden max-w-[150px]">
+                                    <p className="font-bold truncate text-neutral-800 transition-colors group-hover:text-brand-700">
+                                        {product.productNm}
                                     </p>
                                     <div className="mt-1 flex items-center gap-2">
-                                        <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-500">
-                                            {product.category}
+                                        <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-500 whitespace-nowrap">
+                                            {product.locationName || product.category || "본가"}
                                         </span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col items-end">
-                                <span className="font-extrabold text-brand-600">{product.price.toLocaleString()}원</span>
-                                <span className="mt-1 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded flex items-center gap-1">
+                            <div className="flex shrink-0 flex-col items-end">
+                                <span className="font-extrabold whitespace-nowrap text-brand-600">{(product.productValue || product.productPrice || 0).toLocaleString()}원</span>
+                                <span className="mt-1 text-[10px] font-semibold text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded flex items-center gap-1">
                                     ✓ 보유 중
                                 </span>
                             </div>
-                        </div>
-                    ))}
+                        </Link>
+                    )) : (
+                        <div className="col-span-full py-8 text-center text-neutral-400">목록이 비어있습니다.</div>
+                    )}
                 </div>
             </section>
         </main>
