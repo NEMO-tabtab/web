@@ -49,18 +49,16 @@ export default async function Product() {
                     </Text>
                 </div>
 
-                {/* 제품 리스트 */}
                 <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
                     {productList.content.map((product: Product, index: number) => (
                         <Link
                             key={index}
                             href={`/product/edit/${product.productIdx || 4}`}
-                            className="group block overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lg sm:rounded-2xl"
+                            className="group block overflow-hidden rounded-[1.5rem] border border-neutral-100/50 bg-white/70 backdrop-blur-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)] hover:border-brand-200"
                         >
-                            {/* 모바일: 세로 레이아웃, 태블릿 이상: 가로 레이아웃 */}
                             <div className="flex flex-col gap-3 p-3 sm:flex-row sm:gap-4 sm:p-4 md:gap-5 md:p-5">
                                 {/* 이미지 영역 */}
-                                <div className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden rounded-lg bg-neutral-100 sm:aspect-square sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-40 lg:w-40">
+                                <div className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-50 to-neutral-100 sm:aspect-square sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-40 lg:w-40 p-2">
                                     <Image
                                         src={
                                             product.files.length > 0
@@ -68,23 +66,23 @@ export default async function Product() {
                                                 : defaultThumbnail
                                         }
                                         fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="object-cover rounded-xl transition-transform duration-700 ease-out group-hover:scale-105"
                                         alt={product.productNm}
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                                 </div>
 
                                 {/* 정보 영역 */}
                                 <div className="flex flex-1 flex-col justify-between space-y-2 sm:space-y-0">
-                                    <div className="space-y-1.5 sm:space-y-2">
-                                        <h3 className="text-base font-bold text-neutral-900 transition-colors group-hover:text-brand-600 sm:text-lg md:text-lg lg:text-xl">
+                                    <div className="space-y-1 sm:space-y-2">
+                                        <h3 className="text-lg font-bold text-neutral-800 transition-colors group-hover:text-brand-600 sm:text-xl md:text-xl lg:text-2xl">
                                             {product.productNm}
                                         </h3>
 
                                         {product.content && (
                                             <Text
                                                 size="sm"
-                                                className="line-clamp-2 text-xs text-neutral-500 sm:text-sm"
+                                                className="line-clamp-2 text-xs font-medium text-neutral-500 sm:text-sm"
                                             >
                                                 {product.content}
                                             </Text>
@@ -92,23 +90,20 @@ export default async function Product() {
                                     </div>
 
                                     <div className="space-y-1.5 sm:mt-3 sm:space-y-2">
-                                        {/* 위치 태그 */}
+                                        {/* 카테고리 태그 */}
                                         <div className="flex items-center gap-2">
-                                            <span className="inline-flex items-center rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-bold text-brand-700 sm:px-3 sm:py-1">
-                                                본가
+                                            <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-600 sm:px-3 sm:py-1">
+                                                보유 중
                                             </span>
                                         </div>
 
                                         {/* 가격 정보 */}
                                         <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
-                                            <div className="text-xl font-extrabold text-brand-600 sm:text-2xl">
+                                            <div className="text-2xl font-black text-brand-600 sm:text-3xl tracking-tight">
                                                 {product.productValue.toLocaleString()}
-                                                <span className="ml-1 text-xs font-medium text-neutral-400 sm:text-sm">
+                                                <span className="ml-1 text-sm font-bold text-neutral-400 sm:text-base tracking-normal">
                                                     원
                                                 </span>
-                                            </div>
-                                            <div className="text-xs font-medium text-neutral-400 line-through sm:text-sm">
-                                                {product.productPrice.toLocaleString()}원
                                             </div>
                                         </div>
                                     </div>
@@ -134,19 +129,19 @@ export default async function Product() {
                 )}
             </main>
 
-            {/* 플로팅 액션 버튼 */}
-            <div className="fixed bottom-4 right-4 z-20 flex flex-col gap-2 sm:bottom-6 sm:right-6 sm:gap-3 md:bottom-8 md:right-8 lg:bottom-10 lg:right-10">
+            {/* 플로팅 액션 버튼 (FAB) */}
+            <div className="fixed bottom-24 right-4 z-20 flex flex-col gap-3 sm:right-6 md:right-8 lg:right-10">
                 <Link
                     href="/product/add"
-                    className={`${hoverEffectClass} group flex size-12 items-center justify-center rounded-full border-2 border-brand-600 text-brand-600 sm:size-14`}
+                    className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-brand-600 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-brand-100 transition-all duration-300 hover:scale-110 hover:shadow-[0_8px_30px_rgb(0,118,255,0.2)]"
                 >
-                    <i className="xi-plus text-xl sm:text-2xl"></i>
+                    <i className="xi-plus text-2xl font-bold"></i>
                 </Link>
                 <Link
-                    href="#"
-                    className={`${hoverEffectClass} group flex size-12 items-center justify-center rounded-full bg-brand-600 sm:size-14`}
+                    href="/barcode"
+                    className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-[0_8px_30px_rgb(0,118,255,0.24)] transition-all duration-300 hover:scale-110 hover:shadow-[0_12px_40px_rgb(0,118,255,0.36)] hover:from-brand-400 hover:to-brand-500"
                 >
-                    <Image className="size-5 sm:size-6" src={barcodeIcon} alt="바코드 스캔" />
+                    <Image className="h-6 w-6 brightness-0 invert" src={barcodeIcon} alt="바코드 스캔" />
                 </Link>
             </div>
         </div>
