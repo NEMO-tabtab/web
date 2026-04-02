@@ -47,6 +47,7 @@ export default function SignupPage() {
             alert("회원가입 성공!");
             router.push("/login");
         } catch (error) {
+            console.log(error);
             alert("회원가입 중 오류 발생");
         }
     };
