@@ -1,7 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import axios from "axios";
 import ProductForm, { ProductFormData } from "@/app/product/components/ProductForm";
 
-const fetchProductData = async (productId: string): Promise<ProductFormData | undefined> => {
+const fetchProductData = async (productId: string): Promise<ProductFormData | null> => {
     try {
         const response = await axios.get<ProductFormData>(`http://3.38.247.4:8080/api/product/${productId}`, {
             timeout: 3000,
