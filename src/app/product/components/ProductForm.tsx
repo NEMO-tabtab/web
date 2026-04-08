@@ -70,7 +70,7 @@ export interface ProductFormData {
 interface ProductFormProps {
     mode: "add" | "edit";
     productId?: string;
-    initialData?: ProductFormData;
+    initialData?: ProductFormData | null;
     initialImages?: string[];
 }
 
