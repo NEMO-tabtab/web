@@ -1,9 +1,10 @@
+export const dynamic = "force-dynamic";
+
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Text } from "@/components/common/Typography";
 import { ProductFormData } from "./components/ProductForm";
-// import Filter from "./components/Filter";
 
 // 이미지
 import barcodeIcon from "@/app/assets/images/icon_barcode.png";
@@ -19,20 +20,23 @@ type Product = ProductFormData & {
 
 const getProductList = async () => {
     try {
-        const response = await axios.post(`http://3.38.247.4:8080/api/product/list`, {
-            page: 1,
-            size: 10,
-        });
-        return response.data;
+        const response = await axios.post(
+            `http://3.38.247.4:8080/api/product/list`,
+            {
+                page: 1,
+                size: 10,
+            },
+            { timeout: 3000 },
+        );
+        return response?.data;
     } catch (error) {
         console.error("Error:", error);
-        return null;
+        throw new Error("제품 목록을 불러오는데 실패했습니다");
     }
 };
 
 export default async function Product() {
     const productList = await getProductList();
-
     const hoverEffectClass = "transition-all duration-300 hover:scale-110";
 
     return (
