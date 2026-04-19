@@ -88,41 +88,54 @@ export default function BarcodePage() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center bg-yellow-200 p-6">
-            <div className="w-full max-w-xl rounded-3xl bg-white/20 p-6 text-center shadow-xl backdrop-blur-md">
-                <h1 className="mb-2 text-2xl font-bold">바코드 스캐너</h1>
-                <p className="text-sm">{status}</p>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-900 p-6 overscroll-none pb-24">
+            <div className="absolute inset-0 bg-gradient-to-b from-brand-900/20 to-neutral-900 pointer-events-none" />
+            
+            <div className="relative z-10 w-full max-w-xl rounded-3xl bg-neutral-800/40 p-6 text-center shadow-2xl backdrop-blur-xl border border-white/10">
+                <h1 className="mb-2 text-2xl font-black text-white tracking-tight">바코드 스캐너</h1>
+                <p className="font-medium text-brand-400">{status}</p>
             </div>
 
-            <div className="relative mt-8 h-[320px] w-[320px] overflow-hidden rounded-3xl border-4 border-white shadow-2xl">
-                <video ref={videoRef} className="h-full w-full object-cover" />
+            <div className="relative z-10 mt-8 h-[360px] w-full max-w-sm overflow-hidden rounded-[2.5rem] border-[6px] border-neutral-800 shadow-[0_0_50px_rgba(0,118,255,0.15)] bg-black">
+                <video ref={videoRef} className="h-full w-full object-cover opacity-90" />
 
-                {isScanning && (
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                        <div className="h-40 w-60 animate-pulse rounded-xl border-4 border-white" />
+                {/* 가이드라인 UI */}
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="w-[80%] h-[40%] border-2 border-white/20 rounded-2xl relative">
+                        {isScanning && (
+                            <div className="absolute top-0 left-0 right-0 h-1 rounded-full bg-brand-500 animate-[scan_2s_ease-in-out_infinite] shadow-[0_0_15px_rgba(0,118,255,0.8)]" />
+                        )}
+                        {/* 코너 장식 */}
+                        <div className="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-brand-500 rounded-tl-xl" />
+                        <div className="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-brand-500 rounded-tr-xl" />
+                        <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-brand-500 rounded-bl-xl" />
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-brand-500 rounded-br-xl" />
                     </div>
-                )}
+                    {isScanning && (
+                        <p className="mt-6 text-sm font-bold text-white/70 animate-pulse">바코드를 사각형 안에 맞춰주세요</p>
+                    )}
+                </div>
             </div>
 
             {result && (
-                <div className="mt-6 w-full max-w-xl rounded-2xl bg-white p-4 text-center shadow-lg">
-                    <p className="text-sm text-gray-500">인식된 코드</p>
-                    <p className="font-mono text-xl font-bold text-orange-600">{result}</p>
+                <div className="relative z-10 mt-8 w-full max-w-sm rounded-[2rem] bg-gradient-to-r from-emerald-500 to-emerald-400 p-6 text-center shadow-[0_10px_30px_rgba(16,185,129,0.3)] animate-slide-up">
+                    <p className="text-sm font-bold text-emerald-900/70">인식된 코드</p>
+                    <p className="mt-1 font-mono text-3xl font-black text-white tracking-wider">{result}</p>
                 </div>
             )}
 
-            <div className="mt-6 flex gap-4">
+            <div className="relative z-10 mt-10 w-full max-w-sm flex gap-4">
                 {!isScanning ? (
                     <button
                         onClick={startScan}
-                        className="rounded-full bg-white px-6 py-3 font-semibold text-orange-500 shadow-lg transition hover:scale-105"
+                        className="flex-1 rounded-2xl bg-brand-600 px-6 py-4 font-bold text-white shadow-[0_8px_30px_rgb(0,118,255,0.3)] transition-all hover:-translate-y-1 hover:bg-brand-500 active:scale-95"
                     >
                         스캔 시작
                     </button>
                 ) : (
                     <button
                         onClick={stopScan}
-                        className="rounded-full bg-red-500 px-6 py-3 font-semibold text-white shadow-lg transition hover:scale-105"
+                        className="flex-1 rounded-2xl bg-neutral-800 px-6 py-4 font-bold text-white shadow-lg transition-all border border-neutral-700 hover:-translate-y-1 hover:bg-neutral-700 active:scale-95"
                     >
                         스캔 중지
                     </button>
