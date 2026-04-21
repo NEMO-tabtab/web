@@ -8,9 +8,19 @@ import { Button } from "@/components/common/Button";
 import { Heading, Text } from "@/components/common/Typography";
 import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
 
+interface HomeProduct {
+    productIdx?: number;
+    productNm?: string;
+    productValue?: number;
+    productPrice?: number;
+    locationName?: string;
+    category?: string;
+    files?: { filePath: string }[];
+}
+
 export default function Home() {
     const [selectedTab, setSelectedTab] = useState<1 | 2>(1);
-    const [products, setProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<HomeProduct[]>([]);
     const [totalValue, setTotalValue] = useState<number>(0);
     const [totalCount, setTotalCount] = useState<number>(0);
 
@@ -25,7 +35,7 @@ export default function Home() {
                 setProducts(fetchedProducts);
                 setTotalCount(response.data?.totalElements || fetchedProducts.length);
                 
-                const valueSum = fetchedProducts.reduce((sum: number, item: any) => sum + (item.productValue || item.productPrice || 0), 0);
+                const valueSum = fetchedProducts.reduce((sum: number, item: HomeProduct) => sum + (item.productValue || item.productPrice || 0), 0);
                 setTotalValue(valueSum);
             } catch (error) {
                 console.error("Failed to fetch products", error);
