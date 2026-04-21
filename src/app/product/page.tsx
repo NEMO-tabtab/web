@@ -37,7 +37,7 @@ const getProductList = async () => {
 
 export default async function Product() {
     const productList = await getProductList();
-    const hoverEffectClass = "transition-all duration-300 hover:scale-110";
+    //const hoverEffectClass = "transition-all duration-300 hover:scale-110";
 
     return (
         <div className="pb-20 sm:pb-24 lg:pb-28">
