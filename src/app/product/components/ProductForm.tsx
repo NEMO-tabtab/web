@@ -13,8 +13,6 @@ const MAX_IMAGES = 3;
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
 
-const PRODUCT_API_URL = "http://3.38.247.4:8080/api/product";
-
 const FIELDS_TO_SEND = [
     "productIdx",
     "spaceIdx",
@@ -177,6 +175,8 @@ export default function ProductForm({ mode, productId, initialData, initialImage
 
             const multipartForm = buildMultipartForm(submitData);
             const headers = { "Content-Type": "multipart/form-data" };
+
+            const PRODUCT_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/product`;
 
             const response =
                 mode === "add"
