@@ -5,10 +5,13 @@ import ProductForm, { ProductFormData } from "@/app/product/components/ProductFo
 
 const fetchProductData = async (productId: string): Promise<ProductFormData | null> => {
     try {
-        const response = await axios.get<ProductFormData>(`http://3.38.247.4:8080/api/product/${productId}`, {
-            timeout: 3000,
-        });
-        return response?.data;
+        const response = await axios.get<{ data: ProductFormData }>(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/product/${productId}`,
+            {
+                timeout: 3000,
+            },
+        );
+        return response?.data?.data;
     } catch (error) {
         console.error("제품 데이터 불러오기 실패:", error);
         throw new Error("제품 데이터 불러오기 실패");

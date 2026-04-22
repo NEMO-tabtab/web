@@ -13,8 +13,6 @@ const MAX_IMAGES = 3;
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
 
-const PRODUCT_API_URL = "http://3.38.247.4:8080/api/product";
-
 const FIELDS_TO_SEND = [
     "productIdx",
     "spaceIdx",
@@ -178,6 +176,8 @@ export default function ProductForm({ mode, productId, initialData, initialImage
             const multipartForm = buildMultipartForm(submitData);
             const headers = { "Content-Type": "multipart/form-data" };
 
+            const PRODUCT_API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/product`;
+
             const response =
                 mode === "add"
                     ? await axios.post(PRODUCT_API_URL, multipartForm, { headers })
@@ -185,7 +185,7 @@ export default function ProductForm({ mode, productId, initialData, initialImage
 
             if (response.status === 200) {
                 alert(mode === "add" ? "제품이 등록되었습니다!" : "제품이 수정되었습니다!");
-                window.location.reload();
+                // window.location.reload();
             }
         } catch (error) {
             console.error(`${mode === "add" ? "등록" : "수정"} 실패:`, error);
