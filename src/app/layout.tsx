@@ -16,6 +16,11 @@ export const metadata: Metadata = {
     title: "NEMO",
     description: "NEMO - 당신의 가치를 찾아보세요",
     manifest: "/manifest.json",
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: "default",
+        title: "NEMO",
+    },
 };
 
 export const viewport: Viewport = {
@@ -24,6 +29,7 @@ export const viewport: Viewport = {
     maximumScale: 1,
     userScalable: false,
     themeColor: "#ffffff",
+    viewportFit: "cover"
 };
 
 export default function RootLayout({

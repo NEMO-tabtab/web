@@ -3,7 +3,7 @@
     "short_name": "NEMO",
     "description": "NEMO - 당신의 가치를 찾아보세요",
     "start_url": "/",
-    "display": "standalone",
+    "display": "fullscreen",
     "background_color": "#ffffff",
     "theme_color": "#ffffff",
     "orientation": "portrait",
