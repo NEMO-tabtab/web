@@ -185,7 +185,7 @@ export default function ProductForm({ mode, productId, initialData, initialImage
 
             if (response.status === 200) {
                 alert(mode === "add" ? "제품이 등록되었습니다!" : "제품이 수정되었습니다!");
-                // window.location.reload();
+                window.location.reload();
             }
         } catch (error) {
             console.error(`${mode === "add" ? "등록" : "수정"} 실패:`, error);
