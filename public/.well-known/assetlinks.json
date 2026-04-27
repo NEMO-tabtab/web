@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nemo.app",
+      "sha256_cert_fingerprints": [
+        "3F:2D:EC:A4:03:2D:0A:9F:80:41:46:2B:BA:F9:72:9A:44:9A:0C:A2:2D:80:6A:24:DE:C1:69:4A:31:12:ED:0F"
+      ]
+    }
+  }
+]
