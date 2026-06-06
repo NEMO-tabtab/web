@@ -4,6 +4,10 @@ import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Text } from "@/components/common/Typography";
+import { Card } from "@/components/common/Card";
+import { Badge } from "@/components/common/Badge";
+import { EmptyState } from "@/components/common/EmptyState";
+import { FAB } from "@/components/common/FAB";
 import { ProductFormData } from "./components/ProductForm";
 
 // 이미지
@@ -58,9 +62,9 @@ export default async function Product() {
                         <Link
                             key={index}
                             href={`/product/edit/${product.productIdx || 4}`}
-                            className="duration-400 group block overflow-hidden rounded-[1.5rem] border border-neutral-100/50 bg-white/70 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] backdrop-blur-xl transition-all hover:-translate-y-2 hover:border-brand-200 hover:shadow-[0_12px_30px_-4px_rgba(0,0,0,0.1)]"
+                            className="block"
                         >
-                            <div className="flex flex-col gap-3 p-3 sm:flex-row sm:gap-4 sm:p-4 md:gap-5 md:p-5">
+                            <Card variant="glass" interactive padding="none" className="h-full flex flex-col gap-3 p-3 sm:flex-row sm:gap-4 sm:p-4 md:gap-5 md:p-5 group">
                                 {/* 이미지 영역 */}
                                 <div className="relative aspect-[16/9] w-full flex-shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-neutral-50 to-neutral-100 p-2 sm:aspect-square sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-40 lg:w-40">
                                     <Image
@@ -96,9 +100,7 @@ export default async function Product() {
                                     <div className="space-y-1.5 sm:mt-3 sm:space-y-2">
                                         {/* 카테고리 태그 */}
                                         <div className="flex items-center gap-2">
-                                            <span className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-600 sm:px-3 sm:py-1">
-                                                보유 중
-                                            </span>
+                                            <Badge variant="success">보유 중</Badge>
                                         </div>
 
                                         {/* 가격 정보 */}
@@ -112,41 +114,32 @@ export default async function Product() {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </Card>
                         </Link>
                     ))}
                 </div>
 
                 {/* 빈 상태 메시지 (제품이 없을 때) */}
                 {productList?.content?.length === 0 && (
-                    <div className="flex h-96 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-200 bg-neutral-50">
-                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-200 text-3xl">
-                            📦
-                        </div>
-                        <Text size="lg" weight="medium" color="text-neutral-500">
-                            등록된 제품이 없습니다
-                        </Text>
-                        <Text size="sm" color="text-neutral-400" className="mt-2">
-                            오른쪽 아래 버튼을 눌러 제품을 추가해보세요!
-                        </Text>
-                    </div>
+                    <EmptyState 
+                        title="등록된 제품이 없습니다"
+                        description="오른쪽 아래 버튼을 눌러 제품을 추가해보세요!"
+                    />
                 )}
             </main>
 
             {/* 플로팅 액션 버튼 (FAB) */}
             <div className="fixed bottom-24 right-4 z-20 flex flex-col gap-3 sm:right-6 md:right-8 lg:right-10">
-                <Link
-                    href="/product/add"
-                    className="group flex h-14 w-14 items-center justify-center rounded-2xl border border-brand-100 bg-white text-brand-600 shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 hover:scale-110 hover:shadow-[0_8px_30px_rgb(0,118,255,0.2)]"
-                >
-                    <i className="xi-plus text-2xl font-bold"></i>
-                </Link>
-                <Link
-                    href="/barcode"
-                    className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-[0_8px_30px_rgb(0,118,255,0.24)] transition-all duration-300 hover:scale-110 hover:from-brand-400 hover:to-brand-500 hover:shadow-[0_12px_40px_rgb(0,118,255,0.36)]"
-                >
-                    <Image className="h-6 w-6 brightness-0 invert" src={barcodeIcon} alt="바코드 스캔" />
-                </Link>
+                <FAB 
+                    href="/product/add" 
+                    variant="solid" 
+                    icon={<i className="xi-plus text-2xl font-bold"></i>} 
+                />
+                <FAB 
+                    href="/barcode" 
+                    variant="gradient" 
+                    icon={<Image className="h-6 w-6 brightness-0 invert" src={barcodeIcon} alt="바코드 스캔" />} 
+                />
             </div>
         </div>
     );
