@@ -14,7 +14,7 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            const res = await fetch("http://3.38.247.4:8080/api/user/login", {
+            const res = await fetch("https://nemo-api.onrender.com/api/user/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
