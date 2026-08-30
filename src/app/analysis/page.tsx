@@ -1,9 +1,10 @@
 "use client";
 
-import { Card } from "@/components/common/Card";
-import { Heading, Text } from "@/components/common/Typography";
-import { LineChart, DonutChart } from "@/components/analysis/Charts";
 import { useRouter } from "next/navigation";
+
+import { DonutChart, LineChart, donutRamp } from "@/components/analysis/Charts";
+import { Card, IconTile, InfoRow, PageHeader, PageShell, Price, Section, Text } from "@/components/common";
+import { formatWon, toPercent } from "@/lib/format";
 
 export default function AnalysisPage() {
     const router = useRouter();
@@ -18,132 +19,112 @@ export default function AnalysisPage() {
         { label: "6월", value: 102040000 },
     ];
 
-    // 더미 데이터: 카테고리별 비중
+    // 더미 데이터: 카테고리별 비중. 색이 없으므로 명도 단계(donutRamp)로 구분한다.
+    // 큰 항목부터 내림차순으로 두어야 진한 단계가 큰 조각에 붙는다.
     const categoryDistribution = [
-        { label: "전자기기", value: 45000000, color: "#F59E0B" }, // brand-500
-        { label: "가구", value: 30000000, color: "#FCD34D" }, // brand-300
-        { label: "의류", value: 15000000, color: "#FEF3C7" }, // brand-100
-        { label: "기타", value: 12040000, color: "#E5E7EB" }, // gray-200
+        { label: "전자기기", value: 45000000, color: donutRamp[0] },
+        { label: "가구", value: 30000000, color: donutRamp[1] },
+        { label: "의류", value: 15000000, color: donutRamp[2] },
+        { label: "기타", value: 12040000, color: donutRamp[3] },
     ];
 
     const totalAsset = 102040000;
     const lastMonthAsset = 98000000;
     const growth = totalAsset - lastMonthAsset;
-    const growthRate = ((growth / lastMonthAsset) * 100).toFixed(1);
+    const growthRate = toPercent(growth, lastMonthAsset);
 
     return (
-        <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 pb-32">
-            <header className="flex items-center gap-4">
-                <button
-                    onClick={() => router.back()}
-                    className="-ml-2 rounded-full p-2 text-gray-600 transition-colors hover:bg-gray-100"
-                >
-                    <i className="xi-arrow-left text-xl"></i>
-                </button>
-                <div>
-                    <Heading level={2}>자산 분석</Heading>
-                    <Text color="text-gray-500">나의 자산 가치 변동을 확인하세요.</Text>
+        <PageShell className="space-y-8">
+            <PageHeader
+                title="자산 분석"
+                description="나의 자산 가치 변동을 확인하세요."
+                onBack={() => router.back()}
+            />
+
+            {/* 총 자산 요약 — 강조 위계 1단계(먹 채움). 페이지에서 가장 센 면은 여기 하나뿐이다. */}
+            <Card padding="lg" className="bg-ink space-y-4">
+                <div className="space-y-1">
+                    <p className="text-paper/70 text-sm">총 자산 가치</p>
+                    <Price value={totalAsset} size="xl" inverse />
                 </div>
-            </header>
+                <div className="flex flex-wrap items-center gap-2">
+                    {/* 먹 채움 위에서는 먹선을 쓸 수 없어 바탕색 헤어라인으로 알약을 그린다 */}
+                    <span className="border-paper/40 text-paper inline-flex items-center gap-1 rounded-full border-2 px-3 py-1 text-[13px] font-bold">
+                        <i className="xi-arrow-up" aria-hidden="true" />
+                        <span className="font-sans tabular-nums">
+                            {formatWon(growth)}원 ({growthRate}%)
+                        </span>
+                    </span>
+                    <p className="text-paper/70 text-sm">지난달 대비</p>
+                </div>
+            </Card>
 
-            {/* 총 자산 요약 */}
-            <section>
-                <Card className="border-none bg-gradient-to-br from-gray-900 to-gray-800 text-white shadow-xl">
-                    <div className="space-y-1">
-                        <Text size="sm" className="text-gray-400">
-                            총 자산 가치
-                        </Text>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-4xl font-bold tracking-tight">{totalAsset.toLocaleString()}</span>
-                            <span className="text-xl text-gray-400">원</span>
-                        </div>
-                    </div>
-                    <div className="mt-6 flex items-center gap-2">
-                        <div className="flex items-center gap-1 rounded-lg bg-green-500/20 px-2 py-1 text-sm font-medium text-green-400">
-                            <i className="xi-arrow-up"></i>
-                            {growth.toLocaleString()}원 ({growthRate}%)
-                        </div>
-                        <Text size="sm" className="text-gray-400">
-                            지난달 대비
-                        </Text>
-                    </div>
-                </Card>
-            </section>
-
-            {/* 자산 변동 그래프 */}
-            <section className="space-y-4">
-                <Heading level={4}>자산 변동 추이</Heading>
+            <Section title="자산 변동 추이">
                 <Card>
-                    <div className="flex h-64 items-center justify-center">
-                        <LineChart data={assetHistory} height={250} />
-                    </div>
+                    <LineChart
+                        data={assetHistory}
+                        height={200}
+                        ariaLabel={`최근 ${assetHistory.length}개월 자산 가치 추이. ${assetHistory[0].label} ${formatWon(assetHistory[0].value)}원에서 ${assetHistory[assetHistory.length - 1].label} ${formatWon(totalAsset)}원으로 늘었습니다.`}
+                    />
                 </Card>
-            </section>
+            </Section>
 
-            {/* 카테고리별 비중 */}
-            <section className="space-y-4">
-                <Heading level={4}>카테고리별 비중</Heading>
+            <Section title="카테고리별 비중">
                 <Card>
                     <div className="flex flex-col items-center gap-8 md:flex-row">
-                        <div className="flex-shrink-0">
-                            <DonutChart data={categoryDistribution} size={200} />
-                        </div>
+                        <DonutChart data={categoryDistribution} size={200} />
+                        {/* 옅은 조각은 채움만으로 읽히지 않는다 — 이 목록이 값을 책임지는 표 역할이다 */}
                         <div className="w-full space-y-3">
-                            {categoryDistribution.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-gray-50"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
-                                        <Text weight="medium">{item.label}</Text>
-                                    </div>
-                                    <div className="text-right">
-                                        <Text weight="bold">{item.value.toLocaleString()}원</Text>
-                                        <Text size="sm" color="text-gray-400">
-                                            {((item.value / totalAsset) * 100).toFixed(1)}%
-                                        </Text>
-                                    </div>
-                                </div>
+                            {categoryDistribution.map((item) => (
+                                <InfoRow
+                                    key={item.label}
+                                    label={
+                                        <span className="inline-flex items-center gap-2">
+                                            <span
+                                                aria-hidden="true"
+                                                className="border-ink h-3 w-3 rounded-full border"
+                                                style={{ backgroundColor: item.color }}
+                                            />
+                                            {item.label}
+                                        </span>
+                                    }
+                                    value={`${formatWon(item.value)}원 · ${toPercent(item.value, totalAsset)}%`}
+                                />
                             ))}
                         </div>
                     </div>
                 </Card>
-            </section>
+            </Section>
 
-            {/* 인사이트 */}
-            <section className="space-y-4">
-                <Heading level={4}>인사이트</Heading>
-                <div className="grid gap-4">
-                    <Card padding="sm" className="flex items-start gap-4 border-brand-100 bg-brand-50">
-                        <div className="mt-1 rounded-full bg-white p-2 text-brand-500 shadow-sm">
-                            <i className="xi-trending-up"></i>
-                        </div>
-                        <div>
-                            <Text weight="bold" className="text-brand-800">
-                                꾸준한 성장
-                            </Text>
-                            <Text size="sm" className="mt-1 text-brand-600">
+            <Section title="인사이트">
+                {/* paste-grid — 손으로 붙인 듯 카드가 서로 반대로 미세하게 기운다 */}
+                <div className="paste-grid grid gap-4">
+                    <Card padding="md" className="flex items-start gap-4">
+                        <IconTile>
+                            <i className="xi-trending-up" aria-hidden="true" />
+                        </IconTile>
+                        <div className="space-y-1">
+                            <Text weight="bold">꾸준한 성장</Text>
+                            <Text size="sm" tone="muted">
                                 지난 6개월간 자산 가치가 평균 3.5%씩 증가하고 있어요. 특히 전자기기 카테고리의 가치
                                 상승이 두드러집니다.
                             </Text>
                         </div>
                     </Card>
-                    <Card padding="sm" className="flex items-start gap-4 border-gray-200 bg-gray-50">
-                        <div className="mt-1 rounded-full bg-white p-2 text-gray-500 shadow-sm">
-                            <i className="xi-lightbulb-o"></i>
-                        </div>
-                        <div>
-                            <Text weight="bold" className="text-gray-800">
-                                포트폴리오 다각화 추천
-                            </Text>
-                            <Text size="sm" className="mt-1 text-gray-600">
-                                전자기기 비중이 44%로 높습니다. 가구 등 감가상각이 적은 자산군을 늘려보시는 건 어떨까요?
+                    <Card variant="sunken" padding="md" className="flex items-start gap-4">
+                        <IconTile tone="muted">
+                            <i className="xi-lightbulb-o" aria-hidden="true" />
+                        </IconTile>
+                        <div className="space-y-1">
+                            <Text weight="bold">포트폴리오 다각화 추천</Text>
+                            <Text size="sm" tone="muted">
+                                전자기기 비중이 {toPercent(categoryDistribution[0].value, totalAsset)}%로 높습니다. 가구
+                                등 감가상각이 적은 자산군을 늘려보시는 건 어떨까요?
                             </Text>
                         </div>
                     </Card>
                 </div>
-            </section>
-        </main>
+            </Section>
+        </PageShell>
     );
 }

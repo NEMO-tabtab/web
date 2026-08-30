@@ -1,7 +1,9 @@
+import { LoadingState, PageShell } from "@/components/common";
+
 export default function Loading() {
     return (
-        <div className="flex-center h-screen">
-            <p>로딩 중...</p>
-        </div>
+        <PageShell>
+            <LoadingState label="제품 정보를 여는 중…" />
+        </PageShell>
     );
 }

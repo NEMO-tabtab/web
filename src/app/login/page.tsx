@@ -1,17 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+
+import { NemoLogo } from "@/components/NemoLogo";
+import { Button, Card, Heading, Input, Text } from "@/components/common";
 
 export default function Login() {
     const router = useRouter();
 
     const [loginId, setLoginId] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+        setIsSubmitting(true);
 
         try {
             const res = await fetch("http://3.38.247.4:8080/api/user/login", {
@@ -29,63 +36,76 @@ export default function Login() {
                 throw new Error("로그인 실패");
             }
 
-            const data = await res.json();
-            console.log(data);
-
-            alert("로그인 성공!");
+            await res.json();
             router.push("/");
-        } catch (error) {
-            console.log(error);
-            alert("아이디 또는 비밀번호가 틀렸습니다.");
+        } catch (err) {
+            console.log(err);
+            setError("아이디 또는 비밀번호가 틀렸습니다.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-    // const handleKakaoLogin = async () => {
-    //     const res = await fetch("http://3.38.247.4:8080/api/user/kakao/login");
-    //     const kakaoUrl = await res.text();
-    //     console.log(kakaoUrl);
-    // };
-
     return (
-        <main className="bg-brand-3 flex h-screen flex-col items-center justify-center">
-            <article className="flex w-full max-w-md flex-col items-center gap-6 rounded-xl bg-white p-8 shadow-lg">
-                <Image src="/logo.png" width={120} height={120} alt="logo" />
+        <main className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-12">
+            <Card padding="md" className="w-full max-w-sm space-y-6">
+                {/* 표지 — 심볼 로고 아래 낙서 밑줄 제목. .scribble 은 제목 요소 자체에 붙어야 밑줄 폭이 글자를 따라간다 */}
+                <div className="flex flex-col items-center gap-3">
+                    <NemoLogo size={72} />
+                    <Heading level={1} className="scribble">
+                        로그인
+                    </Heading>
+                </div>
 
-                <form onSubmit={handleLogin} className="flex w-full flex-col gap-4">
-                    <input
-                        type="text"
-                        placeholder="아이디"
+                <form onSubmit={handleLogin} className="space-y-4">
+                    <Input
+                        id="login-id"
+                        label="아이디"
+                        placeholder="아이디를 입력하세요"
                         value={loginId}
                         onChange={(e) => setLoginId(e.target.value)}
-                        className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
+                        autoComplete="username"
+                        aria-invalid={error ? true : undefined}
+                        aria-describedby={error ? "login-error" : undefined}
                     />
 
-                    <input
+                    <Input
+                        id="login-password"
                         type="password"
-                        placeholder="비밀번호"
+                        label="비밀번호"
+                        placeholder="비밀번호를 입력하세요"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
+                        autoComplete="current-password"
+                        aria-invalid={error ? true : undefined}
+                        aria-describedby={error ? "login-error" : undefined}
                     />
 
-                    <button type="submit" className="rounded-lg bg-black py-3 font-bold text-white hover:bg-gray-800">
-                        로그인
-                    </button>
+                    {/* 로그인 실패는 특정 칸이 아니라 폼 전체의 문제라 한 번만 알린다.
+                        danger 는 오류·삭제 전용 색이라 이런 자리에만 쓴다. */}
+                    {error && (
+                        <p id="login-error" role="alert" className="text-danger text-[13px] font-bold">
+                            {error}
+                        </p>
+                    )}
+
+                    <Button type="submit" size="lg" fullWidth isLoading={isSubmitting}>
+                        {isSubmitting ? "들어가는 중…" : "로그인"}
+                    </Button>
                 </form>
 
-                {/* 
-                <button
-                    onClick={handleKakaoLogin}
-                    className="w-full rounded-lg bg-yellow-400 py-3 font-bold hover:bg-yellow-300"
-                >
-                    카카오 로그인
-                </button>
-                */}
+                {/* 회원가입은 보조 동작 — 먹 채움 버튼과 겨루지 않게 텍스트 링크로 둔다 */}
+                <p className="text-ink-soft text-center text-[13px]">
+                    아직 계정이 없나요?{" "}
+                    <Link href="/signup" className="text-ink font-bold underline underline-offset-4">
+                        회원가입
+                    </Link>
+                </p>
+            </Card>
 
-                <button onClick={() => router.push("/signup")} className="text-sm text-gray-500 hover:underline">
-                    회원가입
-                </button>
-            </article>
+            <Text size="sm" tone="muted" className="mt-6">
+                NEMO — 당신의 가치를 찾아보세요
+            </Text>
         </main>
     );
 }

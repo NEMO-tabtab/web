@@ -1,17 +1,20 @@
 "use client";
 
-import { Text } from "@/components/common/Typography";
+import { Button, ErrorState, PageShell } from "@/components/common";
 
-export default function Error() {
+export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
     return (
-        <div className="flex h-96 flex-col items-center justify-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-3xl">⚠️</div>
-            <Text size="lg" weight="medium" color="text-neutral-500">
-                제품 목록을 불러오는데 실패했습니다
-            </Text>
-            <Text size="sm" color="text-neutral-400" className="mt-2">
-                잠시 후 다시 시도해주세요.
-            </Text>
-        </div>
+        <PageShell width="wide">
+            <ErrorState
+                title="제품 목록을 불러오지 못했어요"
+                description="잠시 후 다시 시도해주세요."
+                action={
+                    // 이 화면의 유일한 동작이므로 강조 1(먹 채움)을 준다
+                    <Button variant="primary" shape="pill" onClick={reset}>
+                        다시 시도
+                    </Button>
+                }
+            />
+        </PageShell>
     );
 }

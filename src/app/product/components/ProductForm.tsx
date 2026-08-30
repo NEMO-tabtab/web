@@ -1,17 +1,39 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 import axios from "axios";
 
-import { Button } from "@/components/common/Button";
-import { Card } from "@/components/common/Card";
-import { Heading, Text } from "@/components/common/Typography";
-import { Input } from "@/components/common/Input";
-import Image from "next/image";
+import {
+    Button,
+    Card,
+    Checkbox,
+    Chip,
+    Heading,
+    Input,
+    PageHeader,
+    PageShell,
+    Section,
+    Textarea,
+} from "@/components/common";
+import { cn } from "@/lib/cn";
 
 const MAX_IMAGES = 3;
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
+
+/**
+ * 제품 상태는 이모지 없이 낱말만 쓴다 — 손그림 시스템의 색은 먹 하나뿐이라
+ * 컬러 이모지가 들어오면 볼터치(유일한 포인트 컬러)의 자리를 빼앗는다.
+ * 나쁨 → 미개봉 순서 자체가 이미 등급을 말해준다.
+ */
+const STATUS_OPTIONS = [
+    { value: "BAD", label: "나쁨" },
+    { value: "POOR", label: "보통" },
+    { value: "GOOD", label: "좋음" },
+    { value: "EXCELLENT", label: "아주 좋음" },
+    { value: "NEW", label: "미개봉" },
+] as const;
 
 const FIELDS_TO_SEND = [
     "productIdx",
@@ -97,6 +119,9 @@ const DEFAULT_FORM_DATA: ProductFormData = {
     updDate: null,
     delDate: null,
 };
+
+/** 칩 묶음 라벨 — Input/Textarea 의 라벨과 같은 결로 맞춘다. 필드 라벨은 한 가지 모양만 쓴다. */
+const groupLabel = "mb-2 block text-[13px] font-bold text-ink";
 
 export default function ProductForm({ mode, productId, initialData, initialImages = [] }: ProductFormProps) {
     const [images, setImages] = useState<string[]>(initialImages); // 미리보기용 Data URL
@@ -198,18 +223,15 @@ export default function ProductForm({ mode, productId, initialData, initialImage
         mode === "add" ? "소중한 물건을 등록하고 가치를 기록해보세요." : "제품 정보를 수정하고 최신 상태를 유지하세요.";
     const submitButtonText = mode === "add" ? "등록 완료" : "수정 완료";
 
-    return (
-        <main className="mx-auto max-w-3xl space-y-8 px-4 py-8 pb-32">
-            <header className="space-y-2">
-                <Heading level={2}>{pageTitle}</Heading>
-                <Text color="text-gray-500">{pageDescription}</Text>
-            </header>
+    // 비어 있는 자리 표시 칸 — "몇 장까지 붙일 수 있는지"를 숫자 대신 자리로 보여준다
+    const emptySlotCount = MAX_IMAGES - images.length - (canAddMoreImages ? 1 : 0);
 
-            {/* 이미지 업로드 섹션 */}
-            <section>
-                <Text weight="medium" className="mb-3">
-                    제품 사진
-                </Text>
+    return (
+        <PageShell className="space-y-6">
+            <PageHeader title={pageTitle} description={pageDescription} />
+
+            {/* 이미지 업로드 섹션 — 폼 바깥에 둔다. 전송은 imageFiles 상태로 직접 조립한다. */}
+            <Section title="제품 사진" description={`최대 ${MAX_IMAGES}장까지 등록 가능합니다.`}>
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -218,50 +240,68 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                     onChange={handleImageSelect}
                     className="hidden"
                 />
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-3">
                     {canAddMoreImages && (
                         <button
                             type="button"
                             onClick={handleImageClick}
-                            className="flex aspect-square flex-col items-center justify-center rounded-2xl border-2 border-dashed border-brand-300 bg-brand-50 text-brand-500 transition-colors hover:bg-brand-100"
+                            className={cn(
+                                "sticker sticker-press rounded-nemo bg-cream text-ink",
+                                "flex aspect-square flex-col items-center justify-center gap-1",
+                                "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
+                            )}
                         >
-                            <i className="xi-camera mb-1 text-2xl"></i>
-                            <span className="text-xs font-medium">사진 추가</span>
+                            <i className="xi-camera text-2xl" aria-hidden="true" />
+                            <span className="text-[12px] font-bold">사진 추가</span>
                         </button>
                     )}
                     {images.map((image, index) => (
+                        // .checker 는 투명 PNG 를 올렸을 때 뚫린 자리를 드러낸다
                         <div
                             key={index}
-                            className="group relative aspect-square overflow-hidden rounded-2xl border border-gray-200"
+                            className="sticker checker rounded-nemo relative aspect-square overflow-hidden"
                         >
-                            <Image src={image} alt={`제품 사진 ${index + 1}`} fill className="object-cover" />
+                            <Image
+                                src={image}
+                                alt={`제품 사진 ${index + 1}`}
+                                fill
+                                sizes="33vw"
+                                className="object-cover"
+                            />
+                            {/* 인쇄 질감 — absolute 라서 부모가 relative 여야 한다 */}
+                            <span aria-hidden="true" className="print-grain" />
                             <button
                                 type="button"
                                 onClick={() => handleImageRemove(index)}
-                                className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+                                aria-label={`제품 사진 ${index + 1} 삭제`}
+                                className={cn(
+                                    "sticker sticker-press bg-paper text-danger",
+                                    "absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full",
+                                    "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
+                                )}
                             >
-                                <i className="xi-close text-sm"></i>
+                                <i className="xi-close text-sm" aria-hidden="true" />
                             </button>
                         </div>
                     ))}
-                    {Array.from({ length: MAX_IMAGES - images.length - (canAddMoreImages ? 1 : 0) }).map((_, index) => (
+                    {Array.from({ length: emptySlotCount }).map((_, index) => (
+                        // 아직 안 채운 자리는 강조 위계 3~4단계 — 옅은 헤어라인 + cream 면
                         <div
                             key={`empty-${index}`}
-                            className="flex aspect-square items-center justify-center rounded-2xl border border-gray-200 bg-gray-100 text-gray-300"
+                            className="border-line bg-cream text-ink-soft rounded-nemo flex aspect-square items-center justify-center border"
                         >
-                            <i className="xi-image text-2xl"></i>
+                            <i className="xi-image text-2xl" aria-hidden="true" />
                         </div>
                     ))}
                 </div>
-                <Text size="sm" color="text-gray-400" className="mt-2">
-                    * 최대 {MAX_IMAGES}장까지 등록 가능합니다.
-                </Text>
-            </section>
+            </Section>
 
-            <form className="space-y-8" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
                 {/* 제품 정보 */}
-                <Card className="space-y-6">
-                    <Heading level={4}>기본 정보</Heading>
+                <Card padding="sm" className="space-y-5">
+                    <Heading level={3} as="h2">
+                        기본 정보
+                    </Heading>
 
                     <Input
                         label="제품명"
@@ -271,12 +311,14 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                         onChange={(e) => updateFormData("productNm", e.target.value)}
                     />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
+                        {/* 금액·수량은 손글씨를 쓰지 않는다 — Gaegu 는 숫자 글리프가 불규칙하다 */}
                         <Input
                             label="구매 가격"
                             placeholder="0"
                             type="number"
-                            icon={<span className="font-bold text-gray-500">₩</span>}
+                            className="font-sans tabular-nums"
+                            icon={<span className="text-ink-soft font-bold">₩</span>}
                             value={formData.productPrice}
                             onChange={(e) => updateFormData("productPrice", e.target.value)}
                             disabled={formData.isGift}
@@ -285,70 +327,69 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                             label="수량"
                             placeholder="1"
                             type="number"
+                            className="font-sans tabular-nums"
                             value={formData.productCnt}
                             onChange={(e) => updateFormData("productCnt", e.target.value)}
                         />
                     </div>
 
-                    <div className="flex items-center gap-2 rounded-xl border border-brand-100 bg-brand-50 p-3">
-                        <input
-                            id="is-gift"
-                            type="checkbox"
-                            className="h-5 w-5 rounded border-gray-300 text-brand-500 focus:ring-brand-500"
-                            checked={formData.isGift}
-                            onChange={(e) => {
-                                updateFormData("isGift", e.target.checked);
-                                if (e.target.checked) {
-                                    updateFormData("productPrice", "0");
-                                }
-                            }}
-                        />
-                        <label
-                            htmlFor="is-gift"
-                            className="cursor-pointer select-none text-sm font-medium text-brand-900"
-                        >
-                            선물 받은 제품인가요? (가격 0원 처리)
-                        </label>
-                    </div>
+                    <Checkbox
+                        id="is-gift"
+                        boxed
+                        label="선물 받은 제품인가요? (가격 0원 처리)"
+                        checked={formData.isGift}
+                        onChange={(e) => {
+                            updateFormData("isGift", e.target.checked);
+                            if (e.target.checked) {
+                                updateFormData("productPrice", "0");
+                            }
+                        }}
+                    />
 
-                    <div>
-                        <label className="mb-2 block text-sm font-medium text-gray-700">
-                            카테고리 {formData.selCategory && <span className="text-brand-600">✓</span>}
-                        </label>
+                    <div role="group" aria-labelledby="product-category-label">
+                        <p id="product-category-label" className={groupLabel}>
+                            카테고리
+                        </p>
                         <div className="flex flex-wrap gap-2">
                             {CATEGORIES.map((cat) => (
-                                <button
+                                <Chip
                                     key={cat}
-                                    type="button"
+                                    selected={formData.selCategory === cat}
                                     onClick={() => updateFormData("selCategory", cat)}
-                                    className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
-                                        formData.selCategory === cat
-                                            ? "border-brand-500 bg-brand-500 text-white"
-                                            : "border-gray-200 bg-white text-gray-600 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-600"
-                                    }`}
                                 >
                                     {cat}
-                                </button>
+                                </Chip>
                             ))}
                         </div>
                     </div>
                 </Card>
 
                 {/* 추가 정보 토글 */}
-                <div className="space-y-4">
-                    <button
-                        type="button"
-                        onClick={() => setShowMoreInfo(!showMoreInfo)}
-                        className="flex items-center gap-2 font-medium text-brand-600 transition-colors hover:text-brand-700"
-                    >
-                        <span>상세 정보 입력하기</span>
-                        <i
-                            className={`xi-angle-down transition-transform duration-200 ${showMoreInfo ? "rotate-180" : ""}`}
-                        ></i>
-                    </button>
+                <div className="space-y-5">
+                    <div className="flex justify-center">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            shape="pill"
+                            size="sm"
+                            aria-expanded={showMoreInfo}
+                            onClick={() => setShowMoreInfo(!showMoreInfo)}
+                            rightIcon={
+                                <i
+                                    aria-hidden="true"
+                                    className={cn(
+                                        "xi-angle-down transition-transform duration-200",
+                                        showMoreInfo && "rotate-180",
+                                    )}
+                                />
+                            }
+                        >
+                            {showMoreInfo ? "상세 정보 접기" : "상세 정보 입력하기"}
+                        </Button>
+                    </div>
 
                     {showMoreInfo && (
-                        <Card className="animate-fade-in space-y-6">
+                        <Card padding="sm" className="space-y-5">
                             <Input
                                 label="모델명"
                                 placeholder="모델명을 입력해주세요"
@@ -362,29 +403,20 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                                 onChange={(e) => updateFormData("brandNm", e.target.value)}
                             />
 
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-700">제품 상태</label>
-                                <div className="grid grid-cols-5 gap-2">
-                                    {[
-                                        { value: "BAD", label: "나쁨", icon: "😫" },
-                                        { value: "POOR", label: "보통", icon: "😐" },
-                                        { value: "GOOD", label: "좋음", icon: "🙂" },
-                                        { value: "EXCELLENT", label: "아주 좋음", icon: "😀" },
-                                        { value: "NEW", label: "미개봉", icon: "✨" },
-                                    ].map((item) => (
-                                        <button
+                            <div role="group" aria-labelledby="product-status-label">
+                                <p id="product-status-label" className={groupLabel}>
+                                    제품 상태
+                                </p>
+                                {/* 선택 상태는 색이 아니라 먹 채움으로 — Chip 이 알아서 뒤집는다 */}
+                                <div className="flex flex-wrap gap-2">
+                                    {STATUS_OPTIONS.map((item) => (
+                                        <Chip
                                             key={item.value}
-                                            type="button"
+                                            selected={formData.status === item.value}
                                             onClick={() => updateFormData("status", item.value)}
-                                            className={`flex flex-col items-center justify-center rounded-xl border p-2 transition-all ${
-                                                formData.status === item.value
-                                                    ? "border-brand-500 bg-brand-50 text-brand-700 ring-1 ring-brand-500"
-                                                    : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
-                                            }`}
                                         >
-                                            <span className="mb-1 text-2xl">{item.icon}</span>
-                                            <span className="text-xs font-medium">{item.label}</span>
-                                        </button>
+                                            {item.label}
+                                        </Chip>
                                     ))}
                                 </div>
                             </div>
@@ -393,6 +425,7 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                                 label="구매일"
                                 type="date"
                                 required={true}
+                                className="font-sans tabular-nums"
                                 value={formData.prchDate}
                                 onChange={(e) => updateFormData("prchDate", e.target.value)}
                             />
@@ -403,25 +436,24 @@ export default function ProductForm({ mode, productId, initialData, initialImage
                                 onChange={(e) => updateFormData("prchPlace", e.target.value)}
                             />
 
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-700">메모</label>
-                                <textarea
-                                    className="block min-h-[100px] w-full resize-none rounded-xl border-gray-200 bg-gray-50 p-4 text-gray-900 transition-colors focus:border-brand-500 focus:bg-white focus:ring-brand-500"
-                                    placeholder="제품에 대한 상세한 정보를 기록해보세요."
-                                    value={formData.content}
-                                    onChange={(e) => updateFormData("content", e.target.value)}
-                                />
-                            </div>
+                            <Textarea
+                                id="product-memo"
+                                label="메모"
+                                placeholder="제품에 대한 상세한 정보를 기록해보세요."
+                                value={formData.content}
+                                onChange={(e) => updateFormData("content", e.target.value)}
+                            />
                         </Card>
                     )}
                 </div>
 
-                <div className="pt-4">
-                    <Button type="submit" fullWidth size="lg" className="shadow-lg shadow-brand-500/30">
+                {/* 화면당 먹 채움 버튼은 하나 — 제출이 그 자리를 가져간다 */}
+                <div className="pt-2">
+                    <Button type="submit" fullWidth size="lg" className="font-display text-lg">
                         {submitButtonText}
                     </Button>
                 </div>
             </form>
-        </main>
+        </PageShell>
     );
 }
