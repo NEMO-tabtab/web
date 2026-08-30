@@ -36,3 +36,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# macOS metadata files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
