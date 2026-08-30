@@ -2,34 +2,198 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---- 네모(NEMO) 브랜드 토큰 — 손그림 흑백 라인아트 ----
+ * 화이트 바탕 + 러프한 먹선 + 볼터치 한 점. 색은 절제, 선이 주인공.
+ *
+ * 유틸리티 이름(bg-paper · text-ink-soft · rounded-nemo)은 tailwind.config.ts 가 만든다.
+ * 여기 :root 는 아래 raw CSS 규칙(.sticker · .field · body)이 쓸 변수만 담는다.
+ * 두 곳의 값이 어긋나면 유틸리티와 손그림 장치의 색이 조용히 갈리므로 항상 같이 고칠 것. */
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
+    --color-paper: #ffffff; /* 바탕·카드 — 순백 */
+    --color-cream: #f7f6f3; /* 패널 — 이미지 영역·옅은 면 */
+    --color-ink: #1c1b19; /* 먹선·채움 버튼 */
+    --color-ink-soft: #8b8680; /* 보조 텍스트 */
+    --color-line: #e9e7e2; /* 옅은 구분선 */
+    --color-cheek: #f0c1b2; /* 볼터치 — 유일한 포인트 컬러 */
+    --color-danger: #d0554e; /* 삭제·오류 */
+}
+
+/* 손글씨 디스플레이(개구체)는 획이 가늘어 굵게 기본 */
+.font-display {
+    font-weight: 700;
+    letter-spacing: 0.01em;
 }
 
 body {
-    color: var(--foreground);
-    background: var(--background);
-    font-family: Arial, Helvetica, sans-serif;
+    background: var(--color-paper);
+    color: var(--color-ink);
 }
 
-@layer utilities {
-    .text-balance {
-        text-wrap: balance;
+/* 손그림 라인 — 먹선 테두리, 평면. 오프셋 그림자를 쓰지 않는다.
+ * @layer components 안에 둔다: components 는 utilities 보다 먼저 방출되므로
+ * 같은 명시도(0,1,0)에서 유틸리티가 이긴다. 이 블록을 레이어 밖으로 빼면
+ * @tailwind utilities 아래에 놓여 `sticker border-danger` 조합에서
+ * 유틸리티의 테두리 색이 조용히 무시된다. */
+@layer components {
+    .sticker {
+        border: 2px solid var(--color-ink);
+        background-clip: padding-box;
     }
 }
 
-.container-1280 {
-    width: 1280px;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+/* 손으로 그린 사각형 — 비대칭 모서리 (카드·입력창 공통).
+ * 명시도 0,2,0 이라 레이어 밖에 둬도 rounded-* 유틸리티(0,1,0)를 의도대로 이긴다.
+ * tailwind.config.ts 의 borderRadius.nemo(1.25rem 대칭)는 이 규칙이 덮어쓰는 폴백이다. */
+.sticker.rounded-nemo {
+    border-radius: 1.2rem 0.95rem 1.35rem 0.9rem / 0.95rem 1.3rem 0.9rem 1.4rem;
 }
 
-.container-1280.px {
-    @apply px-4;
+/* 손으로 붙인 스크랩북 — 그리드 아이템 미세 기울임 */
+.paste-grid > *:nth-child(4n + 1) {
+    rotate: -0.7deg;
+}
+.paste-grid > *:nth-child(4n + 2) {
+    rotate: 0.5deg;
+}
+.paste-grid > *:nth-child(4n + 3) {
+    rotate: 0.7deg;
+}
+.paste-grid > *:nth-child(4n + 4) {
+    rotate: -0.4deg;
 }
 
-.flex-center {
-    @apply flex items-center justify-center;
+/* 하단 내비 아이콘도 손그림 선으로 */
+nav[aria-label="주요 메뉴"] svg {
+    filter: url(#rough-line-sm);
+    overflow: visible;
+}
+
+/* 손그림 물결 경계선 — 내비 (직선 보더 대체)
+ * 좁은 화면(하단 바)에서는 위쪽 가로 물결, 넓은 화면(세로 레일)에서는
+ * 오른쪽 세로 물결로 바뀐다.
+ * @layer components 안에 둔다: 레이어 밖(= @tailwind utilities 아래)에서 position 을
+ * 지정하면 같은 명시도의 .fixed 유틸리티가 죽는다. */
+@layer components {
+    .wavy-edge {
+        position: relative;
+        border: 0;
+    }
+}
+.wavy-edge::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='6'%3E%3Cpath d='M0 3.5 Q3.5 1 6.5 3.5 T13 3.5 T19.5 3.5 T26 3.5' fill='none' stroke='%231c1b19' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 26px 6px;
+    pointer-events: none;
+}
+@media (min-width: 640px) {
+    .wavy-edge::before {
+        top: 0;
+        bottom: 0;
+        left: auto;
+        right: -3px;
+        width: 6px;
+        height: auto;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='26'%3E%3Cpath d='M3.5 0 Q1 3.5 3.5 6.5 T3.5 13 T3.5 19.5 T3.5 26' fill='none' stroke='%231c1b19' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: repeat-y;
+        background-size: 6px 26px;
+    }
+}
+
+/* 제목 아래 낙서 밑줄 */
+.scribble {
+    position: relative;
+    display: inline-block;
+}
+.scribble::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: -2%;
+    bottom: -5px;
+    height: 7px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='7' preserveAspectRatio='none'%3E%3Cpath d='M2 5 Q22 1.5 45 4 T85 3.5 T118 4.5' fill='none' stroke='%231c1b19' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% 7px;
+    pointer-events: none;
+}
+
+/* 눌림 피드백 — 종이를 누르는 느낌.
+ * transition 단축도 같은 이유로 레이어 안에 둔다 (transition-* 유틸리티가 죽지 않도록). */
+@layer components {
+    .sticker-press {
+        transition:
+            transform 70ms ease,
+            opacity 70ms ease;
+    }
+}
+.sticker-press:active {
+    transform: translateY(1px);
+    opacity: 0.85;
+}
+@media (prefers-reduced-motion: reduce) {
+    .sticker-press {
+        transition: none;
+    }
+}
+
+/* 투명 배경 미리보기용 체커보드 (사진 등록 미리보기 맥락) */
+.checker {
+    background-image: conic-gradient(#eceae5 0 25%, #ffffff 0 50%, #eceae5 0 75%, #ffffff 0);
+    background-size: 16px 16px;
+}
+
+/* 오브제 무대 — 컷아웃 아래 콘택트 섀도 (::before라 이미지 아래에 깔린다) */
+.obj-stage {
+    position: relative;
+}
+.obj-stage::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 5%;
+    width: 56%;
+    height: 9%;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(28, 27, 25, 0.1), transparent 70%);
+    pointer-events: none;
+}
+
+/* 인쇄 질감 오버레이 — 손그림 종이 질감과 톤 통일 */
+.print-grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 입력 요소 공통 — 모서리도 손그림 비대칭 */
+.field {
+    width: 100%;
+    border: 2px solid var(--color-ink);
+    border-radius: 0.95rem 0.75rem 1.05rem 0.7rem / 0.75rem 1rem 0.7rem 1.05rem;
+    background: var(--color-paper);
+    padding: 0.625rem 0.875rem;
+    font-size: 15px;
+}
+.field:focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 2px;
+}
+
+/* 안전 영역 유틸 — viewport-fit=cover 와 짝 */
+@layer utilities {
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    .pt-safe {
+        padding-top: env(safe-area-inset-top);
+    }
 }
