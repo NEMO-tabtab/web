@@ -228,7 +228,9 @@ export default function ProductForm({ mode, productId, initialData, initialImage
 
     return (
         <PageShell className="space-y-6">
-            <PageHeader title={pageTitle} description={pageDescription} />
+            {/* 내비가 숨는 몰입 화면이라 빠져나갈 길을 헤더가 책임진다.
+                설치형 PWA(display: fullscreen)에는 주소창도 뒤로가기도 없다. */}
+            <PageHeader title={pageTitle} description={pageDescription} backHref="/product" />
 
             {/* 이미지 업로드 섹션 — 폼 바깥에 둔다. 전송은 imageFiles 상태로 직접 조립한다. */}
             <Section title="제품 사진" description={`최대 ${MAX_IMAGES}장까지 등록 가능합니다.`}>

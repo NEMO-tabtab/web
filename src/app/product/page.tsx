@@ -1,14 +1,12 @@
 export const dynamic = "force-dynamic";
 
 import axios from "axios";
-import Image from "next/image";
 import Link from "next/link";
 
 import { Badge, EmptyState, FAB, PageHeader, PageShell, ProductCard } from "@/components/common";
 import type { ProductFormData } from "./components/ProductForm";
 
 // 이미지
-import barcodeIcon from "@/app/assets/images/icon_barcode.png";
 import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
 
 interface ProductFile {
@@ -100,7 +98,7 @@ export default async function Product() {
                     href="/barcode"
                     variant="solid"
                     aria-label="바코드 스캔"
-                    icon={<Image className="h-6 w-6" src={barcodeIcon} alt="" />}
+                    icon={<i className="xi-barcode text-2xl" aria-hidden="true" />}
                 />
                 <FAB
                     href="/product/add"
