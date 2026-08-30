@@ -42,3 +42,6 @@ next-env.d.ts
 ._*
 .Spotlight-V100
 .Trashes
+# next-pwa 빌드 산출물 — 매 빌드마다 재생성된다
+public/sw.js
+public/workbox-*.js

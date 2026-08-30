@@ -12,21 +12,25 @@
         "@zxing/browser": "^0.1.5",
         "@zxing/library": "^0.21.3",
         "axios": "^1.13.1",
+        "clsx": "^2.1.1",
         "next": "15.4.8",
         "next-pwa": "^5.6.0",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "react": "^19.1.2",
-        "react-dom": "^19.1.2"
+        "react-dom": "^19.1.2",
+        "tailwind-merge": "^2.6.1"
     },
     "devDependencies": {
         "@types/node": "^20",
         "@types/react": "^18",
         "@types/react-dom": "^18",
+        "autoprefixer": "^10.5.4",
         "eslint": "^8",
         "eslint-config-next": "14.2.30",
         "postcss": "^8",
         "prettier": "^3.6.2",
-        "tailwindcss": "^3.4.1",
+        "tailwindcss": "^3.4.19",
         "typescript": "^5"
-    }
+    },
+    "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }
