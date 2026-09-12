@@ -2,7 +2,7 @@
 
 import withPWA from "next-pwa";
 
-const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL);
+const apiUrl = new URL(process.env.API_URL);
 
 const nextConfig = {
     images: {
