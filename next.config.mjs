@@ -2,6 +2,8 @@
 
 import withPWA from "next-pwa";
 
+const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL);
+
 const nextConfig = {
     images: {
         remotePatterns: [
@@ -12,6 +14,11 @@ const nextConfig = {
             {
                 protocol: "https",
                 hostname: "images.unsplash.com",
+            },
+            {
+                protocol: apiUrl.protocol.replace(":", ""),
+                hostname: apiUrl.hostname,
+                pathname: "/**",
             },
         ],
     },
