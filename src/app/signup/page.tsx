@@ -17,6 +17,26 @@ type FormType = {
     addressSub: string;
 };
 
+interface DaumPostcodeData {
+    userSelectedType: "R" | "J";
+    roadAddress: string;
+    jibunAddress: string;
+    zonecode: string;
+}
+
+interface DaumPostcodeOptions {
+    oncomplete: (data: DaumPostcodeData) => void;
+}
+
+declare global {
+    interface Window {
+        daum?: {
+            Postcode: new (options: DaumPostcodeOptions) => {
+                open: () => void;
+            };
+        };
+    }
+}
 type ErrorType = Partial<Record<keyof FormType, string>>;
 
 export default function SignupPage() {
@@ -208,7 +228,7 @@ export default function SignupPage() {
         }
 
         new window.daum.Postcode({
-            oncomplete: function (data: any) {
+            oncomplete: function (data: DaumPostcodeData) {
                 let address = "";
 
                 if (data.userSelectedType === "R") {
@@ -289,7 +309,10 @@ export default function SignupPage() {
 
     return (
         <>
-            <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="afterInteractive" />
+            <Script
+                src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+                strategy="afterInteractive"
+            />
 
             <div className="flex min-h-screen items-center justify-center bg-gray-100 py-10">
                 <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
