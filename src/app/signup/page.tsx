@@ -275,7 +275,7 @@ export default function SignupPage() {
                 }),
             );
 
-            const res = await fetch("https://nemo-api.onrender.com/api/user/insert", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/insert`, {
                 method: "POST",
                 body: formData,
             });
