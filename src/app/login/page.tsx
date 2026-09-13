@@ -9,12 +9,25 @@ export default function Login() {
 
     const [loginId, setLoginId] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!loginId.trim()) {
+            alert("아이디를 입력해주세요.");
+            return;
+        }
+
+        if (!password.trim()) {
+            alert("비밀번호를 입력해주세요.");
+            return;
+        }
+
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
+            setLoading(true);
+
+            const res = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -25,26 +38,24 @@ export default function Login() {
                 }),
             });
 
-            if (!res.ok) {
-                throw new Error("로그인 실패");
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || "로그인 실패");
             }
 
-            const data = await res.json();
-            console.log(data);
+            console.log("로그인 사용자:", data.data.user);
 
-            alert("로그인 성공!");
             router.push("/");
+            router.refresh();
         } catch (error) {
-            console.log(error);
+            console.error(error);
+
             alert("아이디 또는 비밀번호가 틀렸습니다.");
+        } finally {
+            setLoading(false);
         }
     };
-
-    // const handleKakaoLogin = async () => {
-    //     const res = await fetch("http://3.38.247.4:8080/api/user/kakao/login");
-    //     const kakaoUrl = await res.text();
-    //     console.log(kakaoUrl);
-    // };
 
     return (
         <main className="bg-brand-3 flex h-screen flex-col items-center justify-center">
@@ -68,19 +79,14 @@ export default function Login() {
                         className="w-full rounded-lg border px-4 py-3 outline-none focus:border-blue-500"
                     />
 
-                    <button type="submit" className="rounded-lg bg-black py-3 font-bold text-white hover:bg-gray-800">
-                        로그인
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="rounded-lg bg-black py-3 font-bold text-white hover:bg-gray-800 disabled:opacity-50"
+                    >
+                        {loading ? "로그인 중..." : "로그인"}
                     </button>
                 </form>
-
-                {/* 
-                <button
-                    onClick={handleKakaoLogin}
-                    className="w-full rounded-lg bg-yellow-400 py-3 font-bold hover:bg-yellow-300"
-                >
-                    카카오 로그인
-                </button>
-                */}
 
                 <button onClick={() => router.push("/signup")} className="text-sm text-gray-500 hover:underline">
                     회원가입
