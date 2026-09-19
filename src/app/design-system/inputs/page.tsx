@@ -78,7 +78,10 @@ export default function InputsPage() {
                 </Text>
             </DocSection>
 
-            <DocSection title="RadioGroup" description="fieldset/legend 로 묶여 스크린리더가 그룹으로 읽습니다.">
+            <DocSection
+                title="RadioGroup"
+                description="fieldset/legend 로 묶여 스크린리더가 그룹으로 읽습니다. error 는 Input · Textarea 와 같은 API 입니다."
+            >
                 <Card variant="default" padding="lg" className="max-w-md space-y-6">
                     <RadioGroup name="ds-gender" label="성별" options={GENDER_OPTIONS} defaultValue="M" />
                     <RadioGroup
@@ -89,6 +92,7 @@ export default function InputsPage() {
                         defaultValue="W"
                         required
                     />
+                    <RadioGroup name="ds-gender-err" label="성별" options={GENDER_OPTIONS} error="성별을 선택해주세요." />
                 </Card>
             </DocSection>
 

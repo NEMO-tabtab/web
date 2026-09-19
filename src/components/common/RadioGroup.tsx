@@ -15,6 +15,8 @@ export interface RadioGroupProps {
     defaultValue?: string;
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
     required?: boolean;
+    /** 선택 오류. Input · Textarea 의 error 와 같은 자리에 같은 모양으로 붙는다. */
+    error?: string;
     orientation?: "horizontal" | "vertical";
     className?: string;
 }
@@ -32,12 +34,18 @@ export function RadioGroup({
     defaultValue,
     onChange,
     required,
+    error,
     orientation = "horizontal",
     className,
 }: RadioGroupProps) {
+    // 오류는 fieldset 의 aria-describedby 로만 알린다 —
+    // aria-invalid 는 role="radio" 가 지원하지 않아 개별 라디오에는 달 수 없다.
+    // name 은 폼 안에서 라디오 그룹을 가르는 키라 이미 유일하다 — id prop 을 따로 받지 않고 여기서 파생시킨다.
+    const errorId = `${name}-error`;
+
     return (
         // fieldset 의 기본 min-width: min-content 가 flex 안에서 레이아웃을 밀어낸다
-        <fieldset className={cn("min-w-0", className)}>
+        <fieldset className={cn("min-w-0", className)} aria-describedby={error ? errorId : undefined}>
             {label && (
                 <legend className="text-ink mb-1.5 text-[13px] font-bold">
                     {label}
@@ -63,6 +71,8 @@ export function RadioGroup({
                                 className={cn(
                                     "peer border-ink bg-paper size-5 appearance-none rounded-full border-2",
                                     "focus-visible:outline-ink focus-visible:outline-[3px] focus-visible:outline-offset-2",
+                                    // .field 를 쓰지 않는 컨트롤이라 ! 없이 평범하게 덮인다
+                                    error && "border-danger",
                                 )}
                             />
                             {/* 선택 표시 — 안쪽 먹 점 */}
@@ -75,6 +85,11 @@ export function RadioGroup({
                     </label>
                 ))}
             </div>
+            {error && (
+                <p id={errorId} className="text-danger mt-1.5 text-xs">
+                    {error}
+                </p>
+            )}
         </fieldset>
     );
 }

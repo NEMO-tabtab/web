@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import axios from "axios";
+import Image from "next/image";
 
 import {
     Button,
@@ -54,7 +55,7 @@ const FIELDS_TO_SEND = [
     "information",
     "selCategory",
     "selTag",
-    "carrotYn",
+    // "carrotYn",
     "prchDate",
     "regDate",
     "updDate",
@@ -80,7 +81,7 @@ export interface ProductFormData {
     information: string;
     selCategory: string;
     selTag: string;
-    carrotYn: string;
+    // carrotYn: string;
     prchDate: string;
     regDate: string;
     updDate: string | null;
@@ -113,7 +114,7 @@ const DEFAULT_FORM_DATA: ProductFormData = {
     information: "",
     selCategory: "전자기기",
     selTag: "123",
-    carrotYn: "N",
+    // carrotYn: "N",
     prchDate: "",
     regDate: "",
     updDate: null,
@@ -124,12 +125,15 @@ const DEFAULT_FORM_DATA: ProductFormData = {
 const groupLabel = "mb-2 block text-[13px] font-bold text-ink";
 
 export default function ProductForm({ mode, productId, initialData, initialImages = [] }: ProductFormProps) {
+    const router = useRouter();
     const [images, setImages] = useState<string[]>(initialImages); // 미리보기용 Data URL
     const [imageFiles, setImageFiles] = useState<File[]>([]); // 서버 전송용 File 객체
     const [showMoreInfo, setShowMoreInfo] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const [formData, setFormData] = useState<ProductFormData>(initialData || DEFAULT_FORM_DATA);
+    const [formData, setFormData] = useState<ProductFormData>(
+        initialData ? { ...initialData, prchDate: initialData.prchDate.slice(0, 10) } : DEFAULT_FORM_DATA,
+    );
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -210,7 +214,7 @@ export default function ProductForm({ mode, productId, initialData, initialImage
 
             if (response.status === 200) {
                 alert(mode === "add" ? "제품이 등록되었습니다!" : "제품이 수정되었습니다!");
-                window.location.reload();
+                router.push("/product");
             }
         } catch (error) {
             console.error(`${mode === "add" ? "등록" : "수정"} 실패:`, error);
