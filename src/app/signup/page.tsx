@@ -2,7 +2,16 @@
 
 import Script from "next/script";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+import { NemoLogo } from "@/components/NemoLogo";
+import { Button, Card, Divider, Heading, Input, RadioGroup } from "@/components/common";
+
+const GENDER_OPTIONS = [
+    { value: "M", label: "남자" },
+    { value: "F", label: "여자" },
+] as const;
 
 type FormType = {
     loginId: string;
@@ -54,7 +63,7 @@ export default function SignupPage() {
         address: "",
         addressSub: "",
     });
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<ErrorType>({});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -255,17 +264,17 @@ export default function SignupPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 전체 유효성 검사
+        // 전체 유효성 검사 — 통과하기 전에 제출 상태로 올리면
+        // 여기서 빠져나갈 때 버튼이 로딩인 채로 영영 잠긴다.
         if (!validate()) {
             alert("입력 내용을 확인해주세요.");
             return;
         }
 
+        setIsSubmitting(true);
+
         try {
             const { ...dto } = dataForm;
-
-            console.log("회원가입 요청 DTO:", dto);
-
             const formData = new FormData();
 
             formData.append(
@@ -280,8 +289,6 @@ export default function SignupPage() {
                 body: formData,
             });
 
-            console.log("회원가입 응답 status:", res.status);
-
             if (!res.ok) {
                 const errorText = await res.text();
 
@@ -295,212 +302,192 @@ export default function SignupPage() {
             alert("회원가입이 완료되었습니다.");
 
             router.push("/login");
-        } catch (error) {
-            console.error("회원가입 요청 오류:", error);
+        } catch (err) {
+            console.error("회원가입 요청 오류:", err);
 
             alert("회원가입 중 오류가 발생했습니다.");
+        } finally {
+            // !res.ok 로 빠지는 길도 여기를 지난다 — 버튼을 반드시 되돌린다.
+            setIsSubmitting(false);
         }
     };
 
-    const inputClass = (error?: string) =>
-        `w-full rounded-lg border p-3 outline-none transition ${
-            error ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-black"
-        }`;
-
     return (
         <>
+            {/* handleAddressSearch 가 window.daum 을 찾는다 — 이 스크립트가 빠지면 주소 검색이 통째로 죽는다 */}
             <Script
                 src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
                 strategy="afterInteractive"
             />
 
-            <div className="flex min-h-screen items-center justify-center bg-gray-100 py-10">
-                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-                    <h1 className="mb-6 text-center text-2xl font-bold">회원가입</h1>
+            <main className="flex min-h-[70vh] items-center justify-center px-4 py-12">
+                <Card padding="md" className="w-full max-w-md space-y-6">
+                    {/* 로그인 화면과 같은 표지 — 심볼 로고 + 낙서 밑줄 제목 */}
+                    <div className="flex flex-col items-center gap-3">
+                        <NemoLogo size={72} />
+                        <Heading level={1} className="scribble">
+                            회원가입
+                        </Heading>
+                    </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* 아이디 */}
-                        <div>
-                            <input
+                    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+                        {/* 계정 정보 */}
+                        <div className="space-y-4">
+                            <Input
+                                id="signup-id"
                                 name="loginId"
+                                label="아이디"
+                                placeholder="영문·숫자 4~20자"
                                 value={dataForm.loginId}
-                                placeholder="아이디"
                                 onChange={handleChange}
-                                className={inputClass(errors.loginId)}
+                                error={errors.loginId}
+                                autoComplete="username"
                             />
-
-                            {errors.loginId && <p className="mt-1 text-sm text-red-500">{errors.loginId}</p>}
-                        </div>
-
-                        {/* 비밀번호 */}
-                        <div>
-                            <input
+                            <Input
+                                id="signup-password"
                                 type="password"
                                 name="password"
+                                label="비밀번호"
                                 value={dataForm.password}
-                                placeholder="비밀번호"
                                 onChange={handleChange}
-                                className={inputClass(errors.password)}
+                                error={errors.password}
+                                hint="영문과 숫자를 섞어 8자 이상"
+                                autoComplete="new-password"
                             />
-
-                            {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
-                        </div>
-
-                        {/* 비밀번호 확인 */}
-                        <div>
-                            <input
+                            <Input
+                                id="signup-password-confirm"
                                 type="password"
                                 name="passwordConfirm"
+                                label="비밀번호 확인"
                                 value={dataForm.passwordConfirm}
-                                placeholder="비밀번호 확인"
                                 onChange={handleChange}
-                                className={inputClass(errors.passwordConfirm)}
+                                error={errors.passwordConfirm}
+                                /* 일치 신호는 초록이 아니라 먹 — 이 시스템의 유일한 포인트 컬러는 볼터치다 */
+                                hint={
+                                    dataForm.passwordConfirm && dataForm.password === dataForm.passwordConfirm
+                                        ? "비밀번호가 일치합니다."
+                                        : undefined
+                                }
+                                autoComplete="new-password"
                             />
 
-                            {errors.passwordConfirm ? (
-                                <p className="mt-1 text-sm text-red-500">{errors.passwordConfirm}</p>
-                            ) : (
-                                dataForm.passwordConfirm &&
-                                dataForm.password === dataForm.passwordConfirm && (
-                                    <p className="mt-1 text-sm text-green-600">✓ 비밀번호가 일치합니다.</p>
-                                )
-                            )}
-                        </div>
+                            {/* 짧은 칸 둘은 한 줄로 묶는다 — 좁은 화면에서는 그대로 세로로 쌓인다 */}
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <Input
+                                    id="signup-name"
+                                    name="name"
+                                    label="이름"
+                                    value={dataForm.name}
+                                    onChange={handleChange}
+                                    error={errors.name}
+                                    autoComplete="name"
+                                />
+                                <Input
+                                    id="signup-nickname"
+                                    name="nickname"
+                                    label="닉네임"
+                                    value={dataForm.nickname}
+                                    onChange={handleChange}
+                                    error={errors.nickname}
+                                    autoComplete="nickname"
+                                />
+                            </div>
 
-                        {/* 이름 */}
-                        <div>
-                            <input
-                                name="name"
-                                value={dataForm.name}
-                                placeholder="이름"
-                                onChange={handleChange}
-                                className={inputClass(errors.name)}
-                            />
-
-                            {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
-                        </div>
-
-                        {/* 닉네임 */}
-                        <div>
-                            <input
-                                name="nickname"
-                                value={dataForm.nickname}
-                                placeholder="닉네임"
-                                onChange={handleChange}
-                                className={inputClass(errors.nickname)}
-                            />
-
-                            {errors.nickname && <p className="mt-1 text-sm text-red-500">{errors.nickname}</p>}
-                        </div>
-
-                        {/* 이메일 */}
-                        <div>
-                            <input
+                            <Input
+                                id="signup-email"
                                 type="email"
                                 name="email"
+                                label="이메일"
+                                placeholder="nemo@example.com"
                                 value={dataForm.email}
-                                placeholder="이메일"
                                 onChange={handleChange}
-                                className={inputClass(errors.email)}
+                                error={errors.email}
+                                autoComplete="email"
                             />
 
-                            {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+                            <RadioGroup
+                                name="gender"
+                                label="성별"
+                                options={GENDER_OPTIONS}
+                                value={dataForm.gender}
+                                onChange={handleChange}
+                                error={errors.gender}
+                            />
                         </div>
 
-                        {/* 성별 */}
-                        <div>
-                            <p className="mb-2 font-medium">성별</p>
+                        {/* 주소 묶음 — 옅은 구분선에 라벨을 걸어 구역만 나눈다 */}
+                        <Divider label="주소" />
 
-                            <div className="flex gap-4">
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value="M"
-                                        checked={dataForm.gender === "M"}
-                                        onChange={handleChange}
+                        <div className="space-y-4">
+                            <div className="flex items-end gap-2">
+                                <div className="min-w-0 flex-1">
+                                    <Input
+                                        id="signup-zipcode"
+                                        name="zipcode"
+                                        label="우편번호"
+                                        placeholder="검색으로 채워집니다"
+                                        value={dataForm.zipcode}
+                                        onClick={handleAddressSearch}
+                                        readOnly
+                                        className="cursor-pointer"
+                                        autoComplete="postal-code"
                                     />
-                                    남자
-                                </label>
-
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value="F"
-                                        checked={dataForm.gender === "F"}
-                                        onChange={handleChange}
-                                    />
-                                    여자
-                                </label>
-                            </div>
-
-                            {errors.gender && <p className="mt-1 text-sm text-red-500">{errors.gender}</p>}
-                        </div>
-
-                        {/* 우편번호 */}
-                        <div>
-                            <div className="flex gap-2">
-                                <input
-                                    name="zipcode"
-                                    value={dataForm.zipcode}
-                                    placeholder="우편번호"
-                                    readOnly
-                                    className={`w-full rounded-lg border bg-gray-50 p-3 ${
-                                        errors.zipcode ? "border-red-500" : "border-gray-300"
-                                    }`}
-                                />
-
-                                <button
+                                </div>
+                                <Button
                                     type="button"
+                                    variant="secondary"
                                     onClick={handleAddressSearch}
-                                    className="whitespace-nowrap rounded-lg bg-gray-800 px-4 font-medium text-white hover:bg-gray-700"
+                                    className="shrink-0"
                                 >
                                     주소검색
-                                </button>
+                                </Button>
                             </div>
 
-                            {errors.zipcode && <p className="mt-1 text-sm text-red-500">{errors.zipcode}</p>}
-                        </div>
-
-                        {/* 주소 */}
-                        <div>
-                            <input
+                            <Input
+                                id="signup-address"
                                 name="address"
+                                label="주소"
+                                placeholder="검색으로 채워집니다"
                                 value={dataForm.address}
-                                placeholder="주소"
-                                readOnly
                                 onClick={handleAddressSearch}
-                                className={`w-full cursor-pointer rounded-lg border bg-gray-50 p-3 ${
-                                    errors.address ? "border-red-500" : "border-gray-300"
-                                }`}
+                                readOnly
+                                className="cursor-pointer"
+                                autoComplete="address-line1"
                             />
 
-                            {errors.address && <p className="mt-1 text-sm text-red-500">{errors.address}</p>}
-                        </div>
+                            {/* 우편번호와 주소는 검색 한 번에 같이 채워진다 —
+                                오류도 칸마다가 아니라 묶음 하나로 알린다.
+                                (검색 버튼이 낀 줄에서는 칸 안의 오류 문구가 버튼 정렬을 밀어낸다) */}
+                            {(errors.zipcode || errors.address) && (
+                                <p className="text-danger text-xs">{errors.zipcode || errors.address}</p>
+                            )}
 
-                        {/* 상세주소 */}
-                        <div>
-                            <input
+                            <Input
+                                id="signup-address-sub"
                                 name="addressSub"
+                                label="상세주소"
+                                placeholder="동·호수"
                                 value={dataForm.addressSub}
-                                placeholder="상세주소"
                                 onChange={handleChange}
-                                className={inputClass(errors.addressSub)}
+                                error={errors.addressSub}
+                                autoComplete="address-line2"
                             />
-
-                            {errors.addressSub && <p className="mt-1 text-sm text-red-500">{errors.addressSub}</p>}
                         </div>
 
-                        <button
-                            type="submit"
-                            className="w-full rounded-lg bg-black py-3 font-bold text-white transition hover:bg-gray-800"
-                        >
-                            회원가입
-                        </button>
+                        <Button type="submit" size="lg" fullWidth isLoading={isSubmitting}>
+                            {isSubmitting ? "만드는 중…" : "회원가입"}
+                        </Button>
                     </form>
-                </div>
-            </div>
+
+                    {/* 로그인으로 돌아가기는 보조 동작 — 텍스트 링크로 둔다 */}
+                    <p className="text-ink-soft text-center text-[13px]">
+                        이미 계정이 있나요?{" "}
+                        <Link href="/login" className="text-ink font-bold underline underline-offset-4">
+                            로그인
+                        </Link>
+                    </p>
+                </Card>
+            </main>
         </>
     );
 }

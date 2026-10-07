@@ -1,10 +1,12 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/common/Button";
-import { Card } from "@/components/common/Card";
-import { Heading, Text } from "@/components/common/Typography";
+
+import { Badge, Card, PageHeader, PageShell, Section, StatTile, Text } from "@/components/common";
+import { Tabs } from "@/components/common/Tabs";
+import { NemoFace } from "@/components/NemoFace";
+import { cn } from "@/lib/cn";
 
 type User = {
     userIdx: number;
@@ -14,8 +16,21 @@ type User = {
     address: string;
 };
 
+const TABS = [
+    { value: "category", label: "카테고리" },
+    { value: "group", label: "참여 그룹" },
+] as const;
+
+type TabValue = (typeof TABS)[number]["value"];
+
+/** 계정 진입점 — 전역 떠 있는 메뉴가 사라져 로그인·회원가입은 이 페이지에서만 들어간다 */
+const ACCOUNT_LINKS = [
+    { href: "/login", label: "로그인", hint: "다른 계정으로 전환하기" },
+    { href: "/signup", label: "회원가입", hint: "아직 계정이 없다면" },
+] as const;
+
 export default function MyPage({ user }: { user: User }) {
-    const [activeTab, setActiveTab] = useState<"category" | "group">("category");
+    const [activeTab, setActiveTab] = useState<TabValue>("category");
 
     const categories = [
         { name: "전자기기", count: 12, icon: "💻" },
@@ -33,138 +48,114 @@ export default function MyPage({ user }: { user: User }) {
     ];
 
     return (
-        <main className="mx-auto max-w-3xl space-y-6 px-4 py-8 pb-32">
-            {/* 프로필 */}
-            <section className="flex items-center justify-between">
-                <div className="flex items-center gap-5">
-                    <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-white shadow-md md:h-24 md:w-24">
-                        <Image src="https://placehold.co/200x200.jpg" fill className="object-cover" alt="유저 프로필" />
-                    </div>
+        <PageShell className="space-y-6">
+            <PageHeader title="마이" description="내 정보와 등록한 물건을 한눈에." />
 
-                    <div>
-                        <Heading level={3} className="mb-1">
-                            {user.nickname}
-                        </Heading>
+            {/* 프로필 — 네모가 곧 프로필 그림. 사진 없이도 카드가 비어 보이지 않는다 */}
+            <section className="sticker rounded-nemo bg-paper flex items-center gap-3 px-4 py-4">
+                <div className="shrink-0">
+                    <NemoFace size={60} />
+                </div>
 
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                            <span>
-                                팔로워 <strong className="text-brand-600">128</strong>
-                            </span>
+                <div className="min-w-0">
+                    <p className="font-display truncate text-lg leading-tight">{user.nickname}</p>
+                    <p className="text-ink-soft mt-0.5 truncate text-[12px]">{user.loginId}</p>
 
-                            <span className="h-3 w-px bg-gray-300"></span>
-
-                            <span>
-                                팔로잉 <strong className="text-gray-900">42</strong>
-                            </span>
-                        </div>
+                    <div className="text-ink-soft mt-1 flex items-center gap-2 text-[12px]">
+                        {/* 숫자는 손글씨를 쓰지 않는다 — 글리프 폭이 흔들린다 */}
+                        <span>
+                            팔로워 <strong className="text-ink font-sans font-bold tabular-nums">128</strong>
+                        </span>
+                        <span aria-hidden="true" className="bg-line h-3 w-px" />
+                        <span>
+                            팔로잉 <strong className="text-ink font-sans font-bold tabular-nums">42</strong>
+                        </span>
                     </div>
                 </div>
 
-                <Button variant="outline" size="sm" className="rounded-full">
+                <Link
+                    href="/user-edit"
+                    className="sticker sticker-press bg-paper ml-auto shrink-0 self-start rounded-full px-3 py-1.5 text-[12px] font-bold"
+                >
                     프로필 수정
-                </Button>
+                </Link>
             </section>
 
-            {/* 통계 */}
-            <section className="grid grid-cols-2 gap-4">
-                <Card
-                    padding="sm"
-                    className="flex flex-col items-center justify-center border-brand-100 bg-brand-50 py-6"
-                >
-                    <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-500 shadow-sm">
-                        <i className="xi-box text-xl"></i>
-                    </div>
-
-                    <Text size="sm" color="text-gray-500">
-                        총 등록 물품
-                    </Text>
-
-                    <Text size="xl" weight="bold" color="text-brand-700">
-                        59개
-                    </Text>
-                </Card>
-
-                <Card
-                    padding="sm"
-                    className="flex flex-col items-center justify-center border-gray-200 bg-gray-50 py-6"
-                >
-                    <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-500 shadow-sm">
-                        <i className="xi-users text-xl"></i>
-                    </div>
-
-                    <Text size="sm" color="text-gray-500">
-                        참여 그룹
-                    </Text>
-
-                    <Text size="xl" weight="bold" color="text-gray-700">
-                        3개
-                    </Text>
-                </Card>
+            {/* 통계 — 강조는 색이 아니라 먹 채움으로 하나만 준다 */}
+            <section className="grid grid-cols-2 gap-3">
+                <StatTile
+                    emphasis
+                    icon={<i className="xi-box" aria-hidden="true" />}
+                    label="총 등록 물품"
+                    value="59개"
+                />
+                <StatTile icon={<i className="xi-users" aria-hidden="true" />} label="참여 그룹" value="3개" />
             </section>
 
-            {/* 탭 */}
-            <section className="sticky top-16 z-10 -mx-4 border-b border-gray-100 bg-white/80 px-4 backdrop-blur-md">
-                <div className="flex gap-8">
-                    <button
-                        onClick={() => setActiveTab("category")}
-                        className={`relative py-4 text-sm font-medium ${
-                            activeTab === "category" ? "text-brand-600" : "text-gray-500"
-                        }`}
-                    >
-                        카테고리
-                    </button>
+            <Tabs items={TABS} value={activeTab} onChange={setActiveTab} variant="underline" aria-label="마이 페이지" />
 
-                    <button
-                        onClick={() => setActiveTab("group")}
-                        className={`relative py-4 text-sm font-medium ${
-                            activeTab === "group" ? "text-brand-600" : "text-gray-500"
-                        }`}
-                    >
-                        참여 그룹
-                    </button>
-                </div>
-            </section>
-
-            {/* 내용 */}
-            <section>
+            <Section>
                 {activeTab === "category" && (
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                        {categories.map((cat, i) => (
-                            <Card key={i} padding="sm">
-                                <div className="text-center">
-                                    <span className="text-3xl">{cat.icon}</span>
-
-                                    <Text weight="medium">{cat.name}</Text>
-
-                                    <Text size="sm" color="text-gray-400">
-                                        {cat.count}개
-                                    </Text>
-                                </div>
+                    // 손으로 붙인 스크랩북 — .paste-grid 가 자식 카드를 교차로 기울인다
+                    <div className="paste-grid grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        {categories.map((cat) => (
+                            <Card key={cat.name} padding="sm" interactive className="space-y-1 text-center">
+                                <span aria-hidden="true" className="block text-3xl leading-none">
+                                    {cat.icon}
+                                </span>
+                                <Text size="sm" weight="bold">
+                                    {cat.name}
+                                </Text>
+                                <Text size="xs" tone="muted" className="font-sans tabular-nums">
+                                    {cat.count}개
+                                </Text>
                             </Card>
                         ))}
                     </div>
                 )}
 
                 {activeTab === "group" && (
-                    <div className="space-y-4">
-                        {groups.map((group, i) => (
-                            <Card key={i}>
-                                <div className="flex justify-between">
-                                    <div>
-                                        <Text weight="bold">{group.name}</Text>
-
-                                        <Text size="sm" color="text-gray-500">
-                                            멤버 {group.members.toLocaleString()}명
+                    <div className="space-y-3">
+                        {groups.map((group) => (
+                            <Card key={group.name} padding="sm">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="min-w-0">
+                                        <Text size="sm" weight="bold">
+                                            {group.name}
+                                        </Text>
+                                        <Text size="xs" tone="muted" className="mt-0.5 font-sans tabular-nums">
+                                            멤버 {group.members.toLocaleString("ko-KR")}명
                                         </Text>
                                     </div>
-
-                                    <div>{group.role}</div>
+                                    <Badge variant={group.role === "운영자" ? "ink" : "neutral"}>{group.role}</Badge>
                                 </div>
                             </Card>
                         ))}
                     </div>
                 )}
-            </section>
-        </main>
+            </Section>
+
+            {/* 계정 — 카드 안 구분은 옅은 선이 아니라 먹선으로 끊는다 */}
+            <Section title="계정" titleClassName="scribble">
+                <div className="sticker rounded-nemo bg-paper overflow-hidden">
+                    {ACCOUNT_LINKS.map((link, index) => (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className={cn(
+                                "sticker-press flex items-center justify-between gap-3 px-4 py-3",
+                                index > 0 && "border-ink border-t-2",
+                            )}
+                        >
+                            <span className="min-w-0">
+                                <span className="block text-sm font-bold">{link.label}</span>
+                                <span className="text-ink-soft block text-xs">{link.hint}</span>
+                            </span>
+                            <i className="xi-angle-right-min text-ink-soft text-lg" aria-hidden="true" />
+                        </Link>
+                    ))}
+                </div>
+            </Section>
+        </PageShell>
     );
 }
