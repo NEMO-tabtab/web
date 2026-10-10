@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { BrowserMultiFormatReader, IScannerControls } from "@zxing/browser";
 
 import { Button, Card, IconTile, PageHeader, PageShell, Text } from "@/components/common";
+import { productEditHref } from "@/components/product/StoredProductCard";
 import { cn } from "@/lib/cn";
+import type { Product } from "@/lib/db";
+import { findProductByBarcode } from "@/lib/db/products";
 
 /** 카메라 뷰 위 코너 장식 — 어두운 면 위라 흰 선으로 긋는다. 라운드 없이 각지게. */
 const cornerBase = "absolute h-6 w-6 border-paper";
@@ -15,6 +19,8 @@ export default function BarcodeScanner() {
     const controlsRef = useRef<IScannerControls | null>(null);
 
     const [result, setResult] = useState<string | null>(null);
+    /** 인식한 바코드로 이미 등록한 물건. undefined = 찾는 중, null = 없음 */
+    const [match, setMatch] = useState<Product | null | undefined>(undefined);
     const [isScanning, setIsScanning] = useState(false);
     const [status, setStatus] = useState("대기 중");
 
@@ -27,6 +33,7 @@ export default function BarcodeScanner() {
         if (!videoRef.current || isScanning) return;
 
         setResult(null);
+        setMatch(undefined);
         setStatus("스캔 중...");
         console.log("📷 스캔 시작");
 
@@ -57,6 +64,11 @@ export default function BarcodeScanner() {
                     setResult(currentText);
                     setStatus("인식 성공!");
                     stopScan();
+                    // 서버 조회 없이 기기에 저장된 물건에서 같은 바코드를 찾는다
+                    findProductByBarcode(currentText).then(
+                        (product) => setMatch(product ?? null),
+                        () => setMatch(null),
+                    );
                 }
             }
 
@@ -140,19 +152,40 @@ export default function BarcodeScanner() {
             </div>
 
             {result && (
-                <Card padding="md" className="w-full max-w-sm text-center">
-                    <Text size="sm" weight="bold" tone="muted">
-                        인식된 코드
-                    </Text>
-                    {/* 바코드는 숫자열이라 손글씨(Gaegu)를 피하고 tabular-nums 로 자릿수를 맞춘다 */}
-                    <p className="text-ink mt-1 font-sans text-2xl font-bold tracking-wider tabular-nums">{result}</p>
+                <Card padding="md" className="w-full max-w-sm space-y-3 text-center">
+                    <div>
+                        <Text size="sm" weight="bold" tone="muted">
+                            인식된 코드
+                        </Text>
+                        {/* 바코드는 숫자열이라 손글씨(Gaegu)를 피하고 tabular-nums 로 자릿수를 맞춘다 */}
+                        <p className="text-ink mt-1 font-sans text-2xl font-bold tracking-wider tabular-nums">
+                            {result}
+                        </p>
+                    </div>
+                    {match !== undefined && (
+                        // 결과가 나오면 다음 할 일이 이 화면의 먹 채움 버튼을 가져간다
+                        <Link
+                            href={
+                                match ? productEditHref(match.id) : `/product/add?barcode=${encodeURIComponent(result)}`
+                            }
+                            className="sticker sticker-press bg-ink font-display text-paper block rounded-full px-5 py-2.5"
+                        >
+                            {match ? `이미 등록한 물건 — ${match.name} 보기` : "이 바코드로 물건 등록하기"}
+                        </Link>
+                    )}
                 </Card>
             )}
 
             <div className="flex w-full max-w-sm gap-3">
                 {!isScanning ? (
-                    <Button size="lg" shape="pill" fullWidth onClick={startScan}>
-                        스캔 시작
+                    <Button
+                        size="lg"
+                        shape="pill"
+                        fullWidth
+                        variant={result ? "secondary" : "primary"}
+                        onClick={startScan}
+                    >
+                        {result ? "다시 스캔" : "스캔 시작"}
                     </Button>
                 ) : (
                     <Button size="lg" shape="pill" fullWidth variant="secondary" onClick={stopScan}>

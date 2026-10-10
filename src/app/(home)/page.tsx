@@ -1,27 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import axios from "axios";
+import { useMemo, useState } from "react";
 
-import { Badge, Chip, EmptyState, PageShell, Price, ProductCard, Section, StatTile } from "@/components/common";
+import { Badge, Chip, EmptyState, PageShell, Price, Section, StatTile } from "@/components/common";
 import { Tabs } from "@/components/common/Tabs";
 import { NemoFace } from "@/components/NemoFace";
 import { NemoLogo } from "@/components/NemoLogo";
-import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
-
-interface HomeProduct {
-    productIdx?: number;
-    productNm?: string;
-    productValue?: number;
-    productPrice?: number;
-    locationName?: string;
-    category?: string;
-    files?: { filePath: string }[];
-}
-
-// TODO(api): 다른 페이지처럼 process.env.NEXT_PUBLIC_API_URL 로 옮길 것 (이번 패스는 디자인만 다룬다)
-const API_ORIGIN = "http://3.38.247.4:8080";
+import { StoredProductCard } from "@/components/product/StoredProductCard";
+import { useProducts } from "@/lib/db/hooks";
+import { productValue } from "@/lib/db/products";
 
 /** 분포 칩의 기준 축 — 예전 "카테고리별 / 공간별" 탭을 그대로 이어받는다 */
 const TABS = [
@@ -38,41 +26,18 @@ const CHIP_LIMIT = 6;
 
 export default function Home() {
     const [selectedTab, setSelectedTab] = useState<TabValue>("category");
-    const [products, setProducts] = useState<HomeProduct[]>([]);
-    const [totalValue, setTotalValue] = useState<number>(0);
-    const [totalCount, setTotalCount] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
-
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const response = await axios.post(`${API_ORIGIN}/api/product/list`, {
-                    page: 1,
-                    size: 100,
-                });
-                const fetchedProducts = response.data?.content || [];
-                setProducts(fetchedProducts);
-                setTotalCount(response.data?.totalElements || fetchedProducts.length);
-
-                const valueSum = fetchedProducts.reduce(
-                    (sum: number, item: HomeProduct) => sum + (item.productValue || item.productPrice || 0),
-                    0,
-                );
-                setTotalValue(valueSum);
-            } catch (error) {
-                console.error("Failed to fetch products", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, []);
+    // 기기 저장소를 읽는다 — 다른 화면에서 등록·삭제하면 저절로 다시 그려진다
+    const stored = useProducts();
+    const loading = stored === undefined;
+    const products = useMemo(() => stored ?? [], [stored]);
+    const totalCount = products.length;
+    const totalValue = useMemo(() => products.reduce((sum, item) => sum + productValue(item), 0), [products]);
 
     /** 선택한 축으로 묶어 개수를 센다. 비어 있는 값은 "미지정" 으로 모은다. */
     const distribution = useMemo(() => {
         const counts = new Map<string, number>();
         for (const item of products) {
-            const raw = selectedTab === "category" ? item.category : item.locationName;
+            const raw = selectedTab === "category" ? item.category : item.place;
             const key = raw?.trim() || "미지정";
             counts.set(key, (counts.get(key) ?? 0) + 1);
         }
@@ -84,7 +49,7 @@ export default function Home() {
         const locations = new Set<string>();
         const categories = new Set<string>();
         for (const item of products) {
-            const location = item.locationName?.trim();
+            const location = item.place?.trim();
             const category = item.category?.trim();
             if (location) locations.add(location);
             if (category) categories.add(category);
@@ -180,20 +145,13 @@ export default function Home() {
                                 }
                             >
                                 <div className="paste-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(11rem,1fr))]">
-                                    {recent.map((item, index) => (
-                                        <ProductCard
-                                            key={item.productIdx ?? index}
-                                            href={`/product/edit/${item.productIdx || index}`}
-                                            name={item.productNm || "이름 없는 물건"}
-                                            price={item.productValue || item.productPrice}
-                                            imageSrc={
-                                                item.files && item.files.length > 0
-                                                    ? `${API_ORIGIN}/${item.files[0].filePath}`
-                                                    : defaultThumbnail
-                                            }
+                                    {recent.map((item) => (
+                                        <StoredProductCard
+                                            key={item.id}
+                                            product={item}
                                             meta={
-                                                (item.locationName || item.category) && (
-                                                    <Badge size="sm">{item.locationName || item.category}</Badge>
+                                                (item.place || item.category) && (
+                                                    <Badge size="sm">{item.place || item.category}</Badge>
                                                 )
                                             }
                                         />

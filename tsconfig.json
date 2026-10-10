@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": ["dom", "dom.iterable", "esnext", "webworker"],
         "allowJs": true,
         "skipLibCheck": true,
         "strict": true,
@@ -31,5 +31,5 @@
         "src/app/_(user)/user-edit/page.tsx.dev",
         "src/app/_(user)/user-info/page.tsx.bak"
     ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "public/sw.js", "public/swe-worker-*.js"]
 }

@@ -1,23 +1,9 @@
 import MyPage from "./myPage";
 
-type User = {
-    userIdx: number;
-    loginId: string;
-    name: string;
-    nickname: string;
-    address: string;
-};
-
-export default async function Page() {
-    const res = await fetch("http://3.38.247.4:8080/api/user/1", {
-        cache: "no-store",
-    });
-
-    if (!res.ok) {
-        throw new Error("유저 정보를 불러오지 못했습니다.");
-    }
-    console.log(res);
-    const user: User = await res.json();
-
-    return <MyPage user={user} />;
+/**
+ * 로그인 전에는 서버의 사용자 정보가 없다 — 기기에 저장된 내용을 보여주는 게스트 화면을 연다.
+ * 정적 화면이라 서비스 워커가 미리 받아 두고 오프라인에서도 열린다.
+ */
+export default function Page() {
+    return <MyPage />;
 }

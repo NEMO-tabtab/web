@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Gaegu, Noto_Sans_KR } from "next/font/google";
 
 import AppChrome from "./components/AppChrome";
+import StoragePersist from "./components/StoragePersist";
 import BottomNavigation from "@/components/common/BottomNavigation";
 import "./globals.css";
 
@@ -81,6 +82,7 @@ export default function RootLayout({
                     </AppChrome>
                     <div className="w-full min-w-0 flex-1 pb-16 sm:pb-0">{children}</div>
                 </div>
+                <StoragePersist />
             </body>
         </html>
     );
