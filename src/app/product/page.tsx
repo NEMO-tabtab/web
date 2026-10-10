@@ -1,42 +1,17 @@
-export const dynamic = "force-dynamic";
+"use client";
 
-import axios from "axios";
 import Link from "next/link";
 
-import { Badge, EmptyState, FAB, PageHeader, PageShell, ProductCard } from "@/components/common";
-import type { ProductFormData } from "./components/ProductForm";
+import { Badge, EmptyState, FAB, PageHeader, PageShell } from "@/components/common";
+import { StoredProductCard } from "@/components/product/StoredProductCard";
+import { useProducts } from "@/lib/db/hooks";
+import Loading from "./loading";
 
-// 이미지
-import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
+export default function Product() {
+    const products = useProducts();
 
-interface ProductFile {
-    filePath: string;
-}
-
-type Product = ProductFormData & {
-    files: ProductFile[];
-};
-
-const getProductList = async () => {
-    try {
-        const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/product/list`,
-            {
-                page: 1,
-                size: 10,
-            },
-            { timeout: 3000 },
-        );
-        return response?.data?.data;
-    } catch (error) {
-        console.error("Error:", error);
-        throw new Error("제품 목록을 불러오는데 실패했습니다");
-    }
-};
-
-export default async function Product() {
-    const productList = await getProductList();
-    const products: Product[] = productList?.content ?? [];
+    // 기기 저장소를 여는 짧은 순간 — 목록과 같은 자리의 스켈레톤을 보여준다
+    if (products === undefined) return <Loading />;
 
     return (
         <>
@@ -54,19 +29,11 @@ export default async function Product() {
                 {products.length > 0 ? (
                     /* 스크랩북처럼 카드가 조금씩 다른 각도로 붙는다 — 회전은 .paste-grid 가 맡는다 */
                     <div className="paste-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(9.75rem,1fr))]">
-                        {products.map((product, index) => (
-                            <ProductCard
-                                key={index}
-                                // productIdx 가 비어 오는 경우가 있어 기존 임시 fallback 을 그대로 둔다
-                                href={`/product/edit/${product.productIdx || 4}`}
-                                name={product.productNm}
-                                price={product.productValue}
-                                description={product.content}
-                                imageSrc={
-                                    product.files.length > 0
-                                        ? `${process.env.NEXT_PUBLIC_API_URL}/${product.files[0].filePath}`
-                                        : defaultThumbnail
-                                }
+                        {products.map((product) => (
+                            <StoredProductCard
+                                key={product.id}
+                                product={product}
+                                showMemo
                                 badge={
                                     <Badge variant="success" size="sm">
                                         보유 중

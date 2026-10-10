@@ -10,6 +10,11 @@ export interface ProductCardProps {
     name: string;
     price: number | string | null | undefined;
     imageSrc?: string | StaticImageData;
+    /**
+     * 이미지 최적화(`/_next/image`)를 건너뛴다. 오프라인에서도 보여야 하는 정적 이미지에 쓴다 —
+     * 최적화 결과는 서버가 그때그때 만들어 서비스 워커가 미리 받아 둘 수 없지만, 원본 파일은 미리 받아 둔다.
+     */
+    imageUnoptimized?: boolean;
     /** 이미지가 없을 때 보여줄 이모지 (기본값 📦) */
     fallbackIcon?: React.ReactNode;
     description?: string;
@@ -33,6 +38,7 @@ export function ProductCard({
     name,
     price,
     imageSrc,
+    imageUnoptimized,
     fallbackIcon = "📦",
     description,
     meta,
@@ -53,7 +59,14 @@ export function ProductCard({
                 <span className="sticker rounded-nemo bg-cream relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden">
                     {imageSrc ? (
                         <>
-                            <Image src={imageSrc} alt="" fill sizes="64px" className="object-cover" />
+                            <Image
+                                src={imageSrc}
+                                alt=""
+                                fill
+                                sizes="64px"
+                                unoptimized={imageUnoptimized}
+                                className="object-cover"
+                            />
                             <span aria-hidden="true" className="print-grain" />
                         </>
                     ) : (
@@ -91,6 +104,7 @@ export function ProductCard({
                             alt=""
                             fill
                             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                            unoptimized={imageUnoptimized}
                             className="object-cover"
                         />
                         <span aria-hidden="true" className="print-grain" />
