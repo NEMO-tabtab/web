@@ -38,7 +38,8 @@ export default function DesignSystemLayout({ children }: { children: React.React
                     </div>
                 </div>
 
-                <main className="flex-1 px-4 py-8 lg:px-12 lg:py-12">
+                {/* 문서 본문은 토큰 값·클래스 이름을 복사해 가므로 앱 전역의 선택 막기를 푼다 */}
+                <main className="flex-1 px-4 py-8 select-text lg:px-12 lg:py-12">
                     <div className="mx-auto max-w-4xl">{children}</div>
                 </main>
             </div>
