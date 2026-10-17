@@ -53,6 +53,11 @@ describe("createProduct", () => {
         expect(await getProduct(id)).toMatchObject({ name: "선물", price: 0, count: 1 });
     });
 
+    it("이름이 비었거나 공백뿐이면 저장하지 않는다", async () => {
+        await expect(createProduct(input({ name: "   " }))).rejects.toThrow();
+        expect(await listProducts()).toEqual([]);
+    });
+
     it(`사진은 ${MAX_IMAGES}장까지만 순서대로 저장한다`, async () => {
         const id = await createProduct(input(), ["a", "b", "c", "d"].map(blob));
         const images = await listImages(id);

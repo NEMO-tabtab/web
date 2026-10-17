@@ -29,8 +29,11 @@ export async function compressImage(file: Blob): Promise<Blob> {
         context.drawImage(image, 0, 0, width, height);
 
         const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", JPEG_QUALITY));
+        if (!blob) return file;
+        // 줄였다면 용량과 상관없이 줄인 쪽을 쓴다 — 해상도가 크면 파일이 작아도 그릴 때 메모리를 많이 쓴다
+        if (scale < 1) return blob;
         // 이미 작은 사진은 다시 구워도 커질 수 있다 — 작은 쪽을 남긴다
-        return blob && blob.size < file.size ? blob : file;
+        return blob.size < file.size ? blob : file;
     } catch {
         return file;
     } finally {
