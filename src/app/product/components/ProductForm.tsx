@@ -137,6 +137,9 @@ export default function ProductForm(props: ProductFormProps) {
     const { mode } = props;
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const nameInputRef = useRef<HTMLInputElement>(null);
+    // 저장 중 표시(isSaving)는 다시 그려진 뒤에야 버튼을 막는다 — 같은 순간 두 번 눌리는 것은 ref 로 막는다
+    const savingRef = useRef(false);
 
     const [formData, setFormData] = useState<FormState>(() =>
         props.mode === "edit" ? fromProduct(props.product) : { ...EMPTY_FORM, barcode: props.initialBarcode ?? "" },
@@ -180,7 +183,16 @@ export default function ProductForm(props: ProductFormProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (isSaving) return;
+        if (savingRef.current) return;
+
+        // required 는 공백도 값으로 친다 — 공백뿐인 이름은 여기서 막는다
+        if (!formData.name.trim()) {
+            nameInputRef.current?.setCustomValidity("제품명을 입력해 주세요.");
+            nameInputRef.current?.reportValidity();
+            return;
+        }
+
+        savingRef.current = true;
         setIsSaving(true);
 
         try {
@@ -203,6 +215,7 @@ export default function ProductForm(props: ProductFormProps) {
         } catch (error) {
             console.error(`${mode === "add" ? "등록" : "수정"} 실패:`, error);
             alert(`제품 ${mode === "add" ? "등록" : "수정"}에 실패했습니다.`);
+            savingRef.current = false;
             setIsSaving(false);
         }
     };
@@ -301,11 +314,15 @@ export default function ProductForm(props: ProductFormProps) {
                     </Heading>
 
                     <Input
+                        ref={nameInputRef}
                         label="제품명"
                         placeholder="예: 맥북 프로 16인치"
                         required
                         value={formData.name}
-                        onChange={(e) => updateFormData("name", e.target.value)}
+                        onChange={(e) => {
+                            e.target.setCustomValidity("");
+                            updateFormData("name", e.target.value);
+                        }}
                     />
 
                     <div className="grid grid-cols-2 gap-3">

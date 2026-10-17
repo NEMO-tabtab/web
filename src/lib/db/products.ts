@@ -30,8 +30,9 @@ export function newId(): string {
 
 const isAlive = (product: Product) => product.deletedAt === null;
 
-/** 저장 직전에 값을 정리한다 — 선물이면 가격 0, 수량은 1 이상 정수 */
+/** 저장 직전에 값을 정리한다 — 선물이면 가격 0, 수량은 1 이상 정수. 이름이 비면 저장하지 않는다 */
 function normalize(input: ProductInput): ProductInput {
+    if (!input.name.trim()) throw new Error("제품명이 비어 있습니다");
     const price = Number.isFinite(input.price) && input.price > 0 ? Math.round(input.price) : 0;
     const count = Number.isFinite(input.count) && input.count >= 1 ? Math.floor(input.count) : 1;
     return {
