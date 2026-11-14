@@ -5,10 +5,10 @@
 
 ## 한눈에 보는 흐름
 
-1. 이슈를 만들거나 고른다 → [docs/issues.md](docs/issues.md)
+1. 열린 이슈에서 중복을 찾아 정리하고, 맞는 이슈가 없으면 만든다. 이슈 없이 작업을 시작하지 않는다 → [docs/issues.md](docs/issues.md)의 I4
 2. `main`에서 브랜치를 만든다: `종류/이슈번호/짧은-설명`
 3. 작게 커밋하고 PR을 연다 → [docs/pull-requests.md](docs/pull-requests.md)
-4. 미리보기 빌드가 성공하면 머지한다. [위험 영역](docs/production.md#위험-영역)이면 다른 1명의 승인을 먼저 받는다.
+4. PR에 이 작업으로 모두 해결된 이슈를 `Closes #번호`로 적는다(I3). 미리보기 빌드가 성공하면 머지한다. [위험 영역](docs/production.md#위험-영역)이면 다른 1명의 승인을 먼저 받는다.
 5. 머지 = 운영 배포다 → [docs/production.md](docs/production.md)
 
 ## 실행
@@ -37,7 +37,7 @@ pnpm test     # 저장소 계층 테스트 (PR #94 머지 후)
 - 전제: 팀 3명. 근거는 [docs/decisions/0002-review-by-risk.md](docs/decisions/0002-review-by-risk.md).
 
 **C3. 브랜치 이름은 `종류/이슈번호/설명`**
-- 규칙: 브랜치는 `feat/79/design-system-docs`처럼 짓는다. 이슈 없이 시작한 긴급 수정은 `fix/설명`으로 짓는다.
+- 규칙: 브랜치는 `feat/79/design-system-docs`처럼 짓는다. 이슈를 만들기 전에 시작한 긴급 수정만 `fix/설명`으로 짓는다.
 - 이유: P6. 브랜치만 보고 이슈를 찾는다.
 - 강도: 권장 / 확인: 자율
 - 예시: 원격 브랜치 27개 중 25개가 이미 이 형태다. 예외: `feat/local-first-pwa`.
