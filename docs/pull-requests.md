@@ -8,7 +8,7 @@
 
 - **Work Description**: 사용자나 코드에 무엇이 달라졌는지. 화면이 바뀌면 스크린샷을 붙입니다.
 - **Share**: 리뷰어가 먼저 볼 곳, 고민한 점, 직접 확인한 것.
-- **Related issue**: `Closes #번호`.
+- **Related issue**: 이 PR로 내용이 모두 해결되는 이슈는 전부 `Closes #번호`, 일부만 해결되면 `Refs #번호`([issues.md](issues.md)의 I3).
 
 ## 규칙
 

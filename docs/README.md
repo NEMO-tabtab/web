@@ -7,7 +7,7 @@
 | [context.md](context.md) | 지금의 팀·단계·도구. 규칙의 전제 |
 | [principles.md](principles.md) | 원칙 P1~P6과 우선순위, 규칙을 바꾸는 방법 |
 | [../CONTRIBUTING.md](../CONTRIBUTING.md) | 협업 흐름: 브랜치, 제목, 승인 (C1~C4) |
-| [issues.md](issues.md) | 이슈 쓰기 (I1~I3) |
+| [issues.md](issues.md) | 이슈 쓰기 (I1~I4) |
 | [pull-requests.md](pull-requests.md) | PR 쓰기와 머지 (PR1~PR4) |
 | [code-conventions.md](code-conventions.md) | 코드 구조와 규칙 (K1~K7) |
 | [design-system.md](design-system.md) | 화면 규칙 (U1~U7) |
@@ -42,4 +42,6 @@
 | P6 도구가 지키게, 작게 | C3 브랜치 이름 / K6 파일 이름 / K7 이유 주석 | 자율 |
 | | C4 제목 형식 | 리뷰 → 자동(예정: PR 제목 검사) |
 | | PR1 PR 하나에 기능 하나 / PR4 스쿼시 머지 | 리뷰·자율 |
-| | I1 이슈 크기 / I2 완료 조건 / I3 PR이 이슈를 닫는다 | 자율 |
+| | **I4** 작업은 이슈에서 시작, 만들기 전에 중복 정리 | 리뷰·자율 |
+| | **I3** 모두 해결된 이슈는 PR이 닫는다 | 리뷰·자율 |
+| | I1 이슈 크기 / I2 완료 조건 | 자율 |
