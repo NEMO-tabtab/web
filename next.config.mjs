@@ -2,7 +2,8 @@
 
 import withPWA from "next-pwa";
 
-const apiUrl = new URL(process.env.NEXT_PUBLIC_API_URL);
+// Vercel Preview 처럼 API 주소가 없는 환경에서도 빌드가 깨지지 않게, 있을 때만 이미지 도메인에 넣는다
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ? new URL(process.env.NEXT_PUBLIC_API_URL) : null;
 
 const nextConfig = {
     images: {
@@ -15,11 +16,15 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "images.unsplash.com",
             },
-            {
-                protocol: apiUrl.protocol.replace(":", ""),
-                hostname: apiUrl.hostname,
-                pathname: "/**",
-            },
+            ...(apiUrl
+                ? [
+                      {
+                          protocol: apiUrl.protocol.replace(":", ""),
+                          hostname: apiUrl.hostname,
+                          pathname: "/**",
+                      },
+                  ]
+                : []),
         ],
     },
 };
