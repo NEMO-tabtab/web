@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -14,20 +14,16 @@ import {
     PageHeader,
     PageShell,
     Section,
+    Text,
     Textarea,
 } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
+import { fillEmptyFields, lookupBarcode } from "@/lib/api/barcode";
+import { API_CONFIGURED } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
 import type { Product, ProductImage, ProductStatus } from "@/lib/db";
 import { useObjectUrl } from "@/lib/db/hooks";
-import {
-    MAX_IMAGES,
-    createProduct,
-    deleteProduct,
-    newId,
-    updateProduct,
-    type ProductInput,
-} from "@/lib/db/products";
+import { MAX_IMAGES, createProduct, deleteProduct, newId, updateProduct, type ProductInput } from "@/lib/db/products";
 import { compressImage } from "@/lib/image";
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
@@ -133,6 +129,17 @@ function PhotoPreview({ blob, alt }: { blob: Blob; alt: string }) {
     return <Image src={url} alt={alt} fill sizes="33vw" className="object-cover" />;
 }
 
+/** 바코드로 상품 정보를 찾은 결과를 한 줄로 알린다. null 이면 아무것도 보이지 않는다 */
+type BarcodeNotice = { tone: "default" | "muted"; message: string } | null;
+
+const BARCODE_NOTICES = {
+    loading: { tone: "muted", message: "바코드로 상품 정보를 찾고 있어요. 기다리지 않고 바로 적어도 돼요." },
+    offline: { tone: "muted", message: "오프라인이라 상품 정보를 찾지 않았어요. 직접 적어 주세요." },
+    notFound: { tone: "muted", message: "이 바코드의 상품 정보를 찾지 못했어요. 직접 적어 주세요." },
+    failed: { tone: "muted", message: "상품 정보를 불러오지 못했어요. 직접 적어 주세요." },
+    untouched: { tone: "muted", message: "이미 적은 내용이 있어 바코드 정보로 바꾸지 않았어요." },
+} as const satisfies Record<string, BarcodeNotice>;
+
 export default function ProductForm(props: ProductFormProps) {
     const { mode } = props;
     const router = useRouter();
@@ -152,6 +159,54 @@ export default function ProductForm(props: ProductFormProps) {
     const [showMoreInfo, setShowMoreInfo] = useState(() => hasDetails(formData));
     const [isSaving, setIsSaving] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [barcodeNotice, setBarcodeNotice] = useState<BarcodeNotice>(null);
+
+    // 조회 결과가 왔을 때의 입력값을 본다 — 그사이 사용자가 적은 칸은 건드리지 않기 위해서다
+    const formDataRef = useRef(formData);
+    formDataRef.current = formData;
+
+    /*
+     * 바코드 스캔에서 넘어왔으면 서버에서 상품 정보를 찾아 비어 있는 칸만 채운다.
+     * 도우미일 뿐이라 실패해도 등록을 막지 않고, 저장도 기다리게 하지 않는다.
+     */
+    const initialBarcode = props.mode === "add" ? props.initialBarcode : undefined;
+    useEffect(() => {
+        if (!initialBarcode || !API_CONFIGURED) return;
+        if (navigator.onLine === false) {
+            setBarcodeNotice(BARCODE_NOTICES.offline);
+            return;
+        }
+
+        let cancelled = false;
+        setBarcodeNotice(BARCODE_NOTICES.loading);
+
+        lookupBarcode(initialBarcode).then(
+            (info) => {
+                if (cancelled) return;
+                if (!info) {
+                    setBarcodeNotice(BARCODE_NOTICES.notFound);
+                    return;
+                }
+                const { filled } = fillEmptyFields(formDataRef.current, info);
+                setFormData((prev) => fillEmptyFields(prev, info).next);
+                setBarcodeNotice(
+                    filled.length > 0
+                        ? {
+                              tone: "default",
+                              message: `바코드로 찾은 정보(${filled.join(", ")})를 채웠어요. 맞는지 확인해 주세요.`,
+                          }
+                        : BARCODE_NOTICES.untouched,
+                );
+            },
+            () => {
+                if (!cancelled) setBarcodeNotice(BARCODE_NOTICES.failed);
+            },
+        );
+
+        return () => {
+            cancelled = true;
+        };
+    }, [initialBarcode]);
 
     const canAddMoreImages = photos.length < MAX_IMAGES;
 
@@ -246,6 +301,12 @@ export default function ProductForm(props: ProductFormProps) {
                 설치형 PWA(display: fullscreen)에는 주소창도 뒤로가기도 없다. */}
             <PageHeader title={pageTitle} description={pageDescription} backHref="/product" />
 
+            {barcodeNotice && (
+                <Text size="sm" tone={barcodeNotice.tone} weight="bold" role="status">
+                    {barcodeNotice.message}
+                </Text>
+            )}
+
             {/* 이미지 업로드 섹션 — 폼 바깥에 둔다. 저장은 photos 상태로 직접 넘긴다. */}
             <Section title="제품 사진" description={`최대 ${MAX_IMAGES}장까지 등록 가능합니다.`}>
                 <input
@@ -264,7 +325,7 @@ export default function ProductForm(props: ProductFormProps) {
                             className={cn(
                                 "sticker sticker-press rounded-nemo bg-cream text-ink",
                                 "flex aspect-square flex-col items-center justify-center gap-1",
-                                "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
+                                "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink",
                             )}
                         >
                             <i className="xi-camera text-2xl" aria-hidden="true" />
@@ -275,7 +336,7 @@ export default function ProductForm(props: ProductFormProps) {
                         // .checker 는 투명 PNG 를 올렸을 때 뚫린 자리를 드러낸다
                         <div
                             key={photo.key}
-                            className="sticker checker rounded-nemo relative aspect-square overflow-hidden"
+                            className="sticker checker relative aspect-square overflow-hidden rounded-nemo"
                         >
                             <PhotoPreview blob={photo.blob} alt={`제품 사진 ${index + 1}`} />
                             {/* 인쇄 질감 — absolute 라서 부모가 relative 여야 한다 */}
@@ -286,8 +347,8 @@ export default function ProductForm(props: ProductFormProps) {
                                 aria-label={`제품 사진 ${index + 1} 삭제`}
                                 className={cn(
                                     "sticker sticker-press bg-paper text-danger",
-                                    "absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full",
-                                    "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
+                                    "absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full",
+                                    "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink",
                                 )}
                             >
                                 <i className="xi-close text-sm" aria-hidden="true" />
@@ -298,7 +359,7 @@ export default function ProductForm(props: ProductFormProps) {
                         // 아직 안 채운 자리는 강조 위계 3~4단계 — 옅은 헤어라인 + cream 면
                         <div
                             key={`empty-${index}`}
-                            className="border-line bg-cream text-ink-soft rounded-nemo flex aspect-square items-center justify-center border"
+                            className="flex aspect-square items-center justify-center rounded-nemo border border-line bg-cream text-ink-soft"
                         >
                             <i className="xi-image text-2xl" aria-hidden="true" />
                         </div>
@@ -334,7 +395,7 @@ export default function ProductForm(props: ProductFormProps) {
                             inputMode="numeric"
                             min={0}
                             className="font-sans tabular-nums"
-                            icon={<span className="text-ink-soft font-bold">₩</span>}
+                            icon={<span className="font-bold text-ink-soft">₩</span>}
                             value={formData.price}
                             onChange={(e) => updateFormData("price", e.target.value)}
                             disabled={formData.isGift}
@@ -481,13 +542,7 @@ export default function ProductForm(props: ProductFormProps) {
 
                 {/* 화면당 먹 채움 버튼은 하나 — 제출이 그 자리를 가져간다 */}
                 <div className="space-y-2 pt-2">
-                    <Button
-                        type="submit"
-                        fullWidth
-                        size="lg"
-                        isLoading={isSaving}
-                        className="font-display text-lg"
-                    >
+                    <Button type="submit" fullWidth size="lg" isLoading={isSaving} className="font-display text-lg">
                         {submitButtonText}
                     </Button>
                     {mode === "edit" && (
@@ -519,7 +574,7 @@ export default function ProductForm(props: ProductFormProps) {
                     </>
                 }
             >
-                <p className="text-ink-soft text-sm">사진도 함께 지워지고 되돌릴 수 없어요.</p>
+                <p className="text-sm text-ink-soft">사진도 함께 지워지고 되돌릴 수 없어요.</p>
             </Modal>
         </PageShell>
     );
