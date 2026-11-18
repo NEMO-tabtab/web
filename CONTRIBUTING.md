@@ -18,7 +18,7 @@ pnpm install
 pnpm dev      # 개발 서버
 pnpm lint     # 린트
 pnpm build    # 운영 빌드 (린트·타입 검사 포함)
-pnpm test     # 저장소 계층 테스트 (PR #94 머지 후)
+pnpm test     # 저장소 계층 테스트
 ```
 
 패키지 관리자는 pnpm만 씁니다(`package.json`의 `packageManager`). 환경변수는 `.env.example`을 `.env`로 복사해 채웁니다.
@@ -44,7 +44,7 @@ pnpm test     # 저장소 계층 테스트 (PR #94 머지 후)
 
 **C4. 커밋과 PR 제목은 `종류: 설명`, 이슈 제목은 `[종류] 설명`**
 - 규칙: 종류는 `feat`, `fix`, `refactor`, `style`, `docs`, `chore` 중 하나를 소문자로 쓰고 콜론 앞에는 띄어쓰기를 두지 않는다. 설명은 한국어로 무엇이 달라졌는지 적는다.
-- 이유: P6. 스쿼시 머지라 PR 제목이 곧 `main`의 기록이다.
+- 이유: P6. 리베이스 머지라 브랜치의 커밋 제목이 그대로 `main`의 기록이 된다(PR4).
 - 강도: 권장 / 확인: 리뷰(지금), 자동(PR 제목 검사 — 후속 이슈)
 - 예시: 좋음 `fix: 홈 인사 카드에서 금액과 '+ 물건 등록' 버튼이 겹치던 것`. 고칠 것 `Feat/79/design system docs`(브랜치 이름이 그대로 제목이 됨), `bug: …`(→ `fix:`), `feat : …`(콜론 앞 띄어쓰기).
 
