@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { Badge, Card, PageHeader, PageShell, Section, StatTile, Text } from "@/components/common";
-import { NemoFace } from "@/components/NemoFace";
 import { cn } from "@/lib/cn";
 import { useProducts } from "@/lib/db/hooks";
+
+import { AccountSection, ProfileCard } from "./AccountSection";
 
 const CATEGORY_ICONS: Record<string, string> = {
     전자기기: "💻",
@@ -52,8 +52,8 @@ const rowClassName = (index: number) =>
     cn("flex items-center justify-between gap-3 px-4 py-3", index > 0 && "border-ink border-t-2");
 
 /**
- * 마이 — 로그인 전(게스트) 화면.
- * 서버의 사용자 정보 대신, 이 기기에 무엇이 얼마나 저장돼 있는지를 보여준다.
+ * 마이. 로그인 여부와 상관없이 이 기기에 무엇이 얼마나 저장돼 있는지를 보여준다.
+ * 로그인 상태에 따라 달라지는 부분(프로필, 계정)은 AccountSection 이 맡는다.
  */
 export default function MyPage() {
     const products = useProducts();
@@ -72,20 +72,7 @@ export default function MyPage() {
         <PageShell className="space-y-6">
             <PageHeader title="마이" description="내 정보와 등록한 물건을 한눈에." />
 
-            {/* 프로필 — 네모가 곧 프로필 그림. 사진 없이도 카드가 비어 보이지 않는다 */}
-            <section className="sticker rounded-nemo bg-paper flex items-center gap-3 px-4 py-4">
-                <div className="shrink-0">
-                    <NemoFace size={60} />
-                </div>
-
-                <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                        <p className="font-display truncate text-lg leading-tight">게스트</p>
-                        <Badge size="sm">로그인 전</Badge>
-                    </div>
-                    <p className="text-ink-soft mt-0.5 text-[12px]">기록한 물건은 이 기기에만 저장돼요.</p>
-                </div>
-            </section>
+            <ProfileCard />
 
             {/* 통계 — 강조는 색이 아니라 먹 채움으로 하나만 준다 */}
             <section className="grid grid-cols-2 gap-3">
@@ -128,7 +115,7 @@ export default function MyPage() {
                 titleClassName="scribble"
                 description="앱을 지우거나 브라우저 데이터를 지우면 기록도 함께 사라져요."
             >
-                <div className="sticker rounded-nemo bg-paper overflow-hidden">
+                <div className="sticker overflow-hidden rounded-nemo bg-paper">
                     {BACKUP_ACTIONS.map((action, index) => (
                         // 아직 동작하지 않는다 — 누를 수 없게 막고 "작업 중" 으로 알린다
                         <button
@@ -142,7 +129,7 @@ export default function MyPage() {
                                 <i className={cn(action.icon, "text-lg")} aria-hidden="true" />
                                 <span className="min-w-0">
                                     <span className="block text-sm font-bold">{action.label}</span>
-                                    <span className="text-ink-soft block text-xs">{action.hint}</span>
+                                    <span className="block text-xs text-ink-soft">{action.hint}</span>
                                 </span>
                             </span>
                             <Badge size="sm">작업 중</Badge>
@@ -151,19 +138,7 @@ export default function MyPage() {
                 </div>
             </Section>
 
-            <Section title="계정" titleClassName="scribble">
-                <div className="sticker rounded-nemo bg-paper overflow-hidden">
-                    {ACCOUNT_LINKS.map((link, index) => (
-                        <Link key={link.href} href={link.href} className={cn("sticker-press", rowClassName(index))}>
-                            <span className="min-w-0">
-                                <span className="block text-sm font-bold">{link.label}</span>
-                                <span className="text-ink-soft block text-xs">{link.hint}</span>
-                            </span>
-                            <i className="xi-angle-right-min text-ink-soft text-lg" aria-hidden="true" />
-                        </Link>
-                    ))}
-                </div>
-            </Section>
+            <AccountSection guestLinks={ACCOUNT_LINKS} />
         </PageShell>
     );
 }

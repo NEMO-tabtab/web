@@ -6,7 +6,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { NemoLogo } from "@/components/NemoLogo";
-import { Button, Card, Divider, Heading, Input, RadioGroup } from "@/components/common";
+import { Button, Card, Divider, Heading, Input, RadioGroup, Text } from "@/components/common";
+import { Modal } from "@/components/common/Modal";
+import { checkLoginId, signup, type SignupInput } from "@/lib/api/auth";
+import { describeApiError } from "@/lib/api/errors";
 
 const GENDER_OPTIONS = [
     { value: "M", label: "남자" },
@@ -65,9 +68,17 @@ export default function SignupPage() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState<ErrorType>({});
+    /** 특정 칸이 아니라 제출 전체의 문제 (서버 오류, 확인 안 된 입력) */
+    const [formError, setFormError] = useState<string | null>(null);
+    const [isDone, setIsDone] = useState(false);
+    /** 서버에 물어본 아이디 중복 여부. unknown = 아직 안 물었거나 서버가 답하지 못함 */
+    const [idCheck, setIdCheck] = useState<{ loginId: string; result: "available" | "taken" } | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
+        setFormError(null);
+        if (name === "loginId") setIdCheck(null);
 
         setForm((prev) => ({
             ...prev,
@@ -156,6 +167,25 @@ export default function SignupPage() {
         return message;
     };
 
+    /**
+     * 아이디 칸을 떠날 때 서버에 중복을 물어본다. 서버가 답하지 못하면(꺼짐·지연) 조용히 넘어간다 —
+     * 가입을 누를 때 서버가 다시 확인하므로 여기서 막지 않는다.
+     */
+    const handleLoginIdBlur = async () => {
+        const loginId = dataForm.loginId;
+        if (validateField("loginId", loginId) || idCheck?.loginId === loginId) return;
+
+        try {
+            const result = await checkLoginId(loginId);
+            setIdCheck({ loginId, result });
+        } catch {
+            setIdCheck(null);
+        }
+    };
+
+    const isIdTaken = idCheck?.loginId === dataForm.loginId && idCheck.result === "taken";
+    const isIdAvailable = idCheck?.loginId === dataForm.loginId && idCheck.result === "available";
+
     const validate = () => {
         const newErrors: ErrorType = {};
 
@@ -232,7 +262,10 @@ export default function SignupPage() {
 
     const handleAddressSearch = () => {
         if (!window.daum) {
-            alert("주소 검색 서비스를 불러오는 중입니다.");
+            setErrors((prev) => ({
+                ...prev,
+                zipcode: "주소 검색을 불러오는 중이에요. 잠시 뒤 다시 눌러 주세요.",
+            }));
             return;
         }
 
@@ -263,51 +296,36 @@ export default function SignupPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isSubmitting) return;
 
         // 전체 유효성 검사 — 통과하기 전에 제출 상태로 올리면
         // 여기서 빠져나갈 때 버튼이 로딩인 채로 영영 잠긴다.
-        if (!validate()) {
-            alert("입력 내용을 확인해주세요.");
+        if (!validate() || isIdTaken) {
+            setFormError("입력 내용을 확인해 주세요.");
             return;
         }
 
+        setFormError(null);
         setIsSubmitting(true);
 
         try {
-            const { ...dto } = dataForm;
-            const formData = new FormData();
-
-            formData.append(
-                "dto",
-                new Blob([JSON.stringify(dto)], {
-                    type: "application/json",
-                }),
-            );
-
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/insert`, {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!res.ok) {
-                const errorText = await res.text();
-
-                console.error("회원가입 서버 오류:", errorText);
-
-                alert(`회원가입 실패 (${res.status})`);
-
-                return;
-            }
-
-            alert("회원가입이 완료되었습니다.");
-
-            router.push("/login");
+            // 비밀번호 확인은 화면에서만 쓴다 — 서버로 보내지 않는다
+            const dto: SignupInput = {
+                loginId: dataForm.loginId,
+                password: dataForm.password,
+                name: dataForm.name,
+                nickname: dataForm.nickname,
+                email: dataForm.email,
+                gender: dataForm.gender,
+                zipcode: dataForm.zipcode,
+                address: dataForm.address,
+                addressSub: dataForm.addressSub,
+            };
+            await signup(dto);
+            setIsDone(true);
         } catch (err) {
-            console.error("회원가입 요청 오류:", err);
-
-            alert("회원가입 중 오류가 발생했습니다.");
+            setFormError(describeApiError(err).message);
         } finally {
-            // !res.ok 로 빠지는 길도 여기를 지난다 — 버튼을 반드시 되돌린다.
             setIsSubmitting(false);
         }
     };
@@ -340,7 +358,9 @@ export default function SignupPage() {
                                 placeholder="영문·숫자 4~20자"
                                 value={dataForm.loginId}
                                 onChange={handleChange}
-                                error={errors.loginId}
+                                onBlur={() => void handleLoginIdBlur()}
+                                error={errors.loginId || (isIdTaken ? "이미 쓰고 있는 아이디예요." : undefined)}
+                                hint={isIdAvailable ? "쓸 수 있는 아이디예요." : undefined}
                                 autoComplete="username"
                             />
                             <Input
@@ -459,7 +479,7 @@ export default function SignupPage() {
                                 오류도 칸마다가 아니라 묶음 하나로 알린다.
                                 (검색 버튼이 낀 줄에서는 칸 안의 오류 문구가 버튼 정렬을 밀어낸다) */}
                             {(errors.zipcode || errors.address) && (
-                                <p className="text-danger text-xs">{errors.zipcode || errors.address}</p>
+                                <p className="text-xs text-danger">{errors.zipcode || errors.address}</p>
                             )}
 
                             <Input
@@ -474,20 +494,35 @@ export default function SignupPage() {
                             />
                         </div>
 
+                        {formError && (
+                            <Text size="sm" tone="danger" weight="bold" role="alert">
+                                {formError}
+                            </Text>
+                        )}
+
                         <Button type="submit" size="lg" fullWidth isLoading={isSubmitting}>
                             {isSubmitting ? "만드는 중…" : "회원가입"}
                         </Button>
                     </form>
 
                     {/* 로그인으로 돌아가기는 보조 동작 — 텍스트 링크로 둔다 */}
-                    <p className="text-ink-soft text-center text-[13px]">
+                    <p className="text-center text-[13px] text-ink-soft">
                         이미 계정이 있나요?{" "}
-                        <Link href="/login" className="text-ink font-bold underline underline-offset-4">
+                        <Link href="/login" className="font-bold text-ink underline underline-offset-4">
                             로그인
                         </Link>
                     </p>
                 </Card>
             </main>
+
+            <Modal
+                open={isDone}
+                onClose={() => router.push("/login")}
+                title="가입이 끝났어요"
+                footer={<Button onClick={() => router.push("/login")}>로그인하러 가기</Button>}
+            >
+                <Text size="sm">방금 만든 아이디로 로그인해 주세요.</Text>
+            </Modal>
         </>
     );
 }

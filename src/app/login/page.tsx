@@ -6,6 +6,14 @@ import { useRouter } from "next/navigation";
 
 import { NemoLogo } from "@/components/NemoLogo";
 import { Button, Card, Heading, Input, Text } from "@/components/common";
+import { login } from "@/lib/api/auth";
+import { API_MOCK_ENABLED } from "@/lib/api/client";
+import { describeApiError } from "@/lib/api/errors";
+import { saveSession } from "@/lib/auth/session";
+
+const WRONG_CREDENTIALS = "아이디 또는 비밀번호가 맞지 않아요.";
+/** 잠든 서버가 깨는 데 1분쯤 걸린다 — 그동안 멈춘 것처럼 보이지 않게 알린다 */
+const SLOW_AFTER_MS = 5_000;
 
 export default function Login() {
     const router = useRouter();
@@ -14,34 +22,37 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSlow, setIsSlow] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isSubmitting) return;
+
+        if (!loginId.trim() || !password) {
+            setError("아이디와 비밀번호를 입력해 주세요.");
+            return;
+        }
+
         setError(null);
         setIsSubmitting(true);
+        const slowTimer = setTimeout(() => setIsSlow(true), SLOW_AFTER_MS);
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    loginId,
-                    password,
-                }),
-            });
-
-            if (!res.ok) {
-                throw new Error("로그인 실패");
-            }
-
-            await res.json();
-            router.push("/");
+            const data = await login(loginId.trim(), password);
+            // 저장하지 못해도(사생활 보호 모드 등) 로그인은 된 것이다 — 다음에 다시 로그인하면 된다
+            saveSession(data);
+            router.replace("/");
         } catch (err) {
-            console.log(err);
-            setError("아이디 또는 비밀번호가 틀렸습니다.");
+            // 서버가 꺼진 것과 비밀번호가 틀린 것을 다른 문구로 알린다
+            const { message } = describeApiError(err, {
+                400: WRONG_CREDENTIALS,
+                401: WRONG_CREDENTIALS,
+                envelope: WRONG_CREDENTIALS,
+            });
+            setError(message);
         } finally {
+            clearTimeout(slowTimer);
+            setIsSlow(false);
             setIsSubmitting(false);
         }
     };
@@ -84,20 +95,32 @@ export default function Login() {
                     {/* 로그인 실패는 특정 칸이 아니라 폼 전체의 문제라 한 번만 알린다.
                         danger 는 오류·삭제 전용 색이라 이런 자리에만 쓴다. */}
                     {error && (
-                        <p id="login-error" role="alert" className="text-danger text-[13px] font-bold">
+                        <p id="login-error" role="alert" className="text-[13px] font-bold text-danger">
                             {error}
                         </p>
+                    )}
+
+                    {isSlow && (
+                        <Text size="xs" tone="muted" role="status">
+                            서버가 깨어나는 중이에요. 길면 1분쯤 걸려요.
+                        </Text>
                     )}
 
                     <Button type="submit" size="lg" fullWidth isLoading={isSubmitting}>
                         {isSubmitting ? "들어가는 중…" : "로그인"}
                     </Button>
+
+                    {API_MOCK_ENABLED && (
+                        <Text size="xs" tone="muted">
+                            모의 서버 모드예요. 실제 서버를 부르지 않아요.
+                        </Text>
+                    )}
                 </form>
 
                 {/* 회원가입은 보조 동작 — 먹 채움 버튼과 겨루지 않게 텍스트 링크로 둔다 */}
-                <p className="text-ink-soft text-center text-[13px]">
+                <p className="text-center text-[13px] text-ink-soft">
                     아직 계정이 없나요?{" "}
-                    <Link href="/signup" className="text-ink font-bold underline underline-offset-4">
+                    <Link href="/signup" className="font-bold text-ink underline underline-offset-4">
                         회원가입
                     </Link>
                 </p>

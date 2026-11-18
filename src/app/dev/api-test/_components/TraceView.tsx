@@ -11,6 +11,7 @@ const FAILURE_HINTS: Record<ApiFailureKind, string> = {
     parse: "서버가 JSON 이 아닌 응답을 돌려줬습니다. 프록시·에러 페이지·잘못된 경로일 수 있습니다.",
     http: "서버가 오류 상태 코드로 응답했습니다. 봉투의 message · error 를 확인하세요.",
     envelope: "HTTP 는 성공인데 봉투가 success: false 입니다. 화면 코드는 이 경우도 실패로 다뤄야 합니다.",
+    shape: "성공 응답인데 data 가 예상한 형식(src/lib/api/schemas.ts)과 다릅니다. 서버와 앱 중 어느 쪽이 바뀌었는지 확인하세요.",
 };
 
 export interface TraceEntry {

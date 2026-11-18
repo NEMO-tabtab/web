@@ -7,9 +7,18 @@
  * - `request`  — 실패해도 던지지 않고 호출 과정 전체(상태·소요 시간·봉투·실패 종류)를 돌려준다.
  *               /dev/api-test 콘솔이 이걸로 "어디서 깨졌는지"를 보여준다.
  * - `apiFetch` — 화면용. 봉투를 벗겨 `data` 만 돌려주고, 실패는 `ApiError` 로 던진다.
+ *               예상 형식(zod)을 함께 주면 `data` 가 그 형식인지도 확인한다.
  */
 
-export const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+import type { ZodType } from "zod";
+
+/**
+ * 모의 서버 모드 — 실제 서버 대신 `./mock` 이 명세의 예상 응답을 돌려준다.
+ * 서버 DB 가 꺼져 있어도 화면을 눌러 볼 수 있게 하는 개발용 스위치다. 운영에서는 켜지 않는다.
+ */
+export const API_MOCK_ENABLED = process.env.NEXT_PUBLIC_API_MOCK === "true";
+
+export const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_URL || (API_MOCK_ENABLED ? "https://mock.invalid" : "");
 
 /** Render 무료 플랜은 잠들었다 깨는 데 수십 초가 걸린다 — 기본 타임아웃을 그보다 길게 잡는다 */
 const DEFAULT_TIMEOUT_MS = 60_000;
@@ -29,8 +38,9 @@ export interface ApiEnvelope<T = unknown> {
  * - parse    : 응답이 JSON 이 아님
  * - http     : HTTP 4xx/5xx
  * - envelope : HTTP 는 2xx 인데 `success: false`
+ * - shape    : 성공 응답인데 `data` 가 예상한 형식과 다름 (서버와 앱의 버전이 어긋났을 때)
  */
-export type ApiFailureKind = "network" | "timeout" | "parse" | "http" | "envelope";
+export type ApiFailureKind = "network" | "timeout" | "parse" | "http" | "envelope" | "shape";
 
 export class ApiError extends Error {
     constructor(
@@ -124,7 +134,10 @@ export async function request({
 
     let res: Response;
     try {
-        res = await fetch(url, {
+        let send: (url: string, init: RequestInit) => Promise<Response> = fetch;
+        // 조건을 환경변수 그대로 적어야 번들러가 운영 빌드에서 모의 서버 코드를 통째로 뺀다
+        if (process.env.NEXT_PUBLIC_API_MOCK === "true") send = (await import("./mock")).mockFetch;
+        res = await send(url, {
             method,
             headers,
             body: form ?? (json !== undefined ? JSON.stringify(json) : undefined),
@@ -201,11 +214,20 @@ export async function request({
     return { url, method, ok: true, status: res.status, durationMs, envelope };
 }
 
-/** 화면용 — 봉투를 벗겨 `data` 를 돌려주고, 실패는 던진다 */
-export async function apiFetch<T>(options: RequestOptions): Promise<T> {
+/**
+ * 화면용 — 봉투를 벗겨 `data` 를 돌려주고, 실패는 던진다.
+ * `schema` 를 주면 `data` 를 그 형식으로 확인하고, 형식에 없는 필드는 버린다.
+ */
+export async function apiFetch<T = unknown>(options: RequestOptions, schema?: ZodType<T>): Promise<T> {
     const trace = await request(options);
     if (trace.failure) {
         throw new ApiError(trace.failure.message, trace.failure.kind, trace.status, trace.envelope);
     }
-    return trace.envelope?.data as T;
+    if (!schema) return trace.envelope?.data as T;
+
+    const parsed = schema.safeParse(trace.envelope?.data);
+    if (!parsed.success) {
+        throw new ApiError("응답이 예상한 형식과 다릅니다.", "shape", trace.status, trace.envelope);
+    }
+    return parsed.data;
 }
