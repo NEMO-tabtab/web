@@ -10,6 +10,9 @@ import type { ApiEnvelope } from "./client";
  *   아이디 `offline`  — 응답 자체를 못 받음
  *   아이디 `odd`      — 성공인데 data 가 예상과 다른 형식
  *   비밀번호 `wrong`  — 로그인 401
+ *   바코드 `0000…`    — 못 찾음 (명세대로 500)
+ *   바코드 `9999…`    — 응답 자체를 못 받음
+ *   바코드 `7777…`    — 성공인데 쓸 만한 값이 없음
  */
 
 const json = (status: number, body: ApiEnvelope) =>
@@ -71,6 +74,26 @@ export const expected = {
         code: 500,
         error: "org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection",
     },
+    /** BarcodeRead 는 명세에 필드가 없다 — 이 저장소의 이름 짓는 방식(…Nm)으로 가정한 것 */
+    barcodeOk: (barcode: string): ApiEnvelope => ({
+        success: true,
+        message: "조회되었습니다.",
+        code: 200,
+        data: {
+            barcodeIdx: 1,
+            barcode,
+            productNm: "네모 미니 피규어 시리즈 1",
+            brandNm: "네모토이",
+            modelNm: "NM-001",
+        },
+    }),
+    barcodeEmpty: { success: true, message: "조회되었습니다.", code: 200, data: { barcodeIdx: 2, productNm: "" } },
+    barcodeNotFound: {
+        success: false,
+        message: "서버 내부 오류가 발생했습니다.",
+        code: 500,
+        error: "java.util.NoSuchElementException: barcode not found",
+    },
     oddShape: { success: true, message: "로그인이 완료되었습니다.", code: 200, data: { accessToken: "x" } },
     notMocked: { success: false, message: "모의 서버에 없는 호출입니다.", code: 501 },
 } satisfies Record<string, ApiEnvelope | ((...args: never[]) => ApiEnvelope)>;
@@ -99,6 +122,16 @@ export function createMockFetch({ delayMs }: { delayMs: number }) {
 
         if (loginId === "offline") throw new TypeError("Failed to fetch");
         if (loginId === "down") return json(500, expected.dbDown);
+
+        if (init.method === undefined || init.method === "GET") {
+            const barcode = /^\/api\/barcode\/([^/]+)$/.exec(url.pathname)?.[1];
+            if (barcode !== undefined) {
+                if (barcode.startsWith("9999")) throw new TypeError("Failed to fetch");
+                if (barcode.startsWith("0000")) return json(500, expected.barcodeNotFound);
+                if (barcode.startsWith("7777")) return json(200, expected.barcodeEmpty);
+                return json(200, expected.barcodeOk(decodeURIComponent(barcode)));
+            }
+        }
 
         switch (route) {
             case "POST /api/user/login":
