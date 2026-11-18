@@ -35,7 +35,7 @@
 ```bash
 pnpm install && pnpm dev   # 개발
 pnpm lint && pnpm build    # 머지 전 확인 (빌드가 타입 검사 포함)
-pnpm test                  # src/lib/db 테스트 (PR #94 머지 후)
+pnpm test                  # src/lib/db 테스트
 ```
 
 커밋·PR 제목은 `종류: 설명`(`feat`, `fix`, `refactor`, `style`, `docs`, `chore`), 문서와 주석은 한국어로 씁니다.
