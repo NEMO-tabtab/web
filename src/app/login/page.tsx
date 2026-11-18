@@ -95,7 +95,7 @@ export default function Login() {
                     {/* 로그인 실패는 특정 칸이 아니라 폼 전체의 문제라 한 번만 알린다.
                         danger 는 오류·삭제 전용 색이라 이런 자리에만 쓴다. */}
                     {error && (
-                        <p id="login-error" role="alert" className="text-[13px] font-bold text-danger">
+                        <p id="login-error" role="alert" className="text-danger text-[13px] font-bold">
                             {error}
                         </p>
                     )}
@@ -118,9 +118,9 @@ export default function Login() {
                 </form>
 
                 {/* 회원가입은 보조 동작 — 먹 채움 버튼과 겨루지 않게 텍스트 링크로 둔다 */}
-                <p className="text-center text-[13px] text-ink-soft">
+                <p className="text-ink-soft text-center text-[13px]">
                     아직 계정이 없나요?{" "}
-                    <Link href="/signup" className="font-bold text-ink underline underline-offset-4">
+                    <Link href="/signup" className="text-ink font-bold underline underline-offset-4">
                         회원가입
                     </Link>
                 </p>

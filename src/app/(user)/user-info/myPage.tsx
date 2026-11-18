@@ -115,7 +115,7 @@ export default function MyPage() {
                 titleClassName="scribble"
                 description="앱을 지우거나 브라우저 데이터를 지우면 기록도 함께 사라져요."
             >
-                <div className="sticker overflow-hidden rounded-nemo bg-paper">
+                <div className="sticker rounded-nemo bg-paper overflow-hidden">
                     {BACKUP_ACTIONS.map((action, index) => (
                         // 아직 동작하지 않는다 — 누를 수 없게 막고 "작업 중" 으로 알린다
                         <button
@@ -129,7 +129,7 @@ export default function MyPage() {
                                 <i className={cn(action.icon, "text-lg")} aria-hidden="true" />
                                 <span className="min-w-0">
                                     <span className="block text-sm font-bold">{action.label}</span>
-                                    <span className="block text-xs text-ink-soft">{action.hint}</span>
+                                    <span className="text-ink-soft block text-xs">{action.hint}</span>
                                 </span>
                             </span>
                             <Badge size="sm">작업 중</Badge>

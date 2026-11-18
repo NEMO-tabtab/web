@@ -479,7 +479,7 @@ export default function SignupPage() {
                                 오류도 칸마다가 아니라 묶음 하나로 알린다.
                                 (검색 버튼이 낀 줄에서는 칸 안의 오류 문구가 버튼 정렬을 밀어낸다) */}
                             {(errors.zipcode || errors.address) && (
-                                <p className="text-xs text-danger">{errors.zipcode || errors.address}</p>
+                                <p className="text-danger text-xs">{errors.zipcode || errors.address}</p>
                             )}
 
                             <Input
@@ -506,9 +506,9 @@ export default function SignupPage() {
                     </form>
 
                     {/* 로그인으로 돌아가기는 보조 동작 — 텍스트 링크로 둔다 */}
-                    <p className="text-center text-[13px] text-ink-soft">
+                    <p className="text-ink-soft text-center text-[13px]">
                         이미 계정이 있나요?{" "}
-                        <Link href="/login" className="font-bold text-ink underline underline-offset-4">
+                        <Link href="/login" className="text-ink font-bold underline underline-offset-4">
                             로그인
                         </Link>
                     </p>
