@@ -23,7 +23,14 @@ import { API_CONFIGURED } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
 import type { Product, ProductImage, ProductStatus } from "@/lib/db";
 import { useObjectUrl } from "@/lib/db/hooks";
-import { MAX_IMAGES, createProduct, deleteProduct, newId, updateProduct, type ProductInput } from "@/lib/db/products";
+import {
+    MAX_IMAGES,
+    createProduct,
+    deleteProduct,
+    newId,
+    updateProduct,
+    type ProductInput,
+} from "@/lib/db/products";
 import { compressImage } from "@/lib/image";
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
@@ -325,7 +332,7 @@ export default function ProductForm(props: ProductFormProps) {
                             className={cn(
                                 "sticker sticker-press rounded-nemo bg-cream text-ink",
                                 "flex aspect-square flex-col items-center justify-center gap-1",
-                                "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink",
+                                "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
                             )}
                         >
                             <i className="xi-camera text-2xl" aria-hidden="true" />
@@ -336,7 +343,7 @@ export default function ProductForm(props: ProductFormProps) {
                         // .checker 는 투명 PNG 를 올렸을 때 뚫린 자리를 드러낸다
                         <div
                             key={photo.key}
-                            className="sticker checker relative aspect-square overflow-hidden rounded-nemo"
+                            className="sticker checker rounded-nemo relative aspect-square overflow-hidden"
                         >
                             <PhotoPreview blob={photo.blob} alt={`제품 사진 ${index + 1}`} />
                             {/* 인쇄 질감 — absolute 라서 부모가 relative 여야 한다 */}
@@ -347,8 +354,8 @@ export default function ProductForm(props: ProductFormProps) {
                                 aria-label={`제품 사진 ${index + 1} 삭제`}
                                 className={cn(
                                     "sticker sticker-press bg-paper text-danger",
-                                    "absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full",
-                                    "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ink",
+                                    "absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full",
+                                    "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
                                 )}
                             >
                                 <i className="xi-close text-sm" aria-hidden="true" />
@@ -359,7 +366,7 @@ export default function ProductForm(props: ProductFormProps) {
                         // 아직 안 채운 자리는 강조 위계 3~4단계 — 옅은 헤어라인 + cream 면
                         <div
                             key={`empty-${index}`}
-                            className="flex aspect-square items-center justify-center rounded-nemo border border-line bg-cream text-ink-soft"
+                            className="border-line bg-cream text-ink-soft rounded-nemo flex aspect-square items-center justify-center border"
                         >
                             <i className="xi-image text-2xl" aria-hidden="true" />
                         </div>
@@ -395,7 +402,7 @@ export default function ProductForm(props: ProductFormProps) {
                             inputMode="numeric"
                             min={0}
                             className="font-sans tabular-nums"
-                            icon={<span className="font-bold text-ink-soft">₩</span>}
+                            icon={<span className="text-ink-soft font-bold">₩</span>}
                             value={formData.price}
                             onChange={(e) => updateFormData("price", e.target.value)}
                             disabled={formData.isGift}
@@ -542,7 +549,13 @@ export default function ProductForm(props: ProductFormProps) {
 
                 {/* 화면당 먹 채움 버튼은 하나 — 제출이 그 자리를 가져간다 */}
                 <div className="space-y-2 pt-2">
-                    <Button type="submit" fullWidth size="lg" isLoading={isSaving} className="font-display text-lg">
+                    <Button
+                        type="submit"
+                        fullWidth
+                        size="lg"
+                        isLoading={isSaving}
+                        className="font-display text-lg"
+                    >
                         {submitButtonText}
                     </Button>
                     {mode === "edit" && (
@@ -574,7 +587,7 @@ export default function ProductForm(props: ProductFormProps) {
                     </>
                 }
             >
-                <p className="text-sm text-ink-soft">사진도 함께 지워지고 되돌릴 수 없어요.</p>
+                <p className="text-ink-soft text-sm">사진도 함께 지워지고 되돌릴 수 없어요.</p>
             </Modal>
         </PageShell>
     );
