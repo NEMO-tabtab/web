@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -14,9 +14,12 @@ import {
     PageHeader,
     PageShell,
     Section,
+    Text,
     Textarea,
 } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
+import { fillEmptyFields, lookupBarcode } from "@/lib/api/barcode";
+import { API_CONFIGURED } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
 import type { Product, ProductImage, ProductStatus } from "@/lib/db";
 import { useObjectUrl } from "@/lib/db/hooks";
@@ -133,6 +136,17 @@ function PhotoPreview({ blob, alt }: { blob: Blob; alt: string }) {
     return <Image src={url} alt={alt} fill sizes="33vw" className="object-cover" />;
 }
 
+/** 바코드로 상품 정보를 찾은 결과를 한 줄로 알린다. null 이면 아무것도 보이지 않는다 */
+type BarcodeNotice = { tone: "default" | "muted"; message: string } | null;
+
+const BARCODE_NOTICES = {
+    loading: { tone: "muted", message: "바코드로 상품 정보를 찾고 있어요. 기다리지 않고 바로 적어도 돼요." },
+    offline: { tone: "muted", message: "오프라인이라 상품 정보를 찾지 않았어요. 직접 적어 주세요." },
+    notFound: { tone: "muted", message: "이 바코드의 상품 정보를 찾지 못했어요. 직접 적어 주세요." },
+    failed: { tone: "muted", message: "상품 정보를 불러오지 못했어요. 직접 적어 주세요." },
+    untouched: { tone: "muted", message: "이미 적은 내용이 있어 바코드 정보로 바꾸지 않았어요." },
+} as const satisfies Record<string, BarcodeNotice>;
+
 export default function ProductForm(props: ProductFormProps) {
     const { mode } = props;
     const router = useRouter();
@@ -152,6 +166,54 @@ export default function ProductForm(props: ProductFormProps) {
     const [showMoreInfo, setShowMoreInfo] = useState(() => hasDetails(formData));
     const [isSaving, setIsSaving] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [barcodeNotice, setBarcodeNotice] = useState<BarcodeNotice>(null);
+
+    // 조회 결과가 왔을 때의 입력값을 본다 — 그사이 사용자가 적은 칸은 건드리지 않기 위해서다
+    const formDataRef = useRef(formData);
+    formDataRef.current = formData;
+
+    /*
+     * 바코드 스캔에서 넘어왔으면 서버에서 상품 정보를 찾아 비어 있는 칸만 채운다.
+     * 도우미일 뿐이라 실패해도 등록을 막지 않고, 저장도 기다리게 하지 않는다.
+     */
+    const initialBarcode = props.mode === "add" ? props.initialBarcode : undefined;
+    useEffect(() => {
+        if (!initialBarcode || !API_CONFIGURED) return;
+        if (navigator.onLine === false) {
+            setBarcodeNotice(BARCODE_NOTICES.offline);
+            return;
+        }
+
+        let cancelled = false;
+        setBarcodeNotice(BARCODE_NOTICES.loading);
+
+        lookupBarcode(initialBarcode).then(
+            (info) => {
+                if (cancelled) return;
+                if (!info) {
+                    setBarcodeNotice(BARCODE_NOTICES.notFound);
+                    return;
+                }
+                const { filled } = fillEmptyFields(formDataRef.current, info);
+                setFormData((prev) => fillEmptyFields(prev, info).next);
+                setBarcodeNotice(
+                    filled.length > 0
+                        ? {
+                              tone: "default",
+                              message: `바코드로 찾은 정보(${filled.join(", ")})를 채웠어요. 맞는지 확인해 주세요.`,
+                          }
+                        : BARCODE_NOTICES.untouched,
+                );
+            },
+            () => {
+                if (!cancelled) setBarcodeNotice(BARCODE_NOTICES.failed);
+            },
+        );
+
+        return () => {
+            cancelled = true;
+        };
+    }, [initialBarcode]);
 
     const canAddMoreImages = photos.length < MAX_IMAGES;
 
@@ -245,6 +307,12 @@ export default function ProductForm(props: ProductFormProps) {
             {/* 내비가 숨는 몰입 화면이라 빠져나갈 길을 헤더가 책임진다.
                 설치형 PWA(display: fullscreen)에는 주소창도 뒤로가기도 없다. */}
             <PageHeader title={pageTitle} description={pageDescription} backHref="/product" />
+
+            {barcodeNotice && (
+                <Text size="sm" tone={barcodeNotice.tone} weight="bold" role="status">
+                    {barcodeNotice.message}
+                </Text>
+            )}
 
             {/* 이미지 업로드 섹션 — 폼 바깥에 둔다. 저장은 photos 상태로 직접 넘긴다. */}
             <Section title="제품 사진" description={`최대 ${MAX_IMAGES}장까지 등록 가능합니다.`}>

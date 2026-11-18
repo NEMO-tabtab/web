@@ -20,6 +20,9 @@ export const API_MOCK_ENABLED = process.env.NEXT_PUBLIC_API_MOCK === "true";
 
 export const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_URL || (API_MOCK_ENABLED ? "https://mock.invalid" : "");
 
+/** 서버 주소가 없으면(로컬 전용으로 빌드한 경우) 서버를 부르는 기능은 조용히 건너뛴다 */
+export const API_CONFIGURED = DEFAULT_API_BASE !== "";
+
 /** Render 무료 플랜은 잠들었다 깨는 데 수십 초가 걸린다 — 기본 타임아웃을 그보다 길게 잡는다 */
 const DEFAULT_TIMEOUT_MS = 60_000;
 
