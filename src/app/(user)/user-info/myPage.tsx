@@ -8,6 +8,8 @@ import { NemoFace } from "@/components/NemoFace";
 import { cn } from "@/lib/cn";
 import { useProducts } from "@/lib/db/hooks";
 
+import { BackupSection } from "./BackupSection";
+
 const CATEGORY_ICONS: Record<string, string> = {
     전자기기: "💻",
     가구: "🪑",
@@ -19,12 +21,6 @@ const CATEGORY_ICONS: Record<string, string> = {
 const ACCOUNT_LINKS = [
     { href: "/login", label: "로그인", hint: "계정이 있다면" },
     { href: "/signup", label: "회원가입", hint: "아직 계정이 없다면" },
-] as const;
-
-/** 데이터 백업 — 다음 작업에서 붙인다. 자리와 문구만 먼저 잡아 둔다. */
-const BACKUP_ACTIONS = [
-    { label: "백업 내보내기", hint: "기록한 물건과 사진을 파일로 저장", icon: "xi-download" },
-    { label: "백업 가져오기", hint: "저장해 둔 파일에서 되살리기", icon: "xi-upload" },
 ] as const;
 
 /** 브라우저가 이 앱에 쓰고 있는 저장 공간 (MB). 지원하지 않으면 null */
@@ -73,17 +69,17 @@ export default function MyPage() {
             <PageHeader title="마이" description="내 정보와 등록한 물건을 한눈에." />
 
             {/* 프로필 — 네모가 곧 프로필 그림. 사진 없이도 카드가 비어 보이지 않는다 */}
-            <section className="sticker rounded-nemo bg-paper flex items-center gap-3 px-4 py-4">
+            <section className="sticker flex items-center gap-3 rounded-nemo bg-paper px-4 py-4">
                 <div className="shrink-0">
                     <NemoFace size={60} />
                 </div>
 
                 <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                        <p className="font-display truncate text-lg leading-tight">게스트</p>
+                        <p className="truncate font-display text-lg leading-tight">게스트</p>
                         <Badge size="sm">로그인 전</Badge>
                     </div>
-                    <p className="text-ink-soft mt-0.5 text-[12px]">기록한 물건은 이 기기에만 저장돼요.</p>
+                    <p className="mt-0.5 text-[12px] text-ink-soft">기록한 물건은 이 기기에만 저장돼요.</p>
                 </div>
             </section>
 
@@ -123,43 +119,17 @@ export default function MyPage() {
                 </Section>
             )}
 
-            <Section
-                title="데이터"
-                titleClassName="scribble"
-                description="앱을 지우거나 브라우저 데이터를 지우면 기록도 함께 사라져요."
-            >
-                <div className="sticker rounded-nemo bg-paper overflow-hidden">
-                    {BACKUP_ACTIONS.map((action, index) => (
-                        // 아직 동작하지 않는다 — 누를 수 없게 막고 "작업 중" 으로 알린다
-                        <button
-                            key={action.label}
-                            type="button"
-                            disabled
-                            aria-disabled="true"
-                            className={cn(rowClassName(index), "w-full cursor-not-allowed text-left")}
-                        >
-                            <span className="flex min-w-0 items-center gap-3 opacity-60">
-                                <i className={cn(action.icon, "text-lg")} aria-hidden="true" />
-                                <span className="min-w-0">
-                                    <span className="block text-sm font-bold">{action.label}</span>
-                                    <span className="text-ink-soft block text-xs">{action.hint}</span>
-                                </span>
-                            </span>
-                            <Badge size="sm">작업 중</Badge>
-                        </button>
-                    ))}
-                </div>
-            </Section>
+            <BackupSection />
 
             <Section title="계정" titleClassName="scribble">
-                <div className="sticker rounded-nemo bg-paper overflow-hidden">
+                <div className="sticker overflow-hidden rounded-nemo bg-paper">
                     {ACCOUNT_LINKS.map((link, index) => (
                         <Link key={link.href} href={link.href} className={cn("sticker-press", rowClassName(index))}>
                             <span className="min-w-0">
                                 <span className="block text-sm font-bold">{link.label}</span>
-                                <span className="text-ink-soft block text-xs">{link.hint}</span>
+                                <span className="block text-xs text-ink-soft">{link.hint}</span>
                             </span>
-                            <i className="xi-angle-right-min text-ink-soft text-lg" aria-hidden="true" />
+                            <i className="xi-angle-right-min text-lg text-ink-soft" aria-hidden="true" />
                         </Link>
                     ))}
                 </div>
