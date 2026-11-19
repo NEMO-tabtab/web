@@ -114,6 +114,22 @@ describe("아이디 중복 확인", () => {
         expect(await call((api) => api.checkLoginId("taken"))).toBe("taken");
     });
 
+    it("200 이어도 isAvailable 이 false 면 taken 이다 (실제 서버의 응답 방식)", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi.fn(async () => new Response(JSON.stringify(expected.idCheck("nemo01", false)), { status: 200 })),
+        );
+        expect(await auth.checkLoginId("nemo01")).toBe("taken");
+    });
+
+    it("isAvailable 이 없는 응답이면 available 로 단정하지 않고 던진다", async () => {
+        vi.stubGlobal(
+            "fetch",
+            vi.fn(async () => new Response(JSON.stringify(expected.ok("사용 가능한 아이디입니다.")), { status: 200 })),
+        );
+        await expect(auth.checkLoginId("nemo01")).rejects.toMatchObject({ kind: "shape" });
+    });
+
     it("서버가 답하지 못하면 taken 으로 단정하지 않고 던진다", async () => {
         await expect(call((api) => api.checkLoginId("down"))).rejects.toMatchObject({ kind: "http", status: 500 });
     });
