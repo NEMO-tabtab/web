@@ -65,6 +65,8 @@ const nextConfig = {
     // 값이 없을 때도 빈 문자열로 박아 넣어야 번들러가 모의 서버 코드(src/lib/api/mock.ts)를 운영 번들에서 뺀다
     env: {
         NEXT_PUBLIC_API_MOCK: process.env.NEXT_PUBLIC_API_MOCK ?? "",
+        // 마이 화면 맨 아래에 적는 앱 버전
+        NEXT_PUBLIC_APP_VERSION: JSON.parse(readFileSync("package.json", "utf8")).version,
     },
     images: {
         remotePatterns: [

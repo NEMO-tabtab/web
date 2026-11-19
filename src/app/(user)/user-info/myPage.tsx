@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { DevEntrance } from "@/components/dev/DevEntrance";
 import { Card, PageHeader, PageShell, Section, StatTile, Text } from "@/components/common";
 import { useProducts } from "@/lib/db/hooks";
 
@@ -103,6 +104,8 @@ export default function MyPage() {
             <BackupSection />
 
             <AccountSection guestLinks={ACCOUNT_LINKS} />
+
+            <DevEntrance />
         </PageShell>
     );
 }
