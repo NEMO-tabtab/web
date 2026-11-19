@@ -106,3 +106,40 @@ export const CAMERA_PROBLEM_MESSAGES: Record<CameraProblem, string> = {
     unsupported: "이 브라우저에서는 카메라를 쓸 수 없어요.",
     unknown: "카메라를 열지 못했어요. 다시 눌러 주세요.",
 };
+
+/**
+ * 스캐너 화면에서 서버 조회가 어디까지 왔는지.
+ * - waiting : 찾는 중 (아직 기다릴 만하다)
+ * - slow    : 찾는 중인데 오래 걸린다 — 기다리지 않고 넘어갈 길을 연다
+ * - found   : 찾았다
+ * - missing : 서버에 없다
+ * - failed  : 서버에 닿지 못했다
+ * - skipped : 조회하지 않았다 (오프라인, 서버 주소 없음)
+ */
+export type ScanLookup =
+    | { status: "waiting" | "slow" | "missing" | "failed" | "skipped" }
+    | { status: "found"; name?: string; brandName?: string };
+
+const MAX_PRODUCT_LABEL = 28;
+
+/** 등록 화면으로 가는 버튼의 글자. null 이면 버튼 대신 "찾는 중"을 보여 준다 */
+export function scanActionLabel(lookup: ScanLookup): string | null {
+    switch (lookup.status) {
+        case "waiting":
+            return null;
+        case "slow":
+            return "기다리지 않고 직접 적어 등록하기";
+        case "found": {
+            const product = [lookup.name, lookup.brandName && `(${lookup.brandName})`].filter(Boolean).join("");
+            if (!product) return "이 바코드로 물건 등록하기";
+            const short = product.length > MAX_PRODUCT_LABEL ? `${product.slice(0, MAX_PRODUCT_LABEL - 1)}…` : product;
+            return `${short} — 이 물건 등록하기`;
+        }
+        case "missing":
+            return "정보가 없어요 — 직접 적어 등록하기";
+        case "failed":
+            return "정보를 못 불러왔어요 — 직접 적어 등록하기";
+        case "skipped":
+            return "이 바코드로 물건 등록하기";
+    }
+}
