@@ -134,26 +134,42 @@ export type ScanLookup =
     | { status: "waiting" | "slow" | "missing" | "failed" | "skipped" }
     | { status: "found"; name?: string; brandName?: string };
 
-const MAX_PRODUCT_LABEL = 28;
+/** 번호 카드에 보여 줄 것 — 상품 정보와 할 일(버튼)을 나눠 담는다 */
+export interface ScanAction {
+    /** 찾은 상품. 버튼과 따로 보여 준다 — 이름이 길어도 버튼 글자가 꺾이지 않게 */
+    product: { name: string; brandName?: string } | null;
+    /** 상품이 없을 때 그 자리에 보여 줄 한 줄 */
+    note: string | null;
+    /** 등록 화면으로 가는 버튼의 글자. null 이면 버튼을 내지 않는다 */
+    button: string | null;
+}
 
-/** 등록 화면으로 가는 버튼의 글자. null 이면 버튼 대신 "찾는 중"을 보여 준다 */
-export function scanActionLabel(lookup: ScanLookup): string | null {
+export function scanAction(lookup: ScanLookup): ScanAction {
     switch (lookup.status) {
         case "waiting":
-            return null;
+            return { product: null, note: "상품 정보를 찾는 중…", button: null };
         case "slow":
-            return "기다리지 않고 직접 적어 등록하기";
+            return {
+                product: null,
+                note: "상품 정보를 찾는 중… 오래 걸리고 있어요.",
+                button: "기다리지 않고 등록하기",
+            };
         case "found": {
-            const product = [lookup.name, lookup.brandName && `(${lookup.brandName})`].filter(Boolean).join("");
-            if (!product) return "이 바코드로 물건 등록하기";
-            const short = product.length > MAX_PRODUCT_LABEL ? `${product.slice(0, MAX_PRODUCT_LABEL - 1)}…` : product;
-            return `${short} — 이 물건 등록하기`;
+            // 브랜드만 온 경우에는 브랜드를 이름 자리에 쓴다
+            const name = lookup.name ?? lookup.brandName;
+            return name
+                ? {
+                      product: { name, brandName: lookup.name ? lookup.brandName : undefined },
+                      note: null,
+                      button: "이 물건 등록하기",
+                  }
+                : { product: null, note: null, button: "이 바코드로 물건 등록하기" };
         }
         case "missing":
-            return "정보가 없어요 — 직접 적어 등록하기";
+            return { product: null, note: "등록된 상품 정보가 없어요.", button: "직접 적어 등록하기" };
         case "failed":
-            return "정보를 못 불러왔어요 — 직접 적어 등록하기";
+            return { product: null, note: "상품 정보를 불러오지 못했어요.", button: "직접 적어 등록하기" };
         case "skipped":
-            return "이 바코드로 물건 등록하기";
+            return { product: null, note: null, button: "이 바코드로 물건 등록하기" };
     }
 }
