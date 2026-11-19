@@ -14,7 +14,8 @@ import {
     cameraProblem,
     createScanConfirmer,
     guideSourceRect,
-    isAcceptableCode,
+    hasChecksumProblem,
+    isTypedCodeUsable,
     scanActionLabel,
     type ScanLookup,
 } from "@/lib/barcode/scan";
@@ -84,7 +85,9 @@ export default function BarcodeScanner() {
     }, []);
 
     const cleanCode = code.replace(/\s/g, "");
-    const isUsable = isAcceptableCode(cleanCode);
+    // 스캔한 번호는 확정할 때 이미 검증 숫자까지 확인했다. 손으로 넣은 번호는 검증 숫자가 틀려도 막지 않고 경고만 한다
+    const isUsable = isTypedCodeUsable(cleanCode);
+    const checksumWarning = !scanned && hasChecksumProblem(cleanCode);
 
     // 번호가 쓸 만해지면(스캔이든 직접 입력이든) 기기에 저장된 물건에서 같은 바코드를 찾는다. 서버는 부르지 않는다
     useEffect(() => {
@@ -349,11 +352,15 @@ export default function BarcodeScanner() {
             </div>
 
             {/* 바코드 번호 — 스캔하면 채워지고, 카메라로 안 읽히면 바코드 아래 숫자를 여기에 직접 넣는다.
-                늘 같은 높이라 번호가 생겨도 화면이 밀리지 않는다. */}
+                버튼 글자가 두 줄이 되면 카드가 조금 커지고, 그만큼 위의 카메라 뷰가 줄어든다(화면은 스크롤되지 않는다). */}
             <Card padding="md" className="w-full max-w-sm shrink-0 space-y-3 text-center">
                 <label className="block">
-                    <Text as="span" size="sm" weight="bold" tone="muted" className="block">
-                        {scanned ? "인식된 코드" : "바코드 번호"}
+                    <Text as="span" size="sm" weight="bold" tone={checksumWarning ? "danger" : "muted"} className="block">
+                        {checksumWarning
+                            ? "숫자가 맞는지 한 번 더 확인해 주세요"
+                            : scanned
+                              ? "인식된 코드"
+                              : "바코드 번호"}
                     </Text>
                     {/* 바코드는 숫자열이라 손글씨(Gaegu)를 피하고 tabular-nums 로 자릿수를 맞춘다 */}
                     <input
@@ -386,7 +393,7 @@ export default function BarcodeScanner() {
                                 ? "상품 정보를 찾는 중…"
                                 : cleanCode === ""
                                   ? "카메라로 안 읽히면 바코드 아래 숫자를 넣어 주세요."
-                                  : "숫자를 끝까지 넣으면 다음으로 갈 수 있어요. 안 되면 숫자를 다시 확인해 주세요."}
+                                  : "숫자를 4자리 이상 넣으면 다음으로 갈 수 있어요."}
                         </Text>
                     )}
                 </div>

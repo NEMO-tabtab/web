@@ -6,7 +6,9 @@ import {
     cameraProblem,
     createScanConfirmer,
     guideSourceRect,
+    hasChecksumProblem,
     isAcceptableCode,
+    isTypedCodeUsable,
     isValidGtin,
     scanActionLabel,
 } from "./scan";
@@ -35,6 +37,32 @@ describe("검증 숫자", () => {
         expect(isAcceptableCode("12")).toBe(false);
         // 상품 바코드 길이인데 검증 숫자가 틀리면 자유 형식으로도 받지 않는다
         expect(isAcceptableCode("8801043014831")).toBe(false);
+    });
+});
+
+describe("손으로 넣은 번호", () => {
+    it("검증 숫자가 틀려도 쓸 수 있다 — 대신 경고한다", () => {
+        // 서버의 시험용 데이터에 있는 번호. 검증 숫자가 맞지 않는다
+        expect(isAcceptableCode("8801234567890")).toBe(false);
+        expect(isTypedCodeUsable("8801234567890")).toBe(true);
+        expect(hasChecksumProblem("8801234567890")).toBe(true);
+    });
+
+    it("검증 숫자가 맞으면 경고하지 않는다", () => {
+        expect(isTypedCodeUsable("8801043014830")).toBe(true);
+        expect(hasChecksumProblem("8801043014830")).toBe(false);
+    });
+
+    it("상품 바코드 길이가 아니면 경고하지 않는다 (넣는 중이거나 자유 형식)", () => {
+        expect(hasChecksumProblem("88012345")).toBe(true);
+        expect(hasChecksumProblem("880123456")).toBe(false);
+        expect(hasChecksumProblem("NM-001-A")).toBe(false);
+    });
+
+    it("너무 짧거나 주소에 넣을 수 없는 글자는 쓸 수 없다", () => {
+        expect(isTypedCodeUsable("880")).toBe(false);
+        expect(isTypedCodeUsable("8801 2345")).toBe(false);
+        expect(isTypedCodeUsable("https://a.b")).toBe(false);
     });
 });
 
