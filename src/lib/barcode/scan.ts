@@ -29,6 +29,20 @@ export function isAcceptableCode(code: string): boolean {
     return /^[0-9A-Za-z-]{4,48}$/.test(code);
 }
 
+/**
+ * 손으로 넣은 번호를 쓸 수 있는가. 스캔과 달리 검증 숫자가 틀려도 막지 않는다 —
+ * 검증 숫자가 맞지 않는 번호로 등록된 상품도 있고(서버의 시험용 데이터 등), 사람이 보고 넣은 번호라
+ * 틀렸는지는 본인이 확인할 수 있다. 대신 `hasChecksumProblem` 으로 경고한다.
+ */
+export function isTypedCodeUsable(code: string): boolean {
+    return /^[0-9A-Za-z-]{4,48}$/.test(code);
+}
+
+/** 상품 바코드 길이의 숫자인데 검증 숫자가 맞지 않는다 — 한 자리를 잘못 넣었을 가능성이 높다 */
+export function hasChecksumProblem(code: string): boolean {
+    return /^\d+$/.test(code) && GTIN_LENGTHS.includes(code.length) && !isValidGtin(code);
+}
+
 /** 같은 값이 연달아 이만큼 읽히면 확정한다 */
 export const READS_TO_CONFIRM = 2;
 /** 이보다 오래 못 읽으면 앞서 읽은 것은 잊는다 */
