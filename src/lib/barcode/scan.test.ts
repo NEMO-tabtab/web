@@ -2,7 +2,14 @@ import * as zxing from "@zxing/library";
 import { describe, expect, it } from "vitest";
 
 import { createZxingReader, decodeLuminance, toLuminance } from "./decoder";
-import { cameraProblem, createScanConfirmer, guideSourceRect, isAcceptableCode, isValidGtin } from "./scan";
+import {
+    cameraProblem,
+    createScanConfirmer,
+    guideSourceRect,
+    isAcceptableCode,
+    isValidGtin,
+    scanActionLabel,
+} from "./scan";
 
 describe("검증 숫자", () => {
     it("맞는 상품 바코드를 받아들인다 (EAN-13, UPC-A, EAN-8)", () => {
@@ -105,6 +112,31 @@ describe("카메라를 열지 못한 이유", () => {
         expect(cameraProblem(named("NotReadableError"))).toBe("busy");
         expect(cameraProblem(named("CameraUnsupportedError"))).toBe("unsupported");
         expect(cameraProblem("이상한 값")).toBe("unknown");
+    });
+});
+
+describe("등록 화면으로 가는 버튼의 글자", () => {
+    it("찾았으면 상품 이름과 브랜드를 보여 준다", () => {
+        expect(scanActionLabel({ status: "found", name: "새우깡", brandName: "농심" })).toBe(
+            "새우깡(농심) — 이 물건 등록하기",
+        );
+        expect(scanActionLabel({ status: "found", name: "새우깡" })).toBe("새우깡 — 이 물건 등록하기");
+    });
+
+    it("이름이 길면 줄인다", () => {
+        const label = scanActionLabel({ status: "found", name: "가".repeat(60) });
+        expect(label).toBe(`${"가".repeat(27)}… — 이 물건 등록하기`);
+    });
+
+    it("찾는 중에는 버튼을 내지 않다가, 오래 걸리면 넘어갈 길을 연다", () => {
+        expect(scanActionLabel({ status: "waiting" })).toBeNull();
+        expect(scanActionLabel({ status: "slow" })).toBe("기다리지 않고 직접 적어 등록하기");
+    });
+
+    it("못 찾았거나 못 불러왔으면 직접 적으라고 한다", () => {
+        expect(scanActionLabel({ status: "missing" })).toBe("정보가 없어요 — 직접 적어 등록하기");
+        expect(scanActionLabel({ status: "failed" })).toBe("정보를 못 불러왔어요 — 직접 적어 등록하기");
+        expect(scanActionLabel({ status: "skipped" })).toBe("이 바코드로 물건 등록하기");
     });
 });
 

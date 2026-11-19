@@ -5,6 +5,8 @@ import Link from "next/link";
 
 import { Button, Card, PageHeader, PageShell, Text } from "@/components/common";
 import { productEditHref } from "@/components/product/StoredProductCard";
+import { lookupBarcode } from "@/lib/api/barcode";
+import { API_CONFIGURED } from "@/lib/api/client";
 import { openCamera, type Camera } from "@/lib/barcode/camera";
 import { createBarcodeDecoder, type BarcodeDecoder } from "@/lib/barcode/decoder";
 import {
@@ -13,6 +15,8 @@ import {
     createScanConfirmer,
     guideSourceRect,
     isAcceptableCode,
+    scanActionLabel,
+    type ScanLookup,
 } from "@/lib/barcode/scan";
 import { cn } from "@/lib/cn";
 import type { Product } from "@/lib/db";
@@ -29,6 +33,11 @@ const DECODE_AREA = { width: 0.9, height: 0.5 };
 /** 해독할 그림의 최대 가로 픽셀. 이보다 크면 느려지기만 한다 */
 const MAX_DECODE_WIDTH = 1280;
 const DECODE_INTERVAL_MS = 80;
+
+/** 손으로 넣는 번호는 입력이 이만큼 멈춘 뒤에 서버에 묻는다 — 글자마다 부르지 않게 */
+const TYPING_PAUSE_MS = 600;
+/** 서버 조회가 이보다 길어지면 기다리지 않고 넘어갈 버튼을 띄운다 (잠든 서버는 수십 초가 걸린다) */
+const SLOW_LOOKUP_MS = 4_000;
 
 type Phase = "idle" | "starting" | "scanning";
 
@@ -59,6 +68,8 @@ export default function BarcodeScanner() {
         canTorch: false,
         zoomLevels: [1],
     });
+    /** 이 번호의 상품 정보를 서버에서 찾는 중인지, 찾았는지 */
+    const [lookup, setLookup] = useState<ScanLookup>({ status: "waiting" });
     const [torch, setTorch] = useState(false);
     const [zoom, setZoom] = useState(1);
 
@@ -200,6 +211,48 @@ export default function BarcodeScanner() {
         if (await cameraRef.current?.setZoom(next)) setZoom(next);
     };
 
+    // 번호가 정해지면 등록 화면으로 넘어가기 전에 서버에서 상품 정보를 찾아, 무엇을 찍었는지 여기서 보여 준다.
+    // 결과는 lookupBarcode 가 기억해 두므로 등록 화면은 서버를 다시 부르지 않고 바로 채운다.
+    useEffect(() => {
+        setLookup({ status: "waiting" });
+        if (!isUsable) return;
+        if (!API_CONFIGURED || navigator.onLine === false) {
+            setLookup({ status: "skipped" });
+            return;
+        }
+
+        let cancelled = false;
+        let slowTimer: ReturnType<typeof setTimeout> | undefined;
+
+        const startTimer = setTimeout(
+            () => {
+                slowTimer = setTimeout(() => !cancelled && setLookup({ status: "slow" }), SLOW_LOOKUP_MS);
+                lookupBarcode(cleanCode)
+                    .then(
+                        (info): ScanLookup =>
+                            info
+                                ? { status: "found", name: info.name, brandName: info.brandName }
+                                : { status: "missing" },
+                        (): ScanLookup => ({ status: "failed" }),
+                    )
+                    .then((next) => {
+                        clearTimeout(slowTimer);
+                        if (!cancelled) setLookup(next);
+                    });
+            },
+            scanned ? 0 : TYPING_PAUSE_MS,
+        );
+
+        return () => {
+            cancelled = true;
+            clearTimeout(startTimer);
+            clearTimeout(slowTimer);
+        };
+    }, [cleanCode, isUsable, scanned]);
+
+    // 이미 등록한 물건이면 서버를 기다리지 않는다
+    const actionLabel = match ? `${match.name} — 이미 등록한 물건 보기` : scanActionLabel(lookup);
+
     const editCode = (value: string) => {
         // 손으로 넣기 시작했으면 카메라는 끈다 — 스캔 결과가 입력을 덮어쓰지 않게
         if (phase !== "idle") stopScan();
@@ -315,7 +368,7 @@ export default function BarcodeScanner() {
                 </label>
 
                 <div className="flex min-h-11 items-center justify-center">
-                    {isUsable && match !== undefined ? (
+                    {isUsable && match !== undefined && actionLabel ? (
                         // 번호가 정해지면 다음 할 일이 이 화면의 먹 채움 버튼을 가져간다
                         <Link
                             href={
@@ -325,13 +378,15 @@ export default function BarcodeScanner() {
                             }
                             className="sticker sticker-press bg-ink font-display text-paper block w-full rounded-full px-5 py-2.5"
                         >
-                            {match ? `이미 등록한 물건 — ${match.name} 보기` : "이 바코드로 물건 등록하기"}
+                            {actionLabel}
                         </Link>
                     ) : (
-                        <Text size="xs" tone="muted">
-                            {cleanCode === "" || isUsable
-                                ? "카메라로 안 읽히면 바코드 아래 숫자를 넣어 주세요."
-                                : "숫자를 끝까지 넣으면 다음으로 갈 수 있어요. 안 되면 숫자를 다시 확인해 주세요."}
+                        <Text size="xs" tone="muted" aria-live="polite">
+                            {isUsable
+                                ? "상품 정보를 찾는 중…"
+                                : cleanCode === ""
+                                  ? "카메라로 안 읽히면 바코드 아래 숫자를 넣어 주세요."
+                                  : "숫자를 끝까지 넣으면 다음으로 갈 수 있어요. 안 되면 숫자를 다시 확인해 주세요."}
                         </Text>
                     )}
                 </div>

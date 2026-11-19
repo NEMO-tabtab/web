@@ -53,14 +53,19 @@ const BARCODE_PATTERN = /^[0-9A-Za-z-]{4,48}$/;
 /** 조회는 도우미일 뿐이라 잠든 서버를 끝까지 기다리지 않는다 */
 const LOOKUP_TIMEOUT_MS = 15_000;
 
-/**
- * 상품 정보를 찾는다. 못 찾으면 null.
- * 서버에 닿지 못했거나(연결·지연) 응답을 읽지 못하면 ApiError 를 던진다.
- */
-export async function lookupBarcode(barcode: string): Promise<BarcodeInfo | null> {
-    const code = barcode.trim();
-    if (!BARCODE_PATTERN.test(code)) return null;
+/** "못 찾음"은 잠깐만 기억한다 — 서버가 고장 나 있던 것일 수도 있고, 그사이 등록됐을 수도 있다 */
+const MISS_TTL_MS = 60_000;
 
+const cache = new Map<string, { info: BarcodeInfo | null; expiresAt: number }>();
+const inFlight = new Map<string, Promise<BarcodeInfo | null>>();
+
+/** 기억해 둔 조회 결과를 지운다 (테스트용) */
+export function clearBarcodeCache(): void {
+    cache.clear();
+    inFlight.clear();
+}
+
+async function fetchBarcode(code: string): Promise<BarcodeInfo | null> {
     try {
         return await apiFetch(
             { method: "GET", path: `/api/barcode/${encodeURIComponent(code)}`, timeoutMs: LOOKUP_TIMEOUT_MS },
@@ -71,6 +76,34 @@ export async function lookupBarcode(barcode: string): Promise<BarcodeInfo | null
         if (error instanceof ApiError && (error.kind === "http" || error.kind === "envelope")) return null;
         throw error;
     }
+}
+
+/**
+ * 상품 정보를 찾는다. 못 찾으면 null.
+ * 서버에 닿지 못했거나(연결·지연) 응답을 읽지 못하면 ApiError 를 던진다.
+ *
+ * 같은 바코드를 스캐너 화면과 등록 화면이 이어서 묻는다. 결과를 기억해 두어 서버는 한 번만 부른다 —
+ * 찾은 것은 앱을 닫을 때까지, 못 찾은 것은 1분. 조회 중에 또 물으면 같은 요청의 결과를 함께 기다린다.
+ * 실패(연결·지연)는 기억하지 않는다.
+ */
+export function lookupBarcode(barcode: string, now: number = Date.now()): Promise<BarcodeInfo | null> {
+    const code = barcode.trim();
+    if (!BARCODE_PATTERN.test(code)) return Promise.resolve(null);
+
+    const cached = cache.get(code);
+    if (cached && cached.expiresAt > now) return Promise.resolve(cached.info);
+
+    const pending = inFlight.get(code);
+    if (pending) return pending;
+
+    const request = fetchBarcode(code)
+        .then((info) => {
+            cache.set(code, { info, expiresAt: info ? Infinity : now + MISS_TTL_MS });
+            return info;
+        })
+        .finally(() => inFlight.delete(code));
+    inFlight.set(code, request);
+    return request;
 }
 
 const FIELD_LABELS: Record<keyof BarcodeInfo, string> = {

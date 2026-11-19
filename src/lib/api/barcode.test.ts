@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { fillEmptyFields, lookupBarcode } from "./barcode";
+import { clearBarcodeCache, fillEmptyFields, lookupBarcode } from "./barcode";
 import { createMockFetch } from "./mock";
 
 // 서버 주소는 모듈을 읽을 때 정해진다 — import 보다 먼저 넣는다
@@ -14,11 +14,44 @@ const respondWith = (status: number, body: unknown) =>
     );
 
 beforeEach(() => {
+    clearBarcodeCache();
     vi.stubGlobal("fetch", vi.fn(mock));
 });
 
 afterEach(() => {
     vi.unstubAllGlobals();
+});
+
+describe("조회 결과 기억", () => {
+    it("스캐너와 등록 화면이 이어서 물어도 서버는 한 번만 부른다", async () => {
+        const first = await lookupBarcode("8801234567890");
+        const second = await lookupBarcode("8801234567890");
+
+        expect(second).toEqual(first);
+        expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("조회 중에 또 물으면 같은 요청을 함께 기다린다", async () => {
+        const [first, second] = await Promise.all([lookupBarcode("8801234567890"), lookupBarcode("8801234567890")]);
+
+        expect(second).toEqual(first);
+        expect(fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("못 찾은 것은 1분만 기억한다", async () => {
+        expect(await lookupBarcode("0000000000000", 0)).toBeNull();
+        expect(await lookupBarcode("0000000000000", 30_000)).toBeNull();
+        expect(fetch).toHaveBeenCalledTimes(1);
+
+        expect(await lookupBarcode("0000000000000", 61_000)).toBeNull();
+        expect(fetch).toHaveBeenCalledTimes(2);
+    });
+
+    it("연결 실패는 기억하지 않는다 — 다시 물으면 다시 부른다", async () => {
+        await expect(lookupBarcode("9999000000000")).rejects.toMatchObject({ kind: "network" });
+        await expect(lookupBarcode("9999000000000")).rejects.toMatchObject({ kind: "network" });
+        expect(fetch).toHaveBeenCalledTimes(2);
+    });
 });
 
 describe("바코드 조회", () => {
