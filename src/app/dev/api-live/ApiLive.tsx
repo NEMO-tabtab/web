@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Badge, Button, Card, Input, PageHeader, PageShell, Text } from "@/components/common";
 import { API_CONFIGURED, API_MOCK_ENABLED, ApiError, DEFAULT_API_BASE } from "@/lib/api/client";
 import { describeApiError } from "@/lib/api/errors";
+import { DEV_TOOLS_ALWAYS_ON, lockDevTools } from "@/lib/devTools";
 
 import { LIVE_CHECKS, type LiveCheck } from "./checks";
 
@@ -55,6 +57,12 @@ export default function ApiLive() {
     const [inputs, setInputs] = useState<Record<string, string>>(initialInputs);
     const [results, setResults] = useState<Record<string, Result>>({});
     const [runningAll, setRunningAll] = useState(false);
+    const router = useRouter();
+
+    const lock = () => {
+        lockDevTools();
+        router.replace("/user-info");
+    };
 
     const run = async (check: LiveCheck) => {
         setResults((prev) => ({ ...prev, [check.id]: { kind: "running" } }));
@@ -93,11 +101,17 @@ export default function ApiLive() {
                     </Text>
                 )}
                 <Text size="xs" tone="muted">
-                    읽기만 합니다. 서버가 잠들어 있으면 첫 호출이 1분쯤 걸려요. 응답 원문은{" "}
-                    <Link href="/dev/api-test" className="underline">
-                        API 테스트 콘솔
-                    </Link>
-                    에서 볼 수 있어요.
+                    읽기만 합니다. 서버가 잠들어 있으면 첫 호출이 1분쯤 걸려요.
+                    {DEV_TOOLS_ALWAYS_ON && (
+                        <>
+                            {" "}
+                            응답 원문은{" "}
+                            <Link href="/dev/api-test" className="underline">
+                                API 테스트 콘솔
+                            </Link>
+                            에서 볼 수 있어요.
+                        </>
+                    )}
                 </Text>
                 <Button onClick={() => void runAll()} disabled={runningAll || !API_CONFIGURED} fullWidth>
                     {runningAll ? "확인하는 중…" : "모두 확인"}
@@ -157,6 +171,17 @@ export default function ApiLive() {
                     );
                 })}
             </ul>
+
+            {!DEV_TOOLS_ALWAYS_ON && (
+                <div className="mt-6 space-y-2 text-center">
+                    <Text size="xs" tone="muted">
+                        이 기기에서 개발자 메뉴가 열려 있어요.
+                    </Text>
+                    <Button variant="ghost" size="sm" onClick={lock}>
+                        개발자 메뉴 잠그기
+                    </Button>
+                </div>
+            )}
         </PageShell>
     );
 }
