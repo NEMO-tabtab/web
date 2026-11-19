@@ -9,6 +9,7 @@ import withSerwistInit from "@serwist/next";
 /**
  * 오프라인에서도 바로 열려야 하는 화면. 서비스 워커가 설치될 때 HTML 을 미리 받아 둔다.
  * 제품 수정은 `/product/edit?id=…` 하나의 정적 화면이라 id 와 상관없이 같은 HTML 로 열린다.
+ * 굿즈샵 내부 지도도 `/shops/view?id=…` 하나의 정적 화면이고, 데이터(public/shops)는 아래 publicEntries 가 함께 담는다.
  * 닫아 둔 화면(`/user-edit`)과 개발용 문서(`/design-system`)는 넣지 않는다.
  */
 const OFFLINE_PAGES = [
@@ -17,6 +18,7 @@ const OFFLINE_PAGES = [
     "/product/add",
     "/product/edit",
     "/barcode",
+    "/shops/view",
     "/analysis",
     "/user-info",
     "/login",
