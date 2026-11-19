@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Button, Card, IconTile, Input, PageHeader, PageShell, Text } from "@/components/common";
+import { Button, Card, PageHeader, PageShell, Text } from "@/components/common";
 import { productEditHref } from "@/components/product/StoredProductCard";
 import { openCamera, type Camera } from "@/lib/barcode/camera";
 import { createBarcodeDecoder, type BarcodeDecoder } from "@/lib/barcode/decoder";
@@ -49,8 +49,11 @@ export default function BarcodeScanner() {
 
     const [phase, setPhase] = useState<Phase>("idle");
     const [problem, setProblem] = useState<string | null>(null);
-    const [result, setResult] = useState<string | null>(null);
-    /** 인식한 바코드로 이미 등록한 물건. undefined = 찾는 중, null = 없음 */
+    /** 바코드 번호 — 스캔하면 채워지고, 손으로 고칠 수도 있다 */
+    const [code, setCode] = useState("");
+    /** 지금 번호가 방금 스캔해서 얻은 것인가 (손으로 고치면 false) */
+    const [scanned, setScanned] = useState(false);
+    /** 이 번호로 이미 등록한 물건. undefined = 찾는 중, null = 없음 */
     const [match, setMatch] = useState<Product | null | undefined>(undefined);
     const [controls, setControls] = useState<{ canTorch: boolean; zoomLevels: number[] }>({
         canTorch: false,
@@ -58,8 +61,6 @@ export default function BarcodeScanner() {
     });
     const [torch, setTorch] = useState(false);
     const [zoom, setZoom] = useState(1);
-    const [manual, setManual] = useState("");
-    const [manualError, setManualError] = useState<string | undefined>(undefined);
 
     const stopScan = useCallback(() => {
         runRef.current += 1;
@@ -71,24 +72,31 @@ export default function BarcodeScanner() {
         setPhase("idle");
     }, []);
 
-    /** 스캔이든 직접 입력이든 바코드가 정해지면 여기로 온다 */
-    const accept = useCallback((code: string) => {
-        setResult(code);
+    const cleanCode = code.replace(/\s/g, "");
+    const isUsable = isAcceptableCode(cleanCode);
+
+    // 번호가 쓸 만해지면(스캔이든 직접 입력이든) 기기에 저장된 물건에서 같은 바코드를 찾는다. 서버는 부르지 않는다
+    useEffect(() => {
         setMatch(undefined);
-        // 서버 조회 없이 기기에 저장된 물건에서 같은 바코드를 찾는다
-        findProductByBarcode(code).then(
-            (product) => setMatch(product ?? null),
-            () => setMatch(null),
+        if (!isUsable) return;
+
+        let cancelled = false;
+        findProductByBarcode(cleanCode).then(
+            (product) => !cancelled && setMatch(product ?? null),
+            () => !cancelled && setMatch(null),
         );
-    }, []);
+        return () => {
+            cancelled = true;
+        };
+    }, [cleanCode, isUsable]);
 
     const startScan = async () => {
         const video = videoRef.current;
         if (!video || phase !== "idle") return;
 
         const run = (runRef.current += 1);
-        setResult(null);
-        setMatch(undefined);
+        setCode("");
+        setScanned(false);
         setProblem(null);
         setPhase("starting");
 
@@ -150,7 +158,8 @@ export default function BarcodeScanner() {
                 if (confirmed) {
                     navigator.vibrate?.(60);
                     stopScan();
-                    accept(confirmed);
+                    setCode(confirmed);
+                    setScanned(true);
                     return;
                 }
             }
@@ -160,8 +169,16 @@ export default function BarcodeScanner() {
         void tick();
     };
 
-    // 화면을 떠나거나 앱을 내리면 카메라를 끈다 — 켜 둔 채로 두면 배터리를 쓰고 카메라 표시등이 남는다
+    // 아래 effect 가 늘 최신 startScan 을 부르도록 담아 둔다
+    const startScanRef = useRef(startScan);
+    startScanRef.current = startScan;
+
+    // 화면에 들어오면 바로 스캔을 켠다 — 이 화면에 온 이유가 스캔이라, 버튼을 한 번 더 누르게 하지 않는다.
+    // 화면을 떠나거나 앱을 내리면 카메라를 끈다 — 켜 둔 채로 두면 배터리를 쓰고 카메라 표시등이 남는다.
+    // 돌아왔을 때 다시 켜는 것은 버튼으로 한다.
     useEffect(() => {
+        void startScanRef.current();
+
         const onHide = () => {
             if (document.hidden) stopScan();
         };
@@ -183,68 +200,76 @@ export default function BarcodeScanner() {
         if (await cameraRef.current?.setZoom(next)) setZoom(next);
     };
 
-    const submitManual = (event: React.FormEvent) => {
-        event.preventDefault();
-        const code = manual.replace(/\s/g, "");
-        if (!isAcceptableCode(code)) {
-            setManualError("바코드 숫자를 다시 확인해 주세요.");
-            return;
-        }
-        setManualError(undefined);
-        setManual("");
-        stopScan();
-        accept(code);
+    const editCode = (value: string) => {
+        // 손으로 넣기 시작했으면 카메라는 끈다 — 스캔 결과가 입력을 덮어쓰지 않게
+        if (phase !== "idle") stopScan();
+        setScanned(false);
+        setCode(value);
     };
 
     const isScanning = phase === "scanning";
     const isBusy = phase !== "idle";
 
     return (
-        <PageShell className="flex flex-col items-center gap-6">
+        // 한 화면에 다 들어오게 높이를 화면에 맞춘다 — 카메라를 대고 있는데 화면이 위아래로 움직이면 쓰기 어렵다.
+        // 빼는 값은 루트 레이아웃이 하단 탭 바 자리로 비워 둔 4rem(좁은 화면)과 홈 표시줄 영역이다.
+        <PageShell className="flex h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] flex-col items-center gap-4 pb-4 sm:h-dvh">
             <PageHeader
                 title="바코드 스캐너"
                 description="제품 바코드를 인식해 정보를 자동으로 채웁니다."
                 backHref="/product"
-                className="w-full"
+                className="w-full shrink-0"
             />
 
-            {/* 진행 상태 — 색이 아니라 아이콘 타일의 채움(ink)과 옅은 면(muted)으로 구분한다 */}
-            <Card padding="sm" className="flex w-full max-w-sm items-center gap-3">
-                <IconTile size="sm" tone={isBusy ? "ink" : "muted"}>
-                    <i className={cn(isBusy ? "xi-spinner-1 animate-spin" : "xi-barcode")} aria-hidden="true" />
-                </IconTile>
-                <Text size="sm" weight="bold" aria-live="polite">
-                    {result && !isBusy ? "인식 성공!" : STATUS[phase]}
-                </Text>
-            </Card>
+            {/* 카메라 뷰 — 유일하게 어두운 표면. 영상 대비를 위해 의도적으로 먹으로 채운다.
+                높이는 정하지 않고 남는 공간을 쓴다. 화면이 작으면 여기가 줄어든다. */}
+            <div className="sticker rounded-nemo bg-ink relative min-h-36 w-full max-w-sm flex-1 overflow-hidden">
+                <video ref={videoRef} muted playsInline className="absolute inset-0 h-full w-full object-cover" />
 
-            {/* 카메라 뷰 — 유일하게 어두운 표면. 영상 대비를 위해 의도적으로 먹으로 채운다. */}
-            <div className="sticker rounded-nemo bg-ink relative h-[360px] w-full max-w-sm overflow-hidden">
-                <video ref={videoRef} muted playsInline className="h-full w-full object-cover" />
+                {/* 진행 상태 — 카드를 따로 두지 않고 영상 위에 얹는다 */}
+                <p
+                    aria-live="polite"
+                    className="bg-paper text-ink absolute top-3 left-3 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
+                >
+                    <i className={cn(isBusy ? "xi-spinner-1 animate-spin" : "xi-barcode")} aria-hidden="true" />
+                    {scanned && !isBusy ? "인식 성공!" : STATUS[phase]}
+                </p>
 
                 {/* 가이드 프레임 — 어두운 면 위이므로 이 안쪽 선만 흰색을 쓴다 */}
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="rounded-nemo border-paper/40 relative h-[40%] w-[80%] border-2">
-                        {isScanning && (
-                            <span className="bg-paper absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 animate-pulse" />
-                        )}
-                        <span aria-hidden="true" className={cn(cornerBase, "-top-1 -left-1 border-t-4 border-l-4")} />
-                        <span aria-hidden="true" className={cn(cornerBase, "-top-1 -right-1 border-t-4 border-r-4")} />
-                        <span
-                            aria-hidden="true"
-                            className={cn(cornerBase, "-bottom-1 -left-1 border-b-4 border-l-4")}
-                        />
-                        <span
-                            aria-hidden="true"
-                            className={cn(cornerBase, "-right-1 -bottom-1 border-r-4 border-b-4")}
-                        />
-                    </div>
-                    {isScanning && (
-                        <p className="text-paper/70 mt-4 px-4 text-center text-sm font-bold">
-                            바코드를 사각형 안에 맞춰주세요
+                    {problem ? (
+                        <p role="alert" className="text-paper px-6 text-center text-sm font-bold">
+                            {problem}
                             <span className="mt-1 block text-xs font-normal">
-                                흐리게 보이면 휴대폰을 조금 떼어 보세요
+                                아래에 바코드 숫자를 직접 넣어도 돼요.
                             </span>
+                        </p>
+                    ) : (
+                        <div className="rounded-nemo border-paper/40 relative h-[40%] w-[80%] border-2">
+                            {isScanning && (
+                                <span className="bg-paper absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 animate-pulse" />
+                            )}
+                            <span
+                                aria-hidden="true"
+                                className={cn(cornerBase, "-top-1 -left-1 border-t-4 border-l-4")}
+                            />
+                            <span
+                                aria-hidden="true"
+                                className={cn(cornerBase, "-top-1 -right-1 border-t-4 border-r-4")}
+                            />
+                            <span
+                                aria-hidden="true"
+                                className={cn(cornerBase, "-bottom-1 -left-1 border-b-4 border-l-4")}
+                            />
+                            <span
+                                aria-hidden="true"
+                                className={cn(cornerBase, "-right-1 -bottom-1 border-r-4 border-b-4")}
+                            />
+                        </div>
+                    )}
+                    {isScanning && (
+                        <p className="text-paper/70 mt-3 px-4 text-center text-xs font-bold">
+                            바코드를 사각형 안에 맞춰주세요. 흐리면 휴대폰을 조금 떼어 보세요
                         </p>
                     )}
                 </div>
@@ -270,47 +295,58 @@ export default function BarcodeScanner() {
                 )}
             </div>
 
-            {problem && (
-                <Text size="sm" tone="danger" role="alert" className="w-full max-w-sm">
-                    {problem} 아래에 바코드 숫자를 직접 넣어도 돼요.
-                </Text>
-            )}
+            {/* 바코드 번호 — 스캔하면 채워지고, 카메라로 안 읽히면 바코드 아래 숫자를 여기에 직접 넣는다.
+                늘 같은 높이라 번호가 생겨도 화면이 밀리지 않는다. */}
+            <Card padding="md" className="w-full max-w-sm shrink-0 space-y-3 text-center">
+                <label className="block">
+                    <Text as="span" size="sm" weight="bold" tone="muted" className="block">
+                        {scanned ? "인식된 코드" : "바코드 번호"}
+                    </Text>
+                    {/* 바코드는 숫자열이라 손글씨(Gaegu)를 피하고 tabular-nums 로 자릿수를 맞춘다 */}
+                    <input
+                        inputMode="numeric"
+                        autoComplete="off"
+                        enterKeyHint="done"
+                        placeholder="스캔하거나 직접 입력"
+                        value={code}
+                        onChange={(event) => editCode(event.target.value)}
+                        className="text-ink placeholder:text-ink-soft mt-1 w-full bg-transparent text-center font-sans text-2xl font-bold tracking-wider tabular-nums placeholder:text-base placeholder:font-normal placeholder:tracking-normal"
+                    />
+                </label>
 
-            {result && (
-                <Card padding="md" className="w-full max-w-sm space-y-3 text-center">
-                    <div>
-                        <Text size="sm" weight="bold" tone="muted">
-                            인식된 코드
-                        </Text>
-                        {/* 바코드는 숫자열이라 손글씨(Gaegu)를 피하고 tabular-nums 로 자릿수를 맞춘다 */}
-                        <p className="text-ink mt-1 font-sans text-2xl font-bold tracking-wider tabular-nums">
-                            {result}
-                        </p>
-                    </div>
-                    {match !== undefined && (
-                        // 결과가 나오면 다음 할 일이 이 화면의 먹 채움 버튼을 가져간다
+                <div className="flex min-h-11 items-center justify-center">
+                    {isUsable && match !== undefined ? (
+                        // 번호가 정해지면 다음 할 일이 이 화면의 먹 채움 버튼을 가져간다
                         <Link
                             href={
-                                match ? productEditHref(match.id) : `/product/add?barcode=${encodeURIComponent(result)}`
+                                match
+                                    ? productEditHref(match.id)
+                                    : `/product/add?barcode=${encodeURIComponent(cleanCode)}`
                             }
-                            className="sticker sticker-press bg-ink font-display text-paper block rounded-full px-5 py-2.5"
+                            className="sticker sticker-press bg-ink font-display text-paper block w-full rounded-full px-5 py-2.5"
                         >
                             {match ? `이미 등록한 물건 — ${match.name} 보기` : "이 바코드로 물건 등록하기"}
                         </Link>
+                    ) : (
+                        <Text size="xs" tone="muted">
+                            {cleanCode === "" || isUsable
+                                ? "카메라로 안 읽히면 바코드 아래 숫자를 넣어 주세요."
+                                : "숫자를 끝까지 넣으면 다음으로 갈 수 있어요. 안 되면 숫자를 다시 확인해 주세요."}
+                        </Text>
                     )}
-                </Card>
-            )}
+                </div>
+            </Card>
 
-            <div className="flex w-full max-w-sm gap-3">
+            <div className="flex w-full max-w-sm shrink-0 gap-3">
                 {!isBusy ? (
                     <Button
                         size="lg"
                         shape="pill"
                         fullWidth
-                        variant={result ? "secondary" : "primary"}
+                        variant={isUsable ? "secondary" : "primary"}
                         onClick={() => void startScan()}
                     >
-                        {result ? "다시 스캔" : "스캔 시작"}
+                        {scanned ? "다시 스캔" : "스캔 시작"}
                     </Button>
                 ) : (
                     <Button size="lg" shape="pill" fullWidth variant="secondary" onClick={stopScan}>
@@ -318,25 +354,6 @@ export default function BarcodeScanner() {
                     </Button>
                 )}
             </div>
-
-            {/* 카메라로 안 읽힐 때의 길 — 바코드 아래 적힌 숫자를 그대로 넣는다 */}
-            <form onSubmit={submitManual} className="flex w-full max-w-sm items-end gap-2">
-                <Input
-                    label="숫자로 직접 입력"
-                    inputMode="numeric"
-                    autoComplete="off"
-                    placeholder="바코드 아래 숫자"
-                    value={manual}
-                    error={manualError}
-                    onChange={(event) => {
-                        setManual(event.target.value);
-                        setManualError(undefined);
-                    }}
-                />
-                <Button type="submit" variant="secondary" className="shrink-0" disabled={manual.trim() === ""}>
-                    확인
-                </Button>
-            </form>
         </PageShell>
     );
 }
