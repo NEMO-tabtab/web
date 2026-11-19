@@ -1,4 +1,10 @@
 {
     "schemaVersion": 1,
-    "series": []
+    "series": [
+        { "id": "virtual-cats", "name": "(예시) 졸린 고양이 피규어", "price": 3000 },
+        { "id": "virtual-bread", "name": "(예시) 갓 구운 빵 키링", "price": 4000 },
+        { "id": "virtual-chairs", "name": "(예시) 미니 의자 컬렉션", "price": 3000 },
+        { "id": "virtual-fish", "name": "(예시) 심해어 마스코트", "price": 5000 },
+        { "id": "virtual-signs", "name": "(예시) 골목 간판 미니어처", "price": 4000 }
+    ]
 }

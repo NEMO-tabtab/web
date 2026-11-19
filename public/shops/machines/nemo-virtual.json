@@ -1,0 +1,31 @@
+{
+    "schemaVersion": 1,
+    "shopId": "nemo-virtual",
+    "layoutVersion": 1,
+    "machines": [
+        { "slotId": "n1", "tier": 0, "seriesId": "virtual-cats", "lastVerifiedAt": "2026-08-01" },
+        { "slotId": "n1", "tier": 1, "seriesId": "virtual-bread", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "n2", "tier": 0, "seriesId": "virtual-chairs", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "n2", "tier": 1, "seriesId": "virtual-fish", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "n3", "tier": 0, "seriesId": "virtual-signs", "lastVerifiedAt": "2026-08-01" },
+        { "slotId": "n3", "tier": 1, "seriesId": "virtual-cats", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "n3", "tier": 2, "seriesId": "virtual-bread", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "n4", "tier": 0, "seriesId": "virtual-chairs", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "n4", "tier": 1, "seriesId": "virtual-fish", "lastVerifiedAt": "2026-08-01" },
+        { "slotId": "w1", "tier": 0, "seriesId": "virtual-signs", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "w1", "tier": 1, "seriesId": "virtual-cats", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "w2", "tier": 0, "seriesId": "virtual-bread", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "c1", "tier": 0, "seriesId": "virtual-chairs", "lastVerifiedAt": "2026-08-01" },
+        { "slotId": "c1", "tier": 1, "seriesId": "virtual-fish", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "c2", "tier": 0, "seriesId": "virtual-signs", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "c2", "tier": 1, "seriesId": "virtual-cats", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "u1", "tier": 0, "seriesId": "virtual-bread", "lastVerifiedAt": "2026-08-01" },
+        { "slotId": "u1", "tier": 1, "seriesId": "virtual-chairs", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "u2", "tier": 0, "seriesId": "virtual-fish", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "u2", "tier": 1, "seriesId": "virtual-signs", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "u3", "tier": 0, "seriesId": "virtual-cats", "lastVerifiedAt": "2026-08-01" },
+        { "slotId": "u3", "tier": 1, "seriesId": "virtual-bread", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "u3", "tier": 2, "seriesId": "virtual-chairs", "lastVerifiedAt": "2026-11-20" },
+        { "slotId": "u4", "tier": 1, "seriesId": "virtual-fish", "lastVerifiedAt": "2026-11-20" }
+    ]
+}
