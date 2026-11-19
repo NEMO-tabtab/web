@@ -16,7 +16,8 @@ import {
     guideSourceRect,
     hasChecksumProblem,
     isTypedCodeUsable,
-    scanActionLabel,
+    scanAction,
+    type ScanAction,
     type ScanLookup,
 } from "@/lib/barcode/scan";
 import { cn } from "@/lib/cn";
@@ -254,7 +255,14 @@ export default function BarcodeScanner() {
     }, [cleanCode, isUsable, scanned]);
 
     // 이미 등록한 물건이면 서버를 기다리지 않는다
-    const actionLabel = match ? `${match.name} — 이미 등록한 물건 보기` : scanActionLabel(lookup);
+    const action: ScanAction = match
+        ? {
+              product: { name: match.name, brandName: match.brandName || undefined },
+              note: null,
+              button: "등록한 물건 보기",
+          }
+        : scanAction(lookup);
+    const isReady = isUsable && match !== undefined;
 
     const editCode = (value: string) => {
         // 손으로 넣기 시작했으면 카메라는 끈다 — 스캔 결과가 입력을 덮어쓰지 않게
@@ -374,20 +382,9 @@ export default function BarcodeScanner() {
                     />
                 </label>
 
-                <div className="flex min-h-11 items-center justify-center">
-                    {isUsable && match !== undefined && actionLabel ? (
-                        // 번호가 정해지면 다음 할 일이 이 화면의 먹 채움 버튼을 가져간다
-                        <Link
-                            href={
-                                match
-                                    ? productEditHref(match.id)
-                                    : `/product/add?barcode=${encodeURIComponent(cleanCode)}`
-                            }
-                            className="sticker sticker-press bg-ink font-display text-paper block w-full rounded-full px-5 py-2.5"
-                        >
-                            {actionLabel}
-                        </Link>
-                    ) : (
+                {/* 상품 정보와 할 일(버튼)을 나눈다 — 이름이 길어도 버튼 글자가 꺾이지 않는다 */}
+                <div className="flex min-h-11 flex-col justify-center gap-2">
+                    {!isReady ? (
                         <Text size="xs" tone="muted" aria-live="polite">
                             {isUsable
                                 ? "상품 정보를 찾는 중…"
@@ -395,6 +392,38 @@ export default function BarcodeScanner() {
                                   ? "카메라로 안 읽히면 바코드 아래 숫자를 넣어 주세요."
                                   : "숫자를 4자리 이상 넣으면 다음으로 갈 수 있어요."}
                         </Text>
+                    ) : (
+                        <>
+                            {action.product && (
+                                <div className="rounded-nemo bg-cream px-3 py-2 text-left">
+                                    <Text as="span" size="xs" tone="muted" className="block">
+                                        {match ? "이미 등록한 물건" : "상품 정보"}
+                                    </Text>
+                                    <p className="text-ink truncate text-sm font-bold">{action.product.name}</p>
+                                    {action.product.brandName && (
+                                        <p className="text-ink-soft truncate text-xs">{action.product.brandName}</p>
+                                    )}
+                                </div>
+                            )}
+                            {action.note && (
+                                <Text size="xs" tone="muted" aria-live="polite">
+                                    {action.note}
+                                </Text>
+                            )}
+                            {action.button && (
+                                // 번호가 정해지면 다음 할 일이 이 화면의 먹 채움 버튼을 가져간다
+                                <Link
+                                    href={
+                                        match
+                                            ? productEditHref(match.id)
+                                            : `/product/add?barcode=${encodeURIComponent(cleanCode)}`
+                                    }
+                                    className="sticker sticker-press bg-ink font-display text-paper block w-full rounded-full px-5 py-2.5 whitespace-nowrap"
+                                >
+                                    {action.button}
+                                </Link>
+                            )}
+                        </>
                     )}
                 </div>
             </Card>

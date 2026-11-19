@@ -10,7 +10,7 @@ import {
     isAcceptableCode,
     isTypedCodeUsable,
     isValidGtin,
-    scanActionLabel,
+    scanAction,
 } from "./scan";
 
 describe("검증 숫자", () => {
@@ -143,28 +143,45 @@ describe("카메라를 열지 못한 이유", () => {
     });
 });
 
-describe("등록 화면으로 가는 버튼의 글자", () => {
-    it("찾았으면 상품 이름과 브랜드를 보여 준다", () => {
-        expect(scanActionLabel({ status: "found", name: "새우깡", brandName: "농심" })).toBe(
-            "새우깡(농심) — 이 물건 등록하기",
-        );
-        expect(scanActionLabel({ status: "found", name: "새우깡" })).toBe("새우깡 — 이 물건 등록하기");
+describe("번호 카드에 보여 줄 것", () => {
+    it("찾았으면 상품 정보와 버튼을 따로 준다 — 버튼 글자에 이름을 넣지 않는다", () => {
+        expect(scanAction({ status: "found", name: "새우깡", brandName: "농심" })).toEqual({
+            product: { name: "새우깡", brandName: "농심" },
+            note: null,
+            button: "이 물건 등록하기",
+        });
     });
 
-    it("이름이 길면 줄인다", () => {
-        const label = scanActionLabel({ status: "found", name: "가".repeat(60) });
-        expect(label).toBe(`${"가".repeat(27)}… — 이 물건 등록하기`);
+    it("이름이 아무리 길어도 버튼 글자는 그대로다", () => {
+        const action = scanAction({ status: "found", name: "가".repeat(80) });
+        expect(action.button).toBe("이 물건 등록하기");
+        expect(action.product?.name).toHaveLength(80);
+    });
+
+    it("브랜드만 왔으면 브랜드를 이름 자리에 쓴다", () => {
+        expect(scanAction({ status: "found", brandName: "농심" }).product).toEqual({
+            name: "농심",
+            brandName: undefined,
+        });
     });
 
     it("찾는 중에는 버튼을 내지 않다가, 오래 걸리면 넘어갈 길을 연다", () => {
-        expect(scanActionLabel({ status: "waiting" })).toBeNull();
-        expect(scanActionLabel({ status: "slow" })).toBe("기다리지 않고 직접 적어 등록하기");
+        expect(scanAction({ status: "waiting" })).toMatchObject({ button: null, note: "상품 정보를 찾는 중…" });
+        expect(scanAction({ status: "slow" }).button).toBe("기다리지 않고 등록하기");
     });
 
-    it("못 찾았거나 못 불러왔으면 직접 적으라고 한다", () => {
-        expect(scanActionLabel({ status: "missing" })).toBe("정보가 없어요 — 직접 적어 등록하기");
-        expect(scanActionLabel({ status: "failed" })).toBe("정보를 못 불러왔어요 — 직접 적어 등록하기");
-        expect(scanActionLabel({ status: "skipped" })).toBe("이 바코드로 물건 등록하기");
+    it("못 찾았거나 못 불러왔으면 이유를 따로 적고 직접 적으라고 한다", () => {
+        expect(scanAction({ status: "missing" })).toEqual({
+            product: null,
+            note: "등록된 상품 정보가 없어요.",
+            button: "직접 적어 등록하기",
+        });
+        expect(scanAction({ status: "failed" }).note).toBe("상품 정보를 불러오지 못했어요.");
+        expect(scanAction({ status: "skipped" })).toEqual({
+            product: null,
+            note: null,
+            button: "이 바코드로 물건 등록하기",
+        });
     });
 });
 
