@@ -1,4 +1,14 @@
 {
     "schemaVersion": 1,
-    "shops": []
+    "shops": [
+        {
+            "id": "nemo-virtual",
+            "name": "네모 가상 굿즈샵 (예시)",
+            "address": "실제 매장이 아니에요 — 화면을 만들려고 지어낸 곳",
+            "floorNote": "1~2층",
+            "lat": 37.5665,
+            "lng": 126.978,
+            "layoutVersion": 1
+        }
+    ]
 }

@@ -1,0 +1,49 @@
+{
+    "schemaVersion": 1,
+    "shopId": "nemo-virtual",
+    "version": 1,
+    "cellCm": 50,
+    "floors": [
+        {
+            "id": "f1",
+            "label": "1층",
+            "width": 12,
+            "depth": 8,
+            "entrance": { "x": 5, "y": 7 },
+            "fixtures": [
+                { "id": "f1-wall-north", "kind": "wall", "x": 0, "y": 0, "w": 12, "d": 1, "h": 5 },
+                { "id": "f1-wall-west", "kind": "wall", "x": 0, "y": 1, "w": 1, "d": 7, "h": 5 },
+                { "id": "f1-counter", "kind": "counter", "x": 10, "y": 1, "w": 2, "d": 1, "h": 2 },
+                { "id": "f1-shelf", "kind": "shelf", "x": 8, "y": 4, "w": 3, "d": 1, "h": 3 },
+                { "id": "f1-pillar", "kind": "pillar", "x": 11, "y": 6, "w": 1, "d": 1, "h": 5 }
+            ],
+            "slots": [
+                { "id": "n1", "x": 1, "y": 1, "w": 2, "d": 1, "h": 3, "facing": "s", "tiers": 2 },
+                { "id": "n2", "x": 3, "y": 1, "w": 2, "d": 1, "h": 3, "facing": "s", "tiers": 2 },
+                { "id": "n3", "x": 5, "y": 1, "w": 2, "d": 1, "h": 4, "facing": "s", "tiers": 3 },
+                { "id": "n4", "x": 7, "y": 1, "w": 2, "d": 1, "h": 4, "facing": "s", "tiers": 3 },
+                { "id": "w1", "x": 1, "y": 3, "w": 1, "d": 2, "h": 3, "facing": "e", "tiers": 2 },
+                { "id": "w2", "x": 1, "y": 5, "w": 1, "d": 2, "h": 3, "facing": "e", "tiers": 2 },
+                { "id": "c1", "x": 4, "y": 4, "w": 2, "d": 1, "h": 3, "facing": "s", "tiers": 2 },
+                { "id": "c2", "x": 4, "y": 3, "w": 2, "d": 1, "h": 3, "facing": "n", "tiers": 2 }
+            ]
+        },
+        {
+            "id": "f2",
+            "label": "2층",
+            "width": 8,
+            "depth": 6,
+            "entrance": { "x": 7, "y": 4 },
+            "fixtures": [
+                { "id": "f2-wall-north", "kind": "wall", "x": 0, "y": 0, "w": 8, "d": 1, "h": 5 },
+                { "id": "f2-shelf", "kind": "shelf", "x": 2, "y": 3, "w": 3, "d": 1, "h": 3 }
+            ],
+            "slots": [
+                { "id": "u1", "x": 0, "y": 1, "w": 2, "d": 1, "h": 3, "facing": "s", "tiers": 2 },
+                { "id": "u2", "x": 2, "y": 1, "w": 2, "d": 1, "h": 3, "facing": "s", "tiers": 2 },
+                { "id": "u3", "x": 4, "y": 1, "w": 2, "d": 1, "h": 4, "facing": "s", "tiers": 3 },
+                { "id": "u4", "x": 0, "y": 4, "w": 1, "d": 2, "h": 3, "facing": "e", "tiers": 2 }
+            ]
+        }
+    ]
+}
