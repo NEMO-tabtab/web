@@ -7,8 +7,14 @@
  */
 
 const KEY_ID = process.env.NEXT_PUBLIC_NAVER_MAP_KEY_ID ?? "";
-/** Style Editor 에서 발행한 흑백 스타일. 없으면 기본 지도로 그린다 */
-const STYLE_ID = process.env.NEXT_PUBLIC_NAVER_MAP_STYLE_ID ?? "";
+/**
+ * Style Editor 에서 발행한 흑백 스타일(My Style ID). 브라우저에 그대로 드러나는 공개값이라 코드에 둔다.
+ * 스타일을 고쳐 같은 스타일에서 다시 발행하면 ID 가 그대로라 다시 배포할 필요가 없다 —
+ * 네이버가 ID 로 지금 발행된 버전을 찾아 준다(2026-11-21 요청으로 확인).
+ * 환경변수에 값이 있으면 그 값을 쓴다(다른 스타일을 시험할 때).
+ */
+const DEFAULT_STYLE_ID = "021b3b97-8571-49ff-b944-a1e5bf5c8fe1";
+const STYLE_ID = process.env.NEXT_PUBLIC_NAVER_MAP_STYLE_ID || DEFAULT_STYLE_ID;
 
 /** 처음 보여 줄 곳 — 굿즈샵이 하나도 없을 때 서울시청 */
 const FALLBACK_CENTER = { lat: 37.5666, lng: 126.9784 };
