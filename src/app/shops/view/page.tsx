@@ -22,7 +22,10 @@ type State =
  */
 function ShopView() {
     const router = useRouter();
-    const id = useSearchParams().get("id");
+    const params = useSearchParams();
+    const id = params.get("id");
+    /** 표시해 둘 기기 — 물건의 "뽑은 곳"에서 들어오면 붙는다(`&slot=…`) */
+    const slotId = params.get("slot");
     const [state, setState] = useState<State>({ status: "loading" });
     const [floorId, setFloorId] = useState<string | null>(null);
 
@@ -97,7 +100,13 @@ function ShopView() {
     }
 
     const { shop, layout, machines, series } = state.interior;
-    const floor = layout.floors.find((each) => each.id === floorId) ?? layout.floors[0];
+    // 층을 고르기 전에는 표시할 기기가 있는 층을 먼저 보여 준다
+    const markedFloor = slotId
+        ? layout.floors.find((each) => each.slots.some((slot) => slot.id === slotId))
+        : undefined;
+    const floor = layout.floors.find((each) => each.id === floorId) ?? markedFloor ?? layout.floors[0];
+    const slots = describeFloor(floor, machines, series);
+    const marked = floor === markedFloor ? slots.find((info) => info.slot.id === slotId) : undefined;
 
     return (
         <PageShell>
@@ -117,13 +126,20 @@ function ShopView() {
                 />
             )}
 
+            {marked && (
+                <p className="mt-4 text-[13px] text-ink">
+                    볼터치 색으로 표시한 <strong>{marked.number}번 기기</strong>에서 뽑았어요.
+                </p>
+            )}
+
             <div className="mt-4">
                 {/* key — 층을 바꾸면 돌린 방향과 확대를 처음으로 되돌린다 */}
                 <FloorMap
                     key={floor.id}
                     floor={floor}
                     shopName={shop.name}
-                    slots={describeFloor(floor, machines, series)}
+                    slots={slots}
+                    initialSelectedId={marked?.slot.id ?? null}
                 />
             </div>
         </PageShell>

@@ -21,7 +21,7 @@ import { Modal } from "@/components/common/Modal";
 import { fillEmptyFields, lookupBarcode } from "@/lib/api/barcode";
 import { API_CONFIGURED } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
-import type { Product, ProductImage, ProductStatus } from "@/lib/db";
+import type { Product, ProductImage, ProductOrigin, ProductStatus } from "@/lib/db";
 import { useObjectUrl } from "@/lib/db/hooks";
 import {
     MAX_IMAGES,
@@ -32,6 +32,8 @@ import {
     type ProductInput,
 } from "@/lib/db/products";
 import { compressImage } from "@/lib/image";
+import type { Series } from "@/lib/shops/schema";
+import { OriginField } from "./OriginField";
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
 
@@ -63,6 +65,8 @@ interface FormState {
     purchaseDate: string;
     purchasePlace: string;
     memo: string;
+    /** 뽑은 굿즈샵·기기·단. 고르지 않았으면 null */
+    origin: ProductOrigin | null;
 }
 
 /** 화면에 올린 사진 한 장. 이미 저장된 사진이면 storedId 가 있다. */
@@ -86,6 +90,7 @@ const EMPTY_FORM: FormState = {
     purchaseDate: "",
     purchasePlace: "",
     memo: "",
+    origin: null,
 };
 
 const fromProduct = (product: Product): FormState => ({
@@ -102,6 +107,8 @@ const fromProduct = (product: Product): FormState => ({
     purchaseDate: product.purchaseDate,
     purchasePlace: product.purchasePlace,
     memo: product.memo,
+    // 이 필드가 생기기 전에 만든 기록에는 없다
+    origin: product.origin ?? null,
 });
 
 const toInput = (form: FormState): ProductInput => ({
@@ -167,6 +174,7 @@ export default function ProductForm(props: ProductFormProps) {
     const [isSaving, setIsSaving] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [barcodeNotice, setBarcodeNotice] = useState<BarcodeNotice>(null);
+    const [originNotice, setOriginNotice] = useState<string | null>(null);
 
     // 조회 결과가 왔을 때의 입력값을 본다 — 그사이 사용자가 적은 칸은 건드리지 않기 위해서다
     const formDataRef = useRef(formData);
@@ -241,6 +249,30 @@ export default function ProductForm(props: ProductFormProps) {
 
     const updateFormData = <K extends keyof FormState>(field: K, value: FormState[K]) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    /** 뽑은 곳을 고르면 그 단의 시리즈로 비어 있는 칸만 채운다 — 사용자가 적은 칸은 건드리지 않는다 */
+    const handleOriginPick = (origin: ProductOrigin, series: Series | null) => {
+        const current = formDataRef.current;
+        const next: FormState = { ...current, origin };
+        const filled: string[] = [];
+        if (series && !current.name.trim()) {
+            next.name = series.name;
+            filled.push("제품명");
+        }
+        if (series && !current.isGift && !current.price) {
+            next.price = String(series.price);
+            filled.push("구매 가격");
+        }
+        if (!current.purchasePlace.trim()) {
+            next.purchasePlace = origin.shopName;
+            filled.push("구매처");
+        }
+        setFormData(next);
+        nameInputRef.current?.setCustomValidity("");
+        setOriginNotice(
+            filled.length > 0 ? `고른 기기 정보로 빈 칸(${filled.join(", ")})을 채웠어요. 맞는지 확인해 주세요.` : null,
+        );
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -449,6 +481,16 @@ export default function ProductForm(props: ProductFormProps) {
                         </div>
                     </div>
                 </Card>
+
+                <OriginField
+                    value={formData.origin}
+                    onPick={handleOriginPick}
+                    onClear={() => {
+                        updateFormData("origin", null);
+                        setOriginNotice(null);
+                    }}
+                    notice={originNotice}
+                />
 
                 {/* 추가 정보 토글 */}
                 <div className="space-y-5">
