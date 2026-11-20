@@ -4,6 +4,29 @@ import Dexie, { type EntityTable } from "dexie";
 export type ProductStatus = "BAD" | "POOR" | "GOOD" | "EXCELLENT" | "NEW";
 
 /**
+ * 물건을 뽑은 곳 — 굿즈샵의 어느 가챠 기기, 몇째 단인지.
+ * 굿즈샵 데이터(public/shops)는 나중에 바뀌거나 빠질 수 있어서, 고른 순간의 이름과 번호를 함께 적어 둔다.
+ * 그래야 굿즈샵 데이터가 달라져도 "어디서 뽑았는지"는 그대로 읽힌다.
+ */
+export interface ProductOrigin {
+    shopId: string;
+    shopName: string;
+    /** 고를 때 본 매장 구조의 버전 */
+    layoutVersion: number;
+    floorId: string;
+    /** "1층" */
+    floorLabel: string;
+    slotId: string;
+    /** 층 안에서 매긴 기기 번호(내부 지도에 적힌 번호) */
+    machineNumber: number;
+    /** 아래부터 0 */
+    tier: number;
+    /** 고를 때 그 단에 들어 있던 시리즈. 비어 있었거나 몰랐으면 null */
+    seriesId: string | null;
+    seriesName: string | null;
+}
+
+/**
  * 기기에 저장되는 물건 한 건.
  *
  * 로그인 전에는 이 기기가 유일한 원본이다. 나중에 서버와 동기화할 수 있도록
@@ -35,6 +58,11 @@ export interface Product {
     serverId: number | null;
     /** 계정 userIdx. 게스트면 null */
     ownerId: number | null;
+    /**
+     * 뽑은 곳. 고르지 않았으면 null, 이 필드가 생기기 전(2026-11)에 만든 기록에는 아예 없다.
+     * 색인이 아니라서 Dexie 버전을 올리지 않았다 — 읽을 때 없는 것과 null 을 같게 다룬다.
+     */
+    origin?: ProductOrigin | null;
 }
 
 /** 제품 사진. 원본 대신 줄인 JPEG Blob 을 저장한다 (src/lib/image.ts) */

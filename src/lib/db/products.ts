@@ -30,18 +30,24 @@ export function newId(): string {
 
 const isAlive = (product: Product) => product.deletedAt === null;
 
-/** 저장 직전에 값을 정리한다 — 선물이면 가격 0, 수량은 1 이상 정수. 이름이 비면 저장하지 않는다 */
+/**
+ * 저장 직전에 값을 정리한다 — 선물이면 가격 0, 수량은 1 이상 정수. 이름이 비면 저장하지 않는다.
+ * 뽑은 곳(origin)은 넘겨준 때만 바꾼다. 빠져 있으면 수정할 때 기존 값을 그대로 둔다 — 뽑은 곳을 모르는
+ * 호출이 기록을 지우지 않게 하기 위해서다. 지우려면 null 을 넘긴다.
+ */
 function normalize(input: ProductInput): ProductInput {
     if (!input.name.trim()) throw new Error("제품명이 비어 있습니다");
     const price = Number.isFinite(input.price) && input.price > 0 ? Math.round(input.price) : 0;
     const count = Number.isFinite(input.count) && input.count >= 1 ? Math.floor(input.count) : 1;
+    const { origin, ...rest } = input;
     return {
-        ...input,
+        ...rest,
         name: input.name.trim(),
         price: input.isGift ? 0 : price,
         count,
         place: input.place.trim(),
         barcode: input.barcode.trim(),
+        ...(origin === undefined ? {} : { origin }),
     };
 }
 
@@ -69,10 +75,7 @@ export async function listImages(productId: string): Promise<ProductImage[]> {
 
 /** 대표 사진(가장 앞 순서) */
 export async function getCoverImage(productId: string): Promise<ProductImage | undefined> {
-    return db.images
-        .where("[productId+order]")
-        .between([productId, Dexie.minKey], [productId, Dexie.maxKey])
-        .first();
+    return db.images.where("[productId+order]").between([productId, Dexie.minKey], [productId, Dexie.maxKey]).first();
 }
 
 /**
@@ -94,7 +97,9 @@ export async function createProduct(input: ProductInput, images: Blob[] = []): P
             ownerId: null,
         });
         await db.images.bulkAdd(
-            images.slice(0, MAX_IMAGES).map((blob, order) => ({ id: newId(), productId: id, blob, order, createdAt: now })),
+            images
+                .slice(0, MAX_IMAGES)
+                .map((blob, order) => ({ id: newId(), productId: id, blob, order, createdAt: now })),
         );
     });
 
@@ -111,7 +116,11 @@ export async function updateProduct(id: string, input: ProductInput, changes: Im
         await db.products.put({ ...current, ...normalize(input), updatedAt: now });
 
         if (changes.removeIds?.length) {
-            await db.images.where("productId").equals(id).and((image) => changes.removeIds!.includes(image.id)).delete();
+            await db.images
+                .where("productId")
+                .equals(id)
+                .and((image) => changes.removeIds!.includes(image.id))
+                .delete();
         }
 
         // 남은 사진 뒤에 새 사진을 붙이고 순서를 0부터 다시 매긴다
