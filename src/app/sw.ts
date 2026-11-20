@@ -4,6 +4,7 @@ import {
     CacheableResponsePlugin,
     ExpirationPlugin,
     NetworkFirst,
+    NetworkOnly,
     Serwist,
     type PrecacheEntry,
     type SerwistGlobalConfig,
@@ -92,6 +93,13 @@ const serwist = new Serwist({
                 cacheName: "next-image-stable",
                 plugins: [new ExpirationPlugin({ maxEntries: 100, purgeOnQuotaError: true })],
             }),
+        },
+        {
+            // 네이버 지도(스크립트·타일·인증)는 저장하지 않는다. 기본 규칙은 다른 사이트의 응답을 1시간 저장하는데,
+            // 그러면 오프라인에서 스크립트만 열리고 지도는 빈 회색으로 남아 목록 안내로 넘어가지 못한다.
+            // 지도 타일을 기기에 저장해도 되는지도 확인하지 못했다(docs/decisions/0004).
+            matcher: ({ url }) => /(^|\.)(map\.naver\.(com|net)|static\.naver\.net|pstatic\.net)$/i.test(url.hostname),
+            handler: new NetworkOnly(),
         },
         ...defaultCache,
     ],
