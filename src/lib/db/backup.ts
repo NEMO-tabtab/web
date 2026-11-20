@@ -15,8 +15,13 @@ import { MAX_IMAGES } from "./products";
  */
 
 export const BACKUP_FORMAT = "nemo-backup";
-/** 파일 형식이 바뀌면 올린다. 올릴 때는 이전 버전을 읽는 변환도 함께 넣을 것 */
-export const BACKUP_FORMAT_VERSION = 1;
+/**
+ * 파일 형식이 바뀌면 올린다. 올릴 때는 이전 버전을 읽는 변환도 함께 넣을 것.
+ *   1: 처음
+ *   2: 물건에 뽑은 곳(origin) 추가. 1 은 origin 이 없을 뿐이라 그대로 읽는다.
+ *      버전을 올린 까닭 — 1 만 아는 앱이 2 를 읽으면 origin 을 모르는 필드로 버려 기록이 사라진다. 대신 "새 버전 파일"로 거부하게 한다.
+ */
+export const BACKUP_FORMAT_VERSION = 2;
 const MANIFEST_NAME = "backup.json";
 
 /**
@@ -39,6 +44,19 @@ export class BackupError extends Error {
 
 const timestamp = z.number().int().nonnegative();
 
+const originSchema = z.object({
+    shopId: z.string().min(1),
+    shopName: z.string().min(1),
+    layoutVersion: z.number().int().min(1),
+    floorId: z.string().min(1),
+    floorLabel: z.string(),
+    slotId: z.string().min(1),
+    machineNumber: z.number().int().min(1),
+    tier: z.number().int().nonnegative(),
+    seriesId: z.string().nullable(),
+    seriesName: z.string().nullable(),
+});
+
 const productSchema = z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -59,6 +77,8 @@ const productSchema = z.object({
     deletedAt: timestamp.nullable(),
     serverId: z.number().int().nullable(),
     ownerId: z.number().int().nullable(),
+    // 형식 1 의 파일에는 없다
+    origin: originSchema.nullable().optional(),
 });
 
 const imageEntrySchema = z.object({
@@ -74,7 +94,7 @@ const imageEntrySchema = z.object({
 
 const manifestSchema = z.object({
     format: z.literal(BACKUP_FORMAT),
-    formatVersion: z.literal(BACKUP_FORMAT_VERSION),
+    formatVersion: z.number().int().min(1).max(BACKUP_FORMAT_VERSION),
     exportedAt: timestamp,
     products: z.array(productSchema),
     images: z.array(imageEntrySchema),

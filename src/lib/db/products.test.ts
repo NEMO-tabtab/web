@@ -34,6 +34,19 @@ const input = (overrides: Partial<ProductInput> = {}): ProductInput => ({
 
 const blob = (label: string) => new Blob([label], { type: "image/jpeg" });
 
+const origin = {
+    shopId: "nemo-virtual",
+    shopName: "네모 가상 굿즈샵 (예시)",
+    layoutVersion: 1,
+    floorId: "f1",
+    floorLabel: "1층",
+    slotId: "n3",
+    machineNumber: 3,
+    tier: 1,
+    seriesId: "virtual-cats",
+    seriesName: "(예시) 졸린 고양이 피규어",
+};
+
 beforeEach(async () => {
     await db.products.clear();
     await db.images.clear();
@@ -109,6 +122,33 @@ describe("updateProduct", () => {
         const id = await createProduct(input());
         await deleteProduct(id);
         await expect(updateProduct(id, input())).rejects.toThrow();
+    });
+});
+
+describe("뽑은 곳 (origin)", () => {
+    it("등록할 때 고른 뽑은 곳을 그대로 저장한다", async () => {
+        const id = await createProduct(input({ origin }));
+        expect((await getProduct(id))!.origin).toEqual(origin);
+    });
+
+    it("수정할 때 뽑은 곳을 넘기지 않으면 기존 값을 그대로 둔다", async () => {
+        const id = await createProduct(input({ origin }));
+        await updateProduct(id, input({ name: "이름만 바꿈" }));
+        expect(await getProduct(id)).toMatchObject({ name: "이름만 바꿈", origin });
+    });
+
+    it("null 을 넘기면 지우고, 다른 곳을 넘기면 바꾼다", async () => {
+        const id = await createProduct(input({ origin }));
+        await updateProduct(id, input({ origin: { ...origin, tier: 0, seriesName: null, seriesId: null } }));
+        expect((await getProduct(id))!.origin).toMatchObject({ tier: 0, seriesName: null });
+
+        await updateProduct(id, input({ origin: null }));
+        expect((await getProduct(id))!.origin).toBeNull();
+    });
+
+    it("뽑은 곳 없이 등록하면 필드가 없다 — 예전 기록과 같은 모양이다", async () => {
+        const id = await createProduct(input());
+        expect((await getProduct(id))!.origin ?? null).toBeNull();
     });
 });
 

@@ -40,6 +40,19 @@ const input = (overrides: Partial<ProductInput> = {}): ProductInput => ({
 
 const photo = (label: string) => new Blob([label], { type: "image/jpeg" });
 
+const origin = {
+    shopId: "nemo-virtual",
+    shopName: "네모 가상 굿즈샵 (예시)",
+    layoutVersion: 1,
+    floorId: "f1",
+    floorLabel: "1층",
+    slotId: "n3",
+    machineNumber: 3,
+    tier: 1,
+    seriesId: "virtual-cats",
+    seriesName: "(예시) 졸린 고양이 피규어",
+};
+
 const clear = async () => {
     await db.products.clear();
     await db.images.clear();
@@ -99,6 +112,36 @@ describe("내보내기 → 가져오기", () => {
         expect(await applyImport(backup)).toEqual({ added: 0, updated: 0, removed: 0, kept: 1 });
         expect(await listProducts()).toHaveLength(1);
         expect(await db.images.count()).toBe(1);
+    });
+
+    it("뽑은 곳(origin)도 내보냈다가 가져오면 그대로 남는다", async () => {
+        const id = await createProduct(input({ name: "고양이 피규어", origin }));
+        const built = await buildBackup();
+
+        await clear();
+        await applyImport(await readBackup(built.blob));
+        expect((await getProduct(id))!.origin).toEqual(origin);
+    });
+
+    it("형식 1 백업(뽑은 곳이 없던 때)도 그대로 가져온다", async () => {
+        const id = await createProduct(input({ name: "예전 물건" }));
+        const old = await tamper((await buildBackup()).blob, (manifest) => {
+            manifest.formatVersion = 1;
+            for (const product of manifest.products as Record<string, unknown>[]) delete product.origin;
+        });
+
+        await clear();
+        await applyImport(await readBackup(old));
+        expect(await getProduct(id)).toMatchObject({ name: "예전 물건" });
+        expect((await getProduct(id))!.origin ?? null).toBeNull();
+    });
+
+    it("뽑은 곳의 모양이 틀리면 백업 전체를 거부한다", async () => {
+        await createProduct(input({ origin }));
+        const broken = await tamper((await buildBackup()).blob, (manifest) => {
+            (manifest.products as Record<string, unknown>[])[0].origin = { shopId: "", tier: -1 };
+        });
+        await expectRejected(broken, "invalid");
     });
 
     it("파일 이름에 내보낸 날짜가 들어간다", () => {
