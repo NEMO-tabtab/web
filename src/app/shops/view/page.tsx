@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button, EmptyState, ErrorState, PageHeader, PageShell, Skeleton } from "@/components/common";
 import { Tabs } from "@/components/common/Tabs";
 import { FloorMap } from "@/components/shop/FloorMap";
+import { describeFloor } from "@/lib/shops/contents";
 import { ShopDataError, loadShopInterior, type ShopInterior } from "@/lib/shops/load";
 
 type State =
@@ -95,7 +96,7 @@ function ShopView() {
         );
     }
 
-    const { shop, layout } = state.interior;
+    const { shop, layout, machines, series } = state.interior;
     const floor = layout.floors.find((each) => each.id === floorId) ?? layout.floors[0];
 
     return (
@@ -118,13 +119,13 @@ function ShopView() {
 
             <div className="mt-4">
                 {/* key — 층을 바꾸면 돌린 방향과 확대를 처음으로 되돌린다 */}
-                <FloorMap key={floor.id} floor={floor} shopName={shop.name} />
+                <FloorMap
+                    key={floor.id}
+                    floor={floor}
+                    shopName={shop.name}
+                    slots={describeFloor(floor, machines, series)}
+                />
             </div>
-
-            <p className="mt-4 text-[13px] text-ink-soft">
-                지도를 끌어서 움직이고, 두 손가락으로 벌려 크게 볼 수 있어요. 가챠 기기 자리는 {floor.slots.length}
-                곳이에요.
-            </p>
         </PageShell>
     );
 }
