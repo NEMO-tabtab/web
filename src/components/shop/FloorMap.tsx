@@ -3,17 +3,16 @@
 import React, { useRef, useState } from "react";
 
 import { Button } from "@/components/common";
-import { sceneBounds, turnSize, type Turn } from "@/lib/iso";
+import type { Turn } from "@/lib/iso";
 import type { SlotInfo } from "@/lib/shops/contents";
 import type { Floor } from "@/lib/shops/schema";
+import { floorScene } from "./floorScene";
 import { IsoFloor } from "./IsoFloor";
 import { MachineDialog } from "./MachineDialog";
 import { MachineList } from "./MachineList";
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 4;
-/** 그림 둘레의 여백(SVG 단위) — 손그림 필터가 선을 밀어내도 잘리지 않게 */
-const MARGIN = 14;
 /** 손가락이 이만큼(px) 움직이기 전까지는 끌기가 아니라 누르기로 본다 — 기기를 누를 때 손이 조금 떨려도 된다 */
 const TAP_SLOP = 8;
 
@@ -33,6 +32,8 @@ export interface FloorMapProps {
     shopName: string;
     /** 이 층의 기기 자리마다의 번호와 내용 (`describeFloor`) */
     slots: readonly SlotInfo[];
+    /** 처음부터 표시해 둘 기기 — 물건의 "뽑은 곳"에서 들어왔을 때. 정보 창은 열지 않는다 */
+    initialSelectedId?: string | null;
 }
 
 /**
@@ -40,10 +41,10 @@ export interface FloorMapProps {
  * 지도의 기기나 목록을 누르면 기기 정보 창이 열린다.
  * 손가락을 못 쓰는 환경을 위해 같은 조작을 단추와 목록으로도 둔다.
  */
-export function FloorMap({ floor, shopName, slots }: FloorMapProps) {
+export function FloorMap({ floor, shopName, slots, initialSelectedId = null }: FloorMapProps) {
     const [turn, setTurn] = useState<Turn>(0);
     const [view, setView] = useState<View>(HOME);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
     const [dialogOpen, setDialogOpen] = useState(false);
     const svgRef = useRef<SVGSVGElement>(null);
     const pointers = useRef(new Map<number, { x: number; y: number }>());
@@ -60,15 +61,7 @@ export function FloorMap({ floor, shopName, slots }: FloorMapProps) {
         if (!moved.current) open(slotId);
     };
 
-    const size = turnSize({ width: floor.width, depth: floor.depth }, turn);
-    const tallest = Math.max(1, ...floor.fixtures.map((each) => each.h), ...floor.slots.map((each) => each.h));
-    const scene = sceneBounds(size, tallest);
-    const full = {
-        x: scene.x - MARGIN,
-        y: scene.y - MARGIN,
-        width: scene.width + MARGIN * 2,
-        height: scene.height + MARGIN * 2,
-    };
+    const full = floorScene(floor, turn);
 
     const width = full.width / view.zoom;
     const height = full.height / view.zoom;
