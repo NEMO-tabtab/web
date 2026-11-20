@@ -14,6 +14,7 @@ import {
     type Point,
     type Turn,
 } from "@/lib/iso";
+import { slotLabel, type SlotInfo } from "@/lib/shops/contents";
 import type { Fixture, Floor, Slot } from "@/lib/shops/schema";
 
 /** 보는 사람 쪽 벽은 이 높이(칸)로 낮춰 그린다 — 안이 가려지지 않게 */
@@ -38,27 +39,55 @@ function FaceLine({ box, face, z }: { box: Box; face: "south" | "east"; z: numbe
     return <line x1={x1} y1={y1} x2={x2} y2={y2} {...thin} />;
 }
 
-function Faces({ box }: { box: Box }) {
+function Faces({ box, selected = false }: { box: Box; selected?: boolean }) {
     const faces = boxFaces(box);
+    // 면마다 채움을 달리해 색 없이 입체를 낸다 — 동쪽 면만 옅은 면.
+    // 고른 기기만 볼터치 색으로 칠한다. 지도 아래 목록의 번호표와 같은 색이라 둘을 잇는다
+    const light = selected ? "fill-cheek" : "fill-paper";
+    const shade = selected ? "fill-cheek/60" : "fill-cream";
     return (
         <>
-            {/* 면마다 채움을 달리해 색 없이 입체를 낸다 — 동쪽 면만 옅은 면 */}
-            <polygon points={points(faces.south)} {...ink} className="fill-paper stroke-ink" />
-            <polygon points={points(faces.east)} {...ink} className="fill-cream stroke-ink" />
-            <polygon points={points(faces.top)} {...ink} className="fill-paper stroke-ink" />
+            <polygon points={points(faces.south)} {...ink} className={`${light} stroke-ink`} />
+            <polygon points={points(faces.east)} {...ink} className={`${shade} stroke-ink`} />
+            <polygon points={points(faces.top)} {...ink} className={`${light} stroke-ink`} />
         </>
     );
 }
 
-/** 가챠 기기 자리 — 단마다 금을 긋고, 손잡이가 보이는 면에는 창과 손잡이를 그린다 */
-function SlotBox({ slot, facing }: { slot: Slot; facing: Facing }) {
+interface SlotBoxProps {
+    slot: Slot;
+    facing: Facing;
+    info: SlotInfo | undefined;
+    selected: boolean;
+    onSelect: (slotId: string) => void;
+}
+
+/**
+ * 가챠 기기 자리 — 단마다 금을 긋고, 손잡이가 보이는 면에는 창과 손잡이를 그린다. 윗면에 번호를 적는다.
+ * 누르거나 키보드(Enter·Space)로 고를 수 있는 버튼이다. 포커스는 선을 굵게 해서 보여 준다.
+ */
+function SlotBox({ slot, facing, info, selected, onSelect }: SlotBoxProps) {
     const tierHeight = slot.h / slot.tiers;
     const front = facing === "s" ? "south" : facing === "e" ? "east" : null;
     const tiers = Array.from({ length: slot.tiers }, (_, tier) => tier * tierHeight);
+    const [numberX, numberY] = project(slot.x + slot.w / 2, slot.y + slot.d / 2, slot.h);
 
     return (
-        <g>
-            <Faces box={slot} />
+        <g
+            role="button"
+            tabIndex={0}
+            aria-label={info ? slotLabel(info) : "가챠 기기"}
+            aria-haspopup="dialog"
+            onClick={() => onSelect(slot.id)}
+            onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+                // Space 가 화면을 스크롤하지 않게 한다
+                event.preventDefault();
+                onSelect(slot.id);
+            }}
+            className="cursor-pointer outline-none [&:focus-visible_line]:[stroke-width:3] [&:focus-visible_polygon]:[stroke-width:4]"
+        >
+            <Faces box={slot} selected={selected} />
             {tiers.slice(1).map((z) => (
                 <React.Fragment key={z}>
                     <FaceLine box={slot} face="south" z={z} />
@@ -83,6 +112,19 @@ function SlotBox({ slot, facing }: { slot: Slot; facing: Facing }) {
                         />
                     </React.Fragment>
                 ))}
+            {info && (
+                <text
+                    x={numberX}
+                    y={numberY}
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    fontSize={11}
+                    aria-hidden="true"
+                    className="pointer-events-none fill-ink font-sans font-bold"
+                >
+                    {info.number}
+                </text>
+            )}
         </g>
     );
 }
@@ -107,13 +149,18 @@ export interface IsoFloorProps {
     floor: Floor;
     /** 시계 방향으로 90도씩 돌린 횟수 */
     turn: Turn;
+    /** 기기 자리마다의 번호와 내용 (`describeFloor`) */
+    slots: readonly SlotInfo[];
+    selectedId: string | null;
+    onSelect: (slotId: string) => void;
 }
 
 /**
  * 한 층을 위에서 비스듬히 내려다본 입체 그림(SVG `<g>`).
  * 데이터의 2D 격자를 돌리고, 뒤에서 앞 순서로 상자를 쌓아 그린다. 손그림 선은 루트 레이아웃의 `#rough-line-sm` 필터.
  */
-export function IsoFloor({ floor, turn }: IsoFloorProps) {
+export function IsoFloor({ floor, turn, slots, selectedId, onSelect }: IsoFloorProps) {
+    const infoById = new Map(slots.map((info) => [info.slot.id, info]));
     const original = { width: floor.width, depth: floor.depth };
     const size = turnSize(original, turn);
 
@@ -168,7 +215,14 @@ export function IsoFloor({ floor, turn }: IsoFloorProps) {
 
             {ordered.map((item) =>
                 item.type === "slot" ? (
-                    <SlotBox key={item.id} slot={item} facing={turnFacing(item.facing, turn)} />
+                    <SlotBox
+                        key={item.id}
+                        slot={item}
+                        facing={turnFacing(item.facing, turn)}
+                        info={infoById.get(item.id)}
+                        selected={item.id === selectedId}
+                        onSelect={onSelect}
+                    />
                 ) : (
                     <FixtureBox key={item.id} fixture={item} cut={item.kind === "wall" && isNearWall(item, size)} />
                 ),
