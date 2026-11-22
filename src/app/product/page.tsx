@@ -4,7 +4,7 @@ import { Suspense, useDeferredValue, useEffect, useMemo, useRef, useState } from
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-import { Badge, Button, Chip, EmptyState, FAB, Input, PageHeader, PageShell } from "@/components/common";
+import { Badge, Button, Chip, EmptyState, Input, PageHeader, PageShell } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
 import { StoredProductCard } from "@/components/product/StoredProductCard";
 import type { Product } from "@/lib/db";
@@ -112,23 +112,6 @@ function ProductList() {
                     />
                 )}
             </PageShell>
-
-            {/* 떠 있는 버튼 — 좁은 화면에선 하단 탭 바 위로 띄우고,
-                넓은 화면에선 내비가 왼쪽 레일로 옮겨 가므로 화면 아래에 바짝 붙인다 */}
-            <div className="fixed bottom-20 right-4 z-30 flex flex-col gap-3 sm:bottom-7">
-                <FAB
-                    href="/barcode"
-                    variant="solid"
-                    aria-label="바코드 스캔"
-                    icon={<i className="xi-barcode text-2xl" aria-hidden="true" />}
-                />
-                <FAB
-                    href="/product/add"
-                    variant="ink"
-                    aria-label="제품 등록"
-                    icon={<i className="xi-plus text-2xl font-bold" aria-hidden="true" />}
-                />
-            </div>
         </>
     );
 }

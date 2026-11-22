@@ -4,6 +4,7 @@ import { Gaegu, Noto_Sans_KR } from "next/font/google";
 import AppChrome from "./components/AppChrome";
 import StoragePersist from "./components/StoragePersist";
 import BottomNavigation from "@/components/common/BottomNavigation";
+import { RegisterQuickMenu } from "@/components/product/RegisterQuickMenu";
 import "./globals.css";
 
 const hand = Gaegu({
@@ -79,6 +80,7 @@ export default function RootLayout({
                 <div className="mx-auto flex min-h-dvh w-full max-w-[1600px]">
                     <AppChrome>
                         <BottomNavigation />
+                        <RegisterQuickMenu />
                     </AppChrome>
                     <div className="w-full min-w-0 flex-1 pb-16 sm:pb-0">{children}</div>
                 </div>
