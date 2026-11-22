@@ -19,7 +19,7 @@ export interface TintSettings {
     pick: FamilyId | null;
 }
 
-/** 테스트 기능이라 처음부터 켜 둔다. 운영에 낼 때 기본값을 다시 정한다 */
+/** 처음부터 켜 둔다. 기본 방식을 바꾸려면 여기만 고친다(docs/design-system.md "정하지 못한 것") */
 export const DEFAULT_SETTINGS: TintSettings = { mode: "top", pick: null };
 
 export function loadSettings(): TintSettings {
