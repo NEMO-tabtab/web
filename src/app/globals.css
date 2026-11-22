@@ -161,6 +161,43 @@ nav[aria-label="주요 메뉴"] svg {
     }
 }
 
+/* 앱을 켤 때의 로딩 화면 (src/app/components/LaunchSplash.tsx, #149)
+   - 모달(z-50)보다 위에서 화면 전체를 덮는다
+   - JS 가 실패해도 남지 않도록 3초 뒤 저절로 걷힌다. 대기 시간 동안은 애니메이션이 아무 값도 덮어쓰지 않아
+     (fill-mode: forwards), JS 가 data-phase 로 거는 흐려짐이 그대로 보인다
+   - 브라우저 탭에서는 보이지 않는다 — 설치한 앱(standalone·fullscreen)에서만 */
+.launch-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-paper);
+    transition: opacity 250ms ease-out;
+    animation: launch-splash-out 250ms ease-out 3s forwards;
+}
+.launch-splash[data-phase="leaving"] {
+    opacity: 0;
+}
+@keyframes launch-splash-out {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+@media (display-mode: browser) {
+    .launch-splash {
+        display: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .launch-splash {
+        transition: none;
+        animation-duration: 1ms;
+    }
+}
+
 /* 투명 배경 미리보기용 체커보드 (사진 등록 미리보기 맥락) */
 .checker {
     background-image: conic-gradient(#eceae5 0 25%, #ffffff 0 50%, #eceae5 0 75%, #ffffff 0);
