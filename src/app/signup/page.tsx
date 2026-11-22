@@ -6,10 +6,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { NemoLogo } from "@/components/NemoLogo";
-import { Button, Card, Divider, Heading, Input, RadioGroup, Text } from "@/components/common";
+import { Button, Card, Checkbox, Divider, Heading, Input, RadioGroup, Text } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
 import { checkLoginId, signup, type SignupInput } from "@/lib/api/auth";
 import { describeApiError } from "@/lib/api/errors";
+import { EXTERNAL_LINK_PROPS, LEGAL_DOCS } from "@/lib/legal";
+
+const AGREE_REQUIRED = "약관과 개인정보처리방침에 동의해야 가입할 수 있어요.";
 
 const GENDER_OPTIONS = [
     { value: "M", label: "남자" },
@@ -73,6 +76,9 @@ export default function SignupPage() {
     const [isDone, setIsDone] = useState(false);
     /** 서버에 물어본 아이디 중복 여부. unknown = 아직 안 물었거나 서버가 답하지 못함 */
     const [idCheck, setIdCheck] = useState<{ loginId: string; result: "available" | "taken" } | null>(null);
+    /** 약관·개인정보처리방침 동의. 서버의 가입 요청에는 동의 칸이 없어 화면에서만 확인한다 */
+    const [agreed, setAgreed] = useState(false);
+    const [agreeError, setAgreeError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -300,7 +306,10 @@ export default function SignupPage() {
 
         // 전체 유효성 검사 — 통과하기 전에 제출 상태로 올리면
         // 여기서 빠져나갈 때 버튼이 로딩인 채로 영영 잠긴다.
-        if (!validate() || isIdTaken) {
+        // validate 는 칸마다 오류를 표시하므로 동의 여부와 상관없이 먼저 부른다
+        const isValid = validate();
+        if (!agreed) setAgreeError(AGREE_REQUIRED);
+        if (!isValid || isIdTaken || !agreed) {
             setFormError("입력 내용을 확인해 주세요.");
             return;
         }
@@ -492,6 +501,45 @@ export default function SignupPage() {
                                 error={errors.addressSub}
                                 autoComplete="address-line2"
                             />
+                        </div>
+
+                        {/* 약관 동의. 문서 링크를 체크 칸의 라벨 안에 넣으면 링크를 누를 때 체크까지 바뀔 수 있어
+                            라벨 밖 다음 줄에 둔다 */}
+                        <div>
+                            <Checkbox
+                                id="signup-agree"
+                                boxed
+                                label={
+                                    <span className="break-keep">서비스 이용약관과 개인정보처리방침에 동의해요 (필수)</span>
+                                }
+                                checked={agreed}
+                                onChange={(e) => {
+                                    setAgreed(e.target.checked);
+                                    setAgreeError(null);
+                                    setFormError(null);
+                                }}
+                                aria-required
+                                aria-invalid={agreeError ? true : undefined}
+                                aria-describedby={agreeError ? "signup-agree-error" : undefined}
+                            />
+                            <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[13px]">
+                                {LEGAL_DOCS.map((doc) => (
+                                    <a
+                                        key={doc.key}
+                                        href={doc.href}
+                                        {...EXTERNAL_LINK_PROPS}
+                                        className="text-ink font-bold underline underline-offset-4"
+                                    >
+                                        {doc.label} 보기
+                                        <span className="sr-only"> (새 창에서 열림)</span>
+                                    </a>
+                                ))}
+                            </p>
+                            {agreeError && (
+                                <span id="signup-agree-error" className="text-danger mt-1.5 block text-xs">
+                                    {agreeError}
+                                </span>
+                            )}
                         </div>
 
                         {formError && (
