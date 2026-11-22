@@ -8,6 +8,7 @@ import { useProducts } from "@/lib/db/hooks";
 
 import { AccountSection, ProfileCard } from "./AccountSection";
 import { BackupSection } from "./BackupSection";
+import { PolicySection } from "./PolicySection";
 
 const CATEGORY_ICONS: Record<string, string> = {
     전자기기: "💻",
@@ -104,6 +105,8 @@ export default function MyPage() {
             <BackupSection />
 
             <AccountSection guestLinks={ACCOUNT_LINKS} />
+
+            <PolicySection />
 
             <DevEntrance />
         </PageShell>
