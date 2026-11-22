@@ -8,6 +8,7 @@ import {
     isNarrowed,
     matchesSearch,
     parseProductQuery,
+    productQueryHref,
     productQuerySearch,
     queryProducts,
     toChoseong,
@@ -215,6 +216,15 @@ describe("정렬", () => {
 });
 
 describe("주소 쿼리", () => {
+    it("다른 화면에서 조건을 건 목록 주소를 만든다 — 미지정은 빈 값으로", () => {
+        expect(productQueryHref({})).toBe("/product");
+        expect(productQueryHref({ category: "키링" })).toBe("/product?category=%ED%82%A4%EB%A7%81");
+        expect(productQueryHref({ place: "" })).toBe("/product?place=");
+        expect(parseProductQuery(new URL(productQueryHref({ place: "" }), "http://x").searchParams)).toEqual(
+            query({ place: "" }),
+        );
+    });
+
     it("기본값이면 쿼리를 붙이지 않는다", () => {
         expect(productQuerySearch(EMPTY_QUERY)).toBe("");
         expect(productQuerySearch(query({ q: "  " }))).toBe("");
