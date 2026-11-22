@@ -8,7 +8,7 @@ import { ClassName, DocSection, ExamplePreview, PageHeader } from "../_component
 const TABS = [
     { label: "홈", href: "/" },
     { label: "제품", href: "/product" },
-    { label: "등록", href: "/product/add" },
+    { label: "지도", href: "/shops" },
     { label: "분석", href: "/analysis" },
     { label: "마이", href: "/user-info" },
 ];
@@ -71,7 +71,7 @@ export default function NavigationPage() {
 
             <DocSection
                 title="갈래"
-                description="다섯 개 고정. 여섯 번째가 필요해지면 메뉴가 아니라 정보 구조를 고칩니다."
+                description="다섯 개 고정. 여섯 번째가 필요해지면 메뉴가 아니라 정보 구조를 고칩니다. 지도를 넣을 때(#159) 등록을 떠 있는 퀵 메뉴로 옮긴 것이 그 예입니다."
             >
                 <Card padding="none" className="overflow-hidden">
                     <ul>

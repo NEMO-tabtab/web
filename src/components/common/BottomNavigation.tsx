@@ -32,11 +32,17 @@ function IconProduct({ active }: { active: boolean }) {
     );
 }
 
-function IconAdd({ active }: { active: boolean }) {
+/** 접힌 종이 지도 — 세 폭이 지그재그로 접힌 모양 */
+function IconMap({ active }: { active: boolean }) {
     return (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" strokeWidth={active ? 2.6 : 2} />
-            <path d="M12 8.5 V15.5 M8.5 12 H15.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path
+                d="M4 6.5 L9 4.5 L15 6.5 L20 4.5 V17.5 L15 19.5 L9 17.5 L4 19.5 Z"
+                stroke="currentColor"
+                strokeWidth={active ? 2.6 : 2}
+                strokeLinejoin="round"
+            />
+            <path d="M9 4.5 V17.5 M15 6.5 V19.5" stroke="currentColor" strokeWidth="1.7" />
         </svg>
     );
 }
@@ -73,7 +79,8 @@ function IconMy({ active }: { active: boolean }) {
 const TABS = [
     { href: "/", label: "홈", Icon: IconHome },
     { href: "/product", label: "제품", Icon: IconProduct },
-    { href: "/product/add", label: "등록", Icon: IconAdd },
+    // 등록은 떠 있는 퀵 메뉴(RegisterQuickMenu)로 한다 — 하단 메뉴는 다섯 칸을 지킨다(design-system/navigation)
+    { href: "/shops", label: "지도", Icon: IconMap },
     { href: "/analysis", label: "분석", Icon: IconAnalysis },
     { href: "/user-info", label: "마이", Icon: IconMy },
 ];
