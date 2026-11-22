@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Badge, IconTile } from "@/components/common";
+import { Badge, Icon, IconTile } from "@/components/common";
 import { cn } from "@/lib/cn";
 import { isStale, seriesSummary, slotLabel, type SlotInfo } from "@/lib/shops/contents";
 
@@ -48,7 +48,7 @@ export function MachineList({ slots, selectedId, onSelect }: MachineListProps) {
                                     확인 오래됨
                                 </Badge>
                             )}
-                            <i className="xi-angle-right-min shrink-0 text-lg text-ink-soft" aria-hidden="true" />
+                            <Icon name="chevron-right" className="shrink-0 text-lg text-ink-soft" />
                         </button>
                     </li>
                 );

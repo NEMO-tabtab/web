@@ -3,6 +3,7 @@
 import React, { useEffect, useId, useRef } from "react";
 
 import { cn } from "@/lib/cn";
+import { Icon } from "./Icon";
 
 export interface ModalProps {
     open: boolean;
@@ -69,7 +70,7 @@ export function Modal({ open, onClose, title, children, footer, className }: Mod
                         aria-label="닫기"
                         className="sticker sticker-press bg-paper focus-visible:outline-ink flex h-8 w-8 shrink-0 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2"
                     >
-                        <i className="xi-close text-base" />
+                        <Icon name="close" className="text-base" />
                     </button>
                 </div>
                 <div className="max-h-[60vh] overflow-y-auto px-4 py-4">{children}</div>

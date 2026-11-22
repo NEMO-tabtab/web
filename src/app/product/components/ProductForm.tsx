@@ -10,6 +10,7 @@ import {
     Checkbox,
     Chip,
     Heading,
+    Icon,
     Input,
     PageHeader,
     PageShell,
@@ -369,7 +370,7 @@ export default function ProductForm(props: ProductFormProps) {
                                 "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
                             )}
                         >
-                            <i className="xi-camera text-2xl" aria-hidden="true" />
+                            <Icon name="camera" className="text-2xl" />
                             <span className="text-[12px] font-bold">사진 추가</span>
                         </button>
                     )}
@@ -392,7 +393,7 @@ export default function ProductForm(props: ProductFormProps) {
                                     "focus-visible:outline-ink focus-visible:outline-3 focus-visible:outline-offset-2",
                                 )}
                             >
-                                <i className="xi-close text-sm" aria-hidden="true" />
+                                <Icon name="close" className="text-sm" />
                             </button>
                         </div>
                     ))}
@@ -402,7 +403,7 @@ export default function ProductForm(props: ProductFormProps) {
                             key={`empty-${index}`}
                             className="border-line bg-cream text-ink-soft rounded-nemo flex aspect-square items-center justify-center border"
                         >
-                            <i className="xi-image text-2xl" aria-hidden="true" />
+                            <Icon name="image" className="text-2xl" />
                         </div>
                     ))}
                 </div>
@@ -505,12 +506,9 @@ export default function ProductForm(props: ProductFormProps) {
                             aria-expanded={showMoreInfo}
                             onClick={() => setShowMoreInfo(!showMoreInfo)}
                             rightIcon={
-                                <i
-                                    aria-hidden="true"
-                                    className={cn(
-                                        "xi-angle-down transition-transform duration-200",
-                                        showMoreInfo && "rotate-180",
-                                    )}
+                                <Icon
+                                    name="chevron-down"
+                                    className={cn("transition-transform duration-200", showMoreInfo && "rotate-180")}
                                 />
                             }
                         >

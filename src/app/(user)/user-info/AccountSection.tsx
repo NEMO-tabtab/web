@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { Badge, Button, Section, Text } from "@/components/common";
+import { Badge, Button, Icon, Section, Text } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
 import { NemoFace } from "@/components/NemoFace";
 import { cn } from "@/lib/cn";
@@ -64,7 +64,7 @@ export function AccountSection({ guestLinks }: AccountSectionProps) {
                                 <span className="block text-sm font-bold">{link.label}</span>
                                 <span className="block text-xs text-ink-soft">{link.hint}</span>
                             </span>
-                            <i className="xi-angle-right-min text-lg text-ink-soft" aria-hidden="true" />
+                            <Icon name="chevron-right" className="text-lg text-ink-soft" />
                         </Link>
                     ))}
                 </div>
@@ -86,7 +86,7 @@ export function AccountSection({ guestLinks }: AccountSectionProps) {
                         <span className="block text-sm font-bold">로그아웃</span>
                         <span className="block text-xs text-ink-soft">기록한 물건은 이 기기에 그대로 남아요</span>
                     </span>
-                    <i className="xi-angle-right-min text-lg text-ink-soft" aria-hidden="true" />
+                    <Icon name="chevron-right" className="text-lg text-ink-soft" />
                 </button>
             </div>
 
