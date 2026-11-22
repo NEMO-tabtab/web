@@ -10,6 +10,7 @@ import { NemoLogo } from "@/components/NemoLogo";
 import { StoredProductCard } from "@/components/product/StoredProductCard";
 import { useProducts } from "@/lib/db/hooks";
 import { productValue } from "@/lib/db/products";
+import { EMPTY_QUERY, facetOptions, productQueryHref, type FacetField } from "@/lib/productSearch";
 
 /** 분포 칩의 기준 축 — 예전 "카테고리별 / 공간별" 탭을 그대로 이어받는다 */
 const TABS = [
@@ -18,6 +19,9 @@ const TABS = [
 ] as const;
 
 type TabValue = (typeof TABS)[number]["value"];
+
+/** 탭마다 묶는 칸 — 제품 화면의 필터와 같은 칸이라 칩을 누르면 그 필터가 걸린 목록으로 간다 */
+const TAB_FIELD: Record<TabValue, FacetField> = { category: "category", space: "place" };
 
 /** 홈에 세워둘 최근 카드 수 */
 const RECENT_LIMIT = 6;
@@ -33,16 +37,14 @@ export default function Home() {
     const totalCount = products.length;
     const totalValue = useMemo(() => products.reduce((sum, item) => sum + productValue(item), 0), [products]);
 
-    /** 선택한 축으로 묶어 개수를 센다. 비어 있는 값은 "미지정" 으로 모은다. */
-    const distribution = useMemo(() => {
-        const counts = new Map<string, number>();
-        for (const item of products) {
-            const raw = selectedTab === "category" ? item.category : item.place;
-            const key = raw?.trim() || "미지정";
-            counts.set(key, (counts.get(key) ?? 0) + 1);
-        }
-        return [...counts.entries()].sort((a, b) => b[1] - a[1]);
-    }, [products, selectedTab]);
+    /**
+     * 선택한 축으로 묶어 개수를 센다. 비어 있는 값은 "미지정" 으로 모은다(맨 뒤).
+     * 제품 화면의 필터 칩과 같은 함수라 여기 숫자와 눌러서 열리는 목록의 개수가 늘 같다.
+     */
+    const distribution = useMemo(
+        () => facetOptions(products, EMPTY_QUERY, TAB_FIELD[selectedTab]),
+        [products, selectedTab],
+    );
 
     /** 스탯 칸에 쓸 갈래 수 — 실제 데이터에서 센다(추정치를 지어내지 않는다) */
     const groupCounts = useMemo(() => {
@@ -121,9 +123,14 @@ export default function Home() {
                                     aria-label="분포 기준"
                                 />
                                 <div className="flex flex-wrap gap-2">
-                                    {shownChips.map(([label, count]) => (
-                                        <Chip key={label} as="span" className="tabular-nums">
-                                            {label} {count}
+                                    {/* 누르면 그 조건이 걸린 제품 목록으로 간다 — "미지정"은 값을 적지 않은 물건만 */}
+                                    {shownChips.map((option) => (
+                                        <Chip
+                                            key={option.value}
+                                            href={productQueryHref({ [TAB_FIELD[selectedTab]]: option.value })}
+                                            className="tabular-nums"
+                                        >
+                                            {option.label} {option.count}
                                         </Chip>
                                     ))}
                                     {restCount > 0 && (

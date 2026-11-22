@@ -61,6 +61,16 @@ export default function ChipsPage() {
                 </ExamplePreview>
             </DocSection>
 
+            <DocSection
+                title="Link"
+                description="href 를 주면 다른 화면으로 가는 링크가 됩니다. 홈의 분포 칩처럼 '그 조건이 걸린 목록'으로 보낼 때 씁니다."
+            >
+                <ExamplePreview caption="href — 눌림 피드백은 있고, 선택 상태와 제거 버튼은 쓰지 않습니다">
+                    <Chip href="/product?category=%ED%82%A4%EB%A7%81">키링 3</Chip>
+                    <Chip href="/product?place=">미지정 1</Chip>
+                </ExamplePreview>
+            </DocSection>
+
             <DocSection title="Disabled">
                 <ExamplePreview caption="disabled — 40% 투명도, 포인터 이벤트 차단">
                     <Chip disabled>비활성</Chip>

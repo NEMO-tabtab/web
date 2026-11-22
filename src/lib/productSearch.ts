@@ -62,6 +62,11 @@ export function productQuerySearch(query: ProductQuery): string {
     return search ? `?${search}` : "";
 }
 
+/** 조건을 건 제품 목록 주소. 홈의 분포 칩처럼 다른 화면에서 목록으로 보낼 때 쓴다 */
+export function productQueryHref(patch: Partial<ProductQuery>): string {
+    return `/product${productQuerySearch({ ...EMPTY_QUERY, ...patch })}`;
+}
+
 /** 검색어나 필터가 걸려 있는가. 정렬은 물건을 빼지 않으므로 치지 않는다 */
 export function isNarrowed(query: ProductQuery): boolean {
     return query.q.trim() !== "" || query.category !== null || query.place !== null;
