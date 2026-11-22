@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { Button, InfoRow, Section, Text } from "@/components/common";
+import { Button, Icon, InfoRow, Section, Text } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
 import { cn } from "@/lib/cn";
 import {
@@ -157,11 +157,11 @@ export function BackupSection() {
     };
 
     const actions = [
-        { label: "백업 내보내기", hint: "기록한 물건과 사진을 파일로 저장", icon: "xi-download", onClick: startExport },
+        { label: "백업 내보내기", hint: "기록한 물건과 사진을 파일로 저장", icon: "download" as const, onClick: startExport },
         {
             label: "백업 가져오기",
             hint: "저장해 둔 파일에서 되살리기",
-            icon: "xi-upload",
+            icon: "upload" as const,
             onClick: () => fileInput.current?.click(),
         },
     ];
@@ -182,13 +182,13 @@ export function BackupSection() {
                         className={rowClassName(index)}
                     >
                         <span className="flex min-w-0 items-center gap-3">
-                            <i className={cn(action.icon, "text-lg")} aria-hidden="true" />
+                            <Icon name={action.icon} className="text-lg" />
                             <span className="min-w-0">
                                 <span className="block text-sm font-bold">{action.label}</span>
                                 <span className="block text-xs text-ink-soft">{action.hint}</span>
                             </span>
                         </span>
-                        <i className="xi-angle-right-min text-lg text-ink-soft" aria-hidden="true" />
+                        <Icon name="chevron-right" className="text-lg text-ink-soft" />
                     </button>
                 ))}
             </div>

@@ -8,6 +8,7 @@ import { DonutChart, LineChart, donutRamp } from "@/components/analysis/Charts";
 import {
     Card,
     EmptyState,
+    Icon,
     IconTile,
     InfoRow,
     LoadingState,
@@ -103,7 +104,7 @@ function Analysis({ products }: { products: Product[] }) {
                 <div className="flex flex-wrap items-center gap-2">
                     {/* 먹 채움 위에서는 먹선을 쓸 수 없어 바탕색 헤어라인으로 알약을 그린다 */}
                     <span className="border-paper/40 text-paper inline-flex items-center gap-1 rounded-full border-2 px-3 py-1 text-[13px] font-bold">
-                        {growth > 0 && <i className="xi-arrow-up" aria-hidden="true" />}
+                        {growth > 0 && <Icon name="arrow-up" />}
                         <span className="font-sans tabular-nums">
                             {growth > 0 && "+"}
                             {formatWon(growth)}원
@@ -159,7 +160,7 @@ function Analysis({ products }: { products: Product[] }) {
                 <div className="paste-grid grid gap-4">
                     <Card padding="md" className="flex items-start gap-4">
                         <IconTile>
-                            <i className="xi-chart-pie" aria-hidden="true" />
+                            <Icon name="chart-pie" />
                         </IconTile>
                         <div className="space-y-1">
                             <Text weight="bold">가장 큰 비중</Text>
@@ -171,7 +172,7 @@ function Analysis({ products }: { products: Product[] }) {
                     </Card>
                     <Card variant="sunken" padding="md" className="flex items-start gap-4">
                         <IconTile tone="muted">
-                            <i className="xi-calendar-check" aria-hidden="true" />
+                            <Icon name="calendar-check" />
                         </IconTile>
                         <div className="space-y-1">
                             <Text weight="bold">이번 달 기록</Text>

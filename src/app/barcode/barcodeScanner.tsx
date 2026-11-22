@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
-import { Button, Card, PageHeader, PageShell, Text } from "@/components/common";
+import { Button, Card, Icon, PageHeader, PageShell, Text } from "@/components/common";
 import { productEditHref } from "@/components/product/StoredProductCard";
 import { lookupBarcode } from "@/lib/api/barcode";
 import { API_CONFIGURED } from "@/lib/api/client";
@@ -295,7 +295,7 @@ export default function BarcodeScanner() {
                     aria-live="polite"
                     className="bg-paper text-ink absolute top-3 left-3 flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
                 >
-                    <i className={cn(isBusy ? "xi-spinner-1 animate-spin" : "xi-barcode")} aria-hidden="true" />
+                    <Icon name={isBusy ? "spinner" : "barcode"} className={cn(isBusy && "animate-spin")} />
                     {scanned && !isBusy ? "인식 성공!" : STATUS[phase]}
                 </p>
 

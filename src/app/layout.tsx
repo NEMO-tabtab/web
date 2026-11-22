@@ -48,8 +48,6 @@ export default function RootLayout({
     return (
         <html lang="ko" className={`${hand.variable} ${noto.variable} antialiased`}>
             <body className="font-sans">
-                {/* xi-* 아이콘 전역 의존성 */}
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xpressengine/XEIcon@2.3.3/xeicon.min.css" />
 
                 {/* 손그림 러프 라인 — SVG 변위 필터 정의 (캐릭터·아이콘이 참조) */}
                 <svg aria-hidden="true" width="0" height="0" className="absolute">

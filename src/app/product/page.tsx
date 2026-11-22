@@ -4,7 +4,7 @@ import { Suspense, useDeferredValue, useEffect, useMemo, useRef, useState } from
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-import { Badge, Button, Chip, EmptyState, Input, PageHeader, PageShell } from "@/components/common";
+import { Badge, Button, Chip, EmptyState, Icon, Input, PageHeader, PageShell } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
 import { StoredProductCard } from "@/components/product/StoredProductCard";
 import type { Product } from "@/lib/db";
@@ -160,7 +160,7 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                     autoComplete="off"
                     value={query.q}
                     onChange={(event) => update({ q: event.target.value })}
-                    icon={<i className="xi-search text-lg" aria-hidden="true" />}
+                    icon={<Icon name="search" className="text-lg" />}
                     trailing={
                         query.q && (
                             <Button
@@ -169,7 +169,7 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                                 shape="circle"
                                 size="sm"
                                 aria-label="검색어 지우기"
-                                leftIcon={<i className="xi-close-circle text-lg" aria-hidden="true" />}
+                                leftIcon={<Icon name="close-circle" className="text-lg" />}
                                 onClick={() => {
                                     update({ q: "" });
                                     inputRef.current?.focus();
@@ -215,7 +215,7 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                         size="sm"
                         aria-haspopup="dialog"
                         onClick={() => setSortOpen(true)}
-                        rightIcon={<i className="xi-angle-down-min" aria-hidden="true" />}
+                        rightIcon={<Icon name="chevron-down" />}
                     >
                         <span className="sr-only">정렬: </span>
                         {sortLabel}
@@ -267,7 +267,7 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                                     fullWidth
                                     aria-pressed={selected}
                                     className="justify-between"
-                                    rightIcon={selected ? <i className="xi-check" aria-hidden="true" /> : undefined}
+                                    rightIcon={selected ? <Icon name="check" /> : undefined}
                                     onClick={() => {
                                         update({ sort: option.value });
                                         setSortOpen(false);

@@ -1,4 +1,4 @@
-import { Section } from "@/components/common";
+import { Icon, Section } from "@/components/common";
 import { cn } from "@/lib/cn";
 import { EXTERNAL_LINK_PROPS, LEGAL_DOCS } from "@/lib/legal";
 
@@ -19,7 +19,7 @@ export function PolicySection() {
                             {doc.label}
                             <span className="sr-only"> (새 창에서 열림)</span>
                         </span>
-                        <i className="xi-external-link text-lg text-ink-soft" aria-hidden="true" />
+                        <Icon name="external-link" className="text-lg text-ink-soft" />
                     </a>
                 ))}
             </div>

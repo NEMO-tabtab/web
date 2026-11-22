@@ -1,4 +1,4 @@
-import { Badge, Card, IconTile, InfoRow, Price, ProductCard, StatTile, Text, priceSizes } from "@/components/common";
+import { Badge, Card, Icon, IconTile, InfoRow, Price, priceSizes, ProductCard, StatTile, Text } from "@/components/common";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../_components/DocSection";
 
@@ -64,8 +64,8 @@ export default function DataDisplayPage() {
 
             <DocSection title="StatTile" description="수치를 먼저, 라벨을 그 아래에. emphasis 는 한 화면에 하나만.">
                 <div className="grid grid-cols-2 gap-4">
-                    <StatTile emphasis icon={<i className="xi-box" />} label="총 등록 물품" value="59개" />
-                    <StatTile icon={<i className="xi-users" />} label="참여 그룹" value="3개" />
+                    <StatTile emphasis icon={<Icon name="box" />} label="총 등록 물품" value="59개" />
+                    <StatTile icon={<Icon name="users" />} label="참여 그룹" value="3개" />
                 </div>
                 <Text size="sm" tone="muted">
                     강조는 색이 아니라 먹 채움입니다. 두 칸을 다 채우면 위계가 사라집니다.

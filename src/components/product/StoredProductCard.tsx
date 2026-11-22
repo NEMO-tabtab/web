@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductCard, type ProductCardProps } from "@/components/common";
+import { Icon, ProductCard, type ProductCardProps } from "@/components/common";
 import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
 import type { Product } from "@/lib/db";
 import { useCoverUrl } from "@/lib/db/hooks";
@@ -26,7 +26,7 @@ export function StoredProductCard({ product, showMemo = false, meta, ...props }:
     const origin = product.origin ? (
         // 두 칸 그리드에서는 한 줄이면 기기 번호가 잘린다 — 두 줄까지 보여 준다
         <span className="flex min-w-0 items-start gap-1 text-[11px] text-ink-soft">
-            <i className="xi-maker mt-0.5 shrink-0" aria-hidden="true" />
+            <Icon name="map-pin" className="mt-0.5 shrink-0" />
             <span className="line-clamp-2 break-keep">{originShort(product.origin)}</span>
         </span>
     ) : null;

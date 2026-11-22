@@ -1,6 +1,7 @@
 import React from "react";
 
 import { cn } from "@/lib/cn";
+import { Icon } from "./Icon";
 
 export const shellWidths = {
     narrow: "max-w-3xl",
@@ -47,11 +48,11 @@ const backClassName =
 export function PageHeader({ title, description, backHref, onBack, action, className }: PageHeaderProps) {
     const back = onBack ? (
         <button type="button" onClick={onBack} aria-label="뒤로 가기" className={backClassName}>
-            <i className="xi-arrow-left text-xl" aria-hidden="true" />
+            <Icon name="arrow-left" className="text-xl" />
         </button>
     ) : backHref ? (
         <a href={backHref} aria-label="뒤로 가기" className={backClassName}>
-            <i className="xi-arrow-left text-xl" aria-hidden="true" />
+            <Icon name="arrow-left" className="text-xl" />
         </a>
     ) : null;
 
