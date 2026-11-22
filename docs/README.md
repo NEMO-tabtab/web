@@ -12,6 +12,7 @@
 | [code-conventions.md](code-conventions.md) | 코드 구조와 규칙 (K1~K7) |
 | [design-system.md](design-system.md) | 화면 규칙 (U1~U7) |
 | [production.md](production.md) | 위험 영역, 사용자 데이터, 배포와 되돌리기 (R1~R6) |
+| [catalog.md](catalog.md) | 가챠 카탈로그(작품·시리즈·종류) 손으로 입력하는 방법 |
 | [decisions/](decisions/) | 주요 결정의 기록 |
 
 문서 속 개수(몇 곳, 몇 개)는 2026-11-15에 PR #94 브랜치를 기준으로 센 값입니다.
