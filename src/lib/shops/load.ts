@@ -1,15 +1,18 @@
 import type { ZodType } from "zod";
 
 import {
+    findCatalogMismatches,
     findMismatches,
     layoutSchema,
     machineListSchema,
     seriesListSchema,
     shopListSchema,
+    titleListSchema,
     type Layout,
     type MachineList,
     type SeriesList,
     type Shop,
+    type TitleList,
 } from "./schema";
 
 /*
@@ -18,7 +21,8 @@ import {
  * 나중에 서버로 옮겨도 화면은 이 함수들만 쓰므로 여기만 바꾸면 된다.
  *
  *   /shops/index.json                       굿즈샵 목록
- *   /shops/series.json                      시리즈 목록
+ *   /shops/series.json                      시리즈 목록(가챠 카탈로그 — 종류·확률·평균 가격)
+ *   /shops/titles.json                      작품 목록(가챠 카탈로그)
  *   /shops/layouts/{shopId}/v{version}.json 매장 구조 (한 번 낸 버전은 바꾸지 않는다)
  *   /shops/machines/{shopId}.json           기기 내용
  */
@@ -65,6 +69,22 @@ async function readJson<T>(path: string, schema: ZodType<T>): Promise<T> {
 
 export async function loadShops(): Promise<Shop[]> {
     return (await readJson("/shops/index.json", shopListSchema)).shops;
+}
+
+export interface Catalog {
+    titles: TitleList;
+    series: SeriesList;
+}
+
+/** 가챠 카탈로그(작품·시리즈)를 읽는다. 시리즈가 없는 작품을 가리키면 던진다 */
+export async function loadCatalog(): Promise<Catalog> {
+    const [titles, series] = await Promise.all([
+        readJson("/shops/titles.json", titleListSchema),
+        readJson("/shops/series.json", seriesListSchema),
+    ]);
+    const problems = findCatalogMismatches(titles, series);
+    if (problems.length > 0) throw new ShopDataError("invalid", `카탈로그: ${problems[0]}`);
+    return { titles, series };
 }
 
 export interface ShopInterior {

@@ -1,8 +1,41 @@
 {
     "schemaVersion": 1,
     "series": [
-        { "id": "virtual-cats", "name": "(예시) 졸린 고양이 피규어", "price": 3000 },
-        { "id": "virtual-bread", "name": "(예시) 갓 구운 빵 키링", "price": 4000 },
+        {
+            "id": "virtual-cats",
+            "name": "(예시) 졸린 고양이 피규어",
+            "price": 3000,
+            "priceShops": 2,
+            "priceJpy": 300,
+            "titleId": "nemo-original",
+            "aliases": ["(例) ねむねこフィギュア"],
+            "maker": "(예시) 네모토이",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                { "id": "nap", "name": "낮잠" },
+                { "id": "yawn", "name": "하품" },
+                { "id": "stretch", "name": "기지개" },
+                { "id": "loaf", "name": "식빵" },
+                { "id": "knead", "name": "꾹꾹이" },
+                { "id": "moon", "name": "달빛 고양이", "secret": true }
+            ],
+            "sources": ["(예시) 공식 페이지 주소나 '홍대 ○○샵 대지'처럼 확인한 곳을 적는다"],
+            "checkedAt": "2026-11-23"
+        },
+        {
+            "id": "virtual-bread",
+            "name": "(예시) 갓 구운 빵 키링",
+            "price": 4000,
+            "titleId": "nemo-original",
+            "kind": "gacha",
+            "lineup": [
+                { "id": "croissant", "name": "크루아상" },
+                { "id": "melon", "name": "멜론빵" },
+                { "id": "baguette", "name": "바게트" },
+                { "id": "gold", "name": "황금 크루아상", "secret": true, "odds": 0.0417 }
+            ]
+        },
         { "id": "virtual-chairs", "name": "(예시) 미니 의자 컬렉션", "price": 3000 },
         { "id": "virtual-fish", "name": "(예시) 심해어 마스코트", "price": 5000 },
         { "id": "virtual-signs", "name": "(예시) 골목 간판 미니어처", "price": 4000 },
