@@ -92,8 +92,9 @@ export default function LaunchSplash() {
                         strokeWidth="5"
                         strokeLinejoin="round"
                     />
-                    <circle cx="32.5" cy="64" r="4.6" fill="#f0c1b2" opacity="0.8" />
-                    <circle cx="67.5" cy="64" r="4.6" fill="#f0c1b2" opacity="0.8" />
+                    {/* 볼터치는 앱 색을 따른다 — <head> 스크립트가 React 보다 먼저 변수를 칠해 두어 켜는 순간부터 같은 색이다 */}
+                    <circle cx="32.5" cy="64" r="4.6" style={{ fill: "rgb(var(--color-cheek))" }} opacity="0.8" />
+                    <circle cx="67.5" cy="64" r="4.6" style={{ fill: "rgb(var(--color-cheek-2))" }} opacity="0.8" />
                     <circle cx="41" cy="57" r="3.8" fill="#1c1b19" />
                     <circle cx="59" cy="57" r="3.8" fill="#1c1b19" />
                     <path

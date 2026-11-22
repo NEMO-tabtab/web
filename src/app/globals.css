@@ -14,8 +14,15 @@
     --color-ink: #1c1b19; /* 먹선·채움 버튼 */
     --color-ink-soft: #8b8680; /* 보조 텍스트 */
     --color-line: #e9e7e2; /* 옅은 구분선 */
-    --color-cheek: #f0c1b2; /* 볼터치 — 유일한 포인트 컬러 */
     --color-danger: #d0554e; /* 삭제·오류 */
+
+    /* ---- 앱 색(물들이기) — 등록한 물건 사진의 색으로 실행 중에 바뀌는 변수 ----
+     * src/lib/tint 가 <html> 에 같은 이름으로 덮어쓴다. 여기 값은 꺼져 있을 때의 모습이라
+     * 지금까지의 흑백 화면과 똑같아야 한다. 투명도를 붙일 수 있게 "r g b" 채널만 적는다. */
+    --color-cheek: 240 193 178; /* 볼터치 — 유일한 포인트 컬러 (#f0c1b2). tailwind 의 cheek 이 이 값을 읽는다 */
+    --color-cheek-2: var(--color-cheek); /* 캐릭터의 오른쪽 볼 — 여러 색을 함께 칠할 때만 달라진다 */
+    --color-accent: 28 27 25; /* 포인트 선(제목 낙서 밑줄) — 기본은 먹(ink) */
+    --color-wash: 255 255 255; /* 화면 바탕 — 기본은 paper. 카드(bg-paper)는 그대로 흰색이라 바탕만 살짝 물든다 */
 }
 
 /* 손글씨 디스플레이(개구체)는 획이 가늘어 굵게 기본 */
@@ -25,13 +32,25 @@
 }
 
 body {
-    background: var(--color-paper);
+    background: rgb(var(--color-wash));
     color: var(--color-ink);
     /* 앱처럼 — 버튼·제목 같은 UI 글자는 드래그나 길게 눌러도 선택되지 않게 한다.
        iOS 의 길게 누르기 메뉴(링크·이미지 미리보기)도 함께 끈다. */
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
+}
+
+/* 물감 번짐 — 여러 색을 함께 칠할 때 바탕 귀퉁이에 색이 번진다(--tint-bloom 이 없으면 아무것도 없다).
+ * 화면에 고정해 스크롤해도 번진 자리가 그대로다. z-index -1 이라 본문과 카드 아래, 바탕 위에 깔린다
+ * (body 의 바탕은 캔버스로 올라가 그려지므로 그보다 위다). */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: var(--tint-bloom, none);
 }
 
 /* 사용자가 직접 입력하는 칸은 선택·복사·붙여넣기가 그대로 되어야 한다.
@@ -136,10 +155,38 @@ nav[aria-label="주요 메뉴"] svg {
     right: -2%;
     bottom: -5px;
     height: 7px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='7' preserveAspectRatio='none'%3E%3Cpath d='M2 5 Q22 1.5 45 4 T85 3.5 T118 4.5' fill='none' stroke='%231c1b19' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-size: 100% 7px;
+    /* 선 모양은 마스크로, 색은 바탕으로 칠한다 — data URI 안의 stroke 에는 CSS 변수를 쓸 수 없어서다.
+     * 한 색이면 포인트 선 색, 여러 색이면 모은 비율대로 나눈 색 띠(--tint-stripe). 꺼져 있으면 지금처럼 먹선이다. */
+    background: var(--tint-stripe, rgb(var(--color-accent)));
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='7' preserveAspectRatio='none'%3E%3Cpath d='M2 5 Q22 1.5 45 4 T85 3.5 T118 4.5' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")
+        no-repeat 0 0 / 100% 7px;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='7' preserveAspectRatio='none'%3E%3Cpath d='M2 5 Q22 1.5 45 4 T85 3.5 T118 4.5' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")
+        no-repeat 0 0 / 100% 7px;
     pointer-events: none;
+}
+
+/* 하단 메뉴의 현재 탭 — 앱 색이 칠해졌을 때만 아이콘 뒤에 볼터치 색 알약이 깔린다.
+ * 꺼져 있으면 아무것도 그리지 않아 지금처럼 획 두께로만 현재 탭을 보인다.
+ * 알약은 ::before 라 아이콘 크기와 줄 간격을 바꾸지 않는다. 내비가 isolate 라 내비 바탕 위에 깔린다. */
+.tint-mark {
+    position: relative;
+}
+.tint-mark::before {
+    content: "";
+    position: absolute;
+    inset: -3px -12px;
+    z-index: -1;
+    border-radius: 9999px;
+    background-color: transparent;
+    transition: background-color 200ms ease;
+}
+:root[data-tint] [aria-current="page"] > .tint-mark::before {
+    background-color: rgb(var(--color-cheek) / 0.9);
+}
+@media (prefers-reduced-motion: reduce) {
+    .tint-mark::before {
+        transition: none;
+    }
 }
 
 /* 눌림 피드백 — 종이를 누르는 느낌.

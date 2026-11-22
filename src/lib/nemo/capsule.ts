@@ -70,7 +70,8 @@ const MOUTHS = {
 
 const CHEEKS: readonly Stroke[] = [
     { d: circle(cx - 10.8, 45.6, 3), fill: "cheek", opacity: FACE.cheekOpacity },
-    { d: circle(cx + 10.8, 45.6, 3), fill: "cheek", opacity: FACE.cheekOpacity },
+    // 오른쪽 볼은 네모와 같이 둘째 색을 받는다(types.ts 의 Paint)
+    { d: circle(cx + 10.8, 45.6, 3), fill: "cheek2", opacity: FACE.cheekOpacity },
 ];
 
 /** 뚜껑에 비친 빛 — 속이 비치는 플라스틱 캡슐이라는 표시. 뚜껑과 함께 움직인다 */

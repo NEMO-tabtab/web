@@ -2,7 +2,17 @@ import React from "react";
 
 import { cn } from "@/lib/cn";
 import { COLORS } from "@/lib/nemo/geometry";
-import type { Drawing, Stroke } from "@/lib/nemo/types";
+import type { Drawing, Paint, Stroke } from "@/lib/nemo/types";
+
+/**
+ * 화면에서는 볼터치를 앱 색(src/lib/tint)의 변수로 칠한다 — 도라에몽을 모으면 볼이 파랗게 물든다.
+ * fill 속성에는 CSS 변수를 쓸 수 없어 style 로 덮는다. 꺼져 있으면 변수 기본값이 COLORS 와 같은 #f0c1b2 다.
+ * 내려받는 그림(exportSvg)은 COLORS 의 원래 색 그대로 둔다.
+ */
+const LIVE_FILL: Partial<Record<Paint, React.CSSProperties>> = {
+    cheek: { fill: "rgb(var(--color-cheek))" },
+    cheek2: { fill: "rgb(var(--color-cheek-2))" },
+};
 
 export interface NemoSvgProps {
     drawing: Drawing;
@@ -22,6 +32,7 @@ export function StrokePaths({ strokes }: { strokes: readonly Stroke[] }) {
                     key={index}
                     d={stroke.d}
                     fill={stroke.fill ? COLORS[stroke.fill] : "none"}
+                    style={stroke.fill ? LIVE_FILL[stroke.fill] : undefined}
                     fillOpacity={stroke.opacity}
                     stroke={stroke.w ? COLORS.ink : "none"}
                     strokeWidth={stroke.w}

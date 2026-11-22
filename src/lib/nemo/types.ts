@@ -3,8 +3,11 @@
  * 그림은 `Icon`(src/components/common/Icon.tsx)처럼 "획의 목록"으로 두고, 컴포넌트는 그리기만 한다.
  */
 
-/** 칠하는 색의 이름. 실제 값은 geometry.ts 의 COLORS 한 곳에 있다 */
-export type Paint = "ink" | "paper" | "cheek" | "cream";
+/**
+ * 칠하는 색의 이름. 실제 값은 geometry.ts 의 COLORS 한 곳에 있다.
+ * cheek2 는 오른쪽 볼이다 — 앱 색(#153)이 여러 색을 칠할 때만 왼쪽 볼과 달라진다.
+ */
+export type Paint = "ink" | "paper" | "cheek" | "cheek2" | "cream";
 
 /** 한 획 — 패스 하나와 그 선·채움. 선은 늘 먹색이다 */
 export interface Stroke {
