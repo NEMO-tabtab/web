@@ -18,6 +18,7 @@
 | 모서리 2개 | `rounded-nemo`, `rounded-full` | 쓰인 곳 28 : 32, 그 밖의 값은 1곳 |
 | 포커스 링 | `outline-3` (3px) | |
 | 손그림 장치 | `.sticker`, `.field`, `.scribble`, `.wavy-edge`, `.paste-grid` | `src/app/globals.css` |
+| 아이콘 | `Icon` (`@/components/common`), 카테고리는 `categoryIcon()` | 먹선 2px·손그림 필터. 목록은 `/design-system/icons` |
 
 ## 규칙
 
@@ -40,7 +41,7 @@
 - 예시: 정리할 값 — `text-[12px]` 7곳, `[11.5px]` 3곳, `[10.5px]`·`[13.5px]`·`[10px]`·`[17px]` 각 1곳.
 
 **U4. 공통 부품을 먼저 쓴다**
-- 규칙: 버튼·입력·카드·모달·탭은 `@/components/common`의 부품을 쓰고, 맞는 부품이 없으면 화면에 따로 만들기 전에 공통 부품에 변형을 더한다. `Modal`, `Tabs`, `BottomNavigation`은 `@/components/common/Modal`처럼 직접 경로로 가져온다.
+- 규칙: 버튼·입력·카드·모달·탭은 `@/components/common`의 부품을 쓰고, 맞는 부품이 없으면 화면에 따로 만들기 전에 공통 부품에 변형을 더한다. 아이콘은 `Icon`을 쓴다 — 새 코드에서 컬러 이모지와 아이콘 폰트(`xi-*`)를 쓰지 않고, 없는 아이콘은 `Icon`에 같은 결로 더한다(#175). `Modal`, `Tabs`, `BottomNavigation`은 `@/components/common/Modal`처럼 직접 경로로 가져온다.
 - 이유: P5. 직접 경로의 까닭은 `src/components/common/index.ts`의 주석에 있다.
 - 강도: 권장 / 확인: 리뷰
 - 예시: 화면 코드의 날 `<button>`·`<input>`은 2개 파일에만 남아 있다(`ProductForm.tsx`, `src/app/(user)/user-info/myPage.tsx`). 예전 필터 `Filter.tsx`는 #85에서 지웠다. 검색 칸의 지우기 버튼은 화면에 따로 만들지 않고 `Input`에 `trailing` 자리를 더해 넣었다(#85).

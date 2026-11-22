@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Icon } from "./Icon";
 import { IconTile } from "./IconTile";
 import { cn } from "@/lib/cn";
 
@@ -24,7 +25,7 @@ export function ErrorState({ title, description, action, className }: ErrorState
             )}
         >
             <IconTile size="lg" tone="danger">
-                ⚠️
+                <Icon name="warning" />
             </IconTile>
             <p className="font-display text-lg leading-snug">{title}</p>
             {description && <p className="text-ink-soft max-w-sm text-[13px] leading-relaxed">{description}</p>}

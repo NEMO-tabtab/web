@@ -3,19 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { DevEntrance } from "@/components/dev/DevEntrance";
-import { Card, PageHeader, PageShell, Section, StatTile, Text } from "@/components/common";
+import { Card, Icon, PageHeader, PageShell, Section, StatTile, Text, categoryIcon } from "@/components/common";
 import { useProducts } from "@/lib/db/hooks";
 
 import { AccountSection, ProfileCard } from "./AccountSection";
 import { BackupSection } from "./BackupSection";
 import { PolicySection } from "./PolicySection";
-
-const CATEGORY_ICONS: Record<string, string> = {
-    전자기기: "💻",
-    가구: "🪑",
-    의류: "👕",
-    도서: "📚",
-};
 
 /** 계정 진입점 — 전역 떠 있는 메뉴가 사라져 로그인·회원가입은 이 페이지에서만 들어간다 */
 const ACCOUNT_LINKS = [
@@ -87,9 +80,8 @@ export default function MyPage() {
                     <div className="paste-grid grid grid-cols-2 gap-3 sm:grid-cols-3">
                         {categories.map(([name, count]) => (
                             <Card key={name} padding="sm" className="space-y-1 text-center">
-                                <span aria-hidden="true" className="block text-3xl leading-none">
-                                    {CATEGORY_ICONS[name] ?? "📦"}
-                                </span>
+                                {/* 컬러 이모지 대신 앱 전용 손그림 아이콘 — 색은 먹 하나뿐이다 */}
+                                <Icon name={categoryIcon(name)} className="mx-auto block text-3xl" />
                                 <Text size="sm" weight="bold">
                                     {name}
                                 </Text>

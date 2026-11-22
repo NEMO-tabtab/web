@@ -33,6 +33,9 @@ export type { ErrorStateProps } from "./ErrorState";
 export { FAB, fabSizes, fabVariants } from "./FAB";
 export type { FABProps, FabVariant } from "./FAB";
 
+export { ICON_NAMES, Icon, categoryIcon } from "./Icon";
+export type { IconName, IconProps } from "./Icon";
+
 export { IconTile, iconTileShapes, iconTileSizes, iconTileTones } from "./IconTile";
 export type { IconTileProps } from "./IconTile";
 
