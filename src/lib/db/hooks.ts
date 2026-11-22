@@ -25,6 +25,20 @@ export function useProductImages(productId: string | null | undefined): ProductI
     return useLiveQuery(async () => (productId ? listImages(productId) : []), [productId]);
 }
 
+export interface ProductCover {
+    product: Product;
+    /** 대표 사진. 사진이 없는 물건이면 undefined */
+    cover: ProductImage | undefined;
+}
+
+/** 물건마다 대표 사진을 함께 — 앱 색(src/lib/tint)이 사진에서 색을 뽑을 때 쓴다. 읽기만 한다 */
+export function useProductCovers(): ProductCover[] | undefined {
+    return useLiveQuery(async () => {
+        const products = await listProducts();
+        return Promise.all(products.map(async (product) => ({ product, cover: await getCoverImage(product.id) })));
+    }, []);
+}
+
 /** Blob 을 화면에 붙일 URL 로 바꾸고, 쓰임이 끝나면 해제한다 */
 export function useObjectUrl(blob: Blob | null | undefined): string | undefined {
     const [url, setUrl] = useState<string>();
