@@ -63,12 +63,12 @@ export default function MyPage() {
             <section className="grid grid-cols-2 gap-3">
                 <StatTile
                     emphasis
-                    icon={<i className="xi-box" aria-hidden="true" />}
+                    icon={<Icon name="box" />}
                     label="등록한 물건"
                     value={products ? `${products.length}개` : "…"}
                 />
                 <StatTile
-                    icon={<i className="xi-server" aria-hidden="true" />}
+                    icon={<Icon name="storage" />}
                     label="저장 공간 사용"
                     value={usageMb === null ? "—" : `${usageMb < 0.1 ? "0.1 미만" : usageMb.toFixed(1)}MB`}
                 />

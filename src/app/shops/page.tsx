@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { Button, EmptyState, ErrorState, PageHeader, PageShell, Skeleton } from "@/components/common";
+import { Button, EmptyState, ErrorState, Icon, PageHeader, PageShell, Skeleton } from "@/components/common";
 import { ShopMap } from "@/components/shop/ShopMap";
 import { ShopDataError, loadShops } from "@/lib/shops/load";
 import type { Shop } from "@/lib/shops/schema";
@@ -119,7 +119,7 @@ function ShopRow({ shop }: { shop: Shop }) {
         >
             {text}
             <span className="shrink-0 text-[13px] font-bold">내부 지도</span>
-            <i className="xi-angle-right-min shrink-0 text-lg text-ink-soft" aria-hidden="true" />
+            <Icon name="chevron-right" className="shrink-0 text-lg text-ink-soft" />
         </Link>
     );
 }

@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-import { FAB } from "@/components/common";
+import { FAB, Icon } from "@/components/common";
 
 /**
  * 물건 등록 퀵 메뉴 — 떠 있는 바코드 스캔·등록 버튼.
@@ -22,13 +22,13 @@ export function RegisterQuickMenu() {
                 href="/barcode"
                 variant="solid"
                 aria-label="바코드 스캔"
-                icon={<i className="xi-barcode text-2xl" aria-hidden="true" />}
+                icon={<Icon name="barcode" className="text-2xl" />}
             />
             <FAB
                 href="/product/add"
                 variant="ink"
                 aria-label="제품 등록"
-                icon={<i className="xi-plus text-2xl font-bold" aria-hidden="true" />}
+                icon={<Icon name="plus" className="text-2xl" strokeWidth={2.6} />}
             />
         </div>
     );

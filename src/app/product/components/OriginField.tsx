@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
-import { Button, Card, Heading } from "@/components/common";
+import { Button, Card, Heading, Icon } from "@/components/common";
 import { OriginPicker } from "@/components/shop/OriginPicker";
 import type { ProductOrigin } from "@/lib/db";
 import { originHref, originLabel } from "@/lib/shops/origin";
@@ -30,7 +30,7 @@ export function OriginField({ value, onPick, onClear, notice }: OriginFieldProps
             {value ? (
                 <>
                     <div className="flex items-start gap-2.5 rounded-nemo border border-line bg-cream px-3 py-2.5">
-                        <i className="xi-maker text-lg leading-6" aria-hidden="true" />
+                        <Icon name="map-pin" className="text-lg leading-6" />
                         <div className="min-w-0 flex-1">
                             <p className="break-keep text-sm font-bold">{originLabel(value)}</p>
                             {value.seriesName && <p className="mt-0.5 text-[13px] text-ink-soft">{value.seriesName}</p>}
@@ -40,7 +40,7 @@ export function OriginField({ value, onPick, onClear, notice }: OriginFieldProps
                                 className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-bold text-ink underline underline-offset-2"
                             >
                                 내부 지도에서 보기
-                                <i className="xi-angle-right-min" aria-hidden="true" />
+                                <Icon name="chevron-right" />
                             </Link>
                         </div>
                     </div>
@@ -70,7 +70,7 @@ export function OriginField({ value, onPick, onClear, notice }: OriginFieldProps
                         variant="secondary"
                         size="sm"
                         shape="pill"
-                        leftIcon={<i className="xi-maker" aria-hidden="true" />}
+                        leftIcon={<Icon name="map-pin" />}
                         onClick={() => setPicking(true)}
                     >
                         굿즈샵·기기 고르기

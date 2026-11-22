@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { Button, LoadingState, Price } from "@/components/common";
+import { Button, Icon, LoadingState, Price } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
 import { Tabs } from "@/components/common/Tabs";
 import type { ProductOrigin } from "@/lib/db";
@@ -91,7 +91,7 @@ export function OriginPicker({ open, onClose, onPick }: OriginPickerProps) {
                     size="sm"
                     shape="pill"
                     className="-ml-2 mb-3"
-                    leftIcon={<i className="xi-arrow-left" aria-hidden="true" />}
+                    leftIcon={<Icon name="arrow-left" />}
                     onClick={() =>
                         setStep(
                             step.kind === "tiers"
@@ -189,7 +189,7 @@ function ShopStep({
                                 {[shop.address, shop.floorNote].filter(Boolean).join(" · ")}
                             </span>
                         </span>
-                        <i className="xi-angle-right-min shrink-0 text-lg text-ink-soft" aria-hidden="true" />
+                        <Icon name="chevron-right" className="shrink-0 text-lg text-ink-soft" />
                     </button>
                 </li>
             ))}
