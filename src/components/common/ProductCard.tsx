@@ -2,6 +2,7 @@ import React from "react";
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 
+import { Icon } from "./Icon";
 import { Price } from "./Price";
 import { cn } from "@/lib/cn";
 
@@ -15,7 +16,7 @@ export interface ProductCardProps {
      * 최적화 결과는 서버가 그때그때 만들어 서비스 워커가 미리 받아 둘 수 없지만, 원본 파일은 미리 받아 둔다.
      */
     imageUnoptimized?: boolean;
-    /** 이미지가 없을 때 보여줄 이모지 (기본값 📦) */
+    /** 이미지가 없을 때 보여줄 그림 (기본값: 상자 아이콘). 이모지 대신 `Icon` 을 쓴다 */
     fallbackIcon?: React.ReactNode;
     description?: string;
     /** 이름 아래 메타 정보 (위치·카테고리 등) */
@@ -39,7 +40,7 @@ export function ProductCard({
     price,
     imageSrc,
     imageUnoptimized,
-    fallbackIcon = "📦",
+    fallbackIcon = <Icon name="box" />,
     description,
     meta,
     badge,
