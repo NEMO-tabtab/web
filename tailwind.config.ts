@@ -6,7 +6,7 @@ import type { Config } from "tailwindcss";
  *   - 이 파일       → 유틸리티 이름을 만든다 (bg-paper, text-ink-soft, rounded-nemo …)
  *   - globals.css 의 :root → raw CSS 규칙(.sticker · .field · body)이 참조할 변수
  * v4 의 @theme 는 이 둘을 한 번에 했지만 v3 에는 그런 장치가 없다.
- * 색을 고칠 때는 반드시 양쪽을 같이 고칠 것. */
+ * 색을 고칠 때는 반드시 양쪽을 같이 고칠 것. 단, cheek 은 globals.css 의 변수만 원본이다(아래 주석). */
 const config: Config = {
     content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
     theme: {
@@ -24,8 +24,10 @@ const config: Config = {
                 },
                 /** 옅은 구분선 */
                 line: "#e9e7e2",
-                /** 볼터치 — 유일한 포인트 컬러 */
-                cheek: "#f0c1b2",
+                /** 볼터치 — 유일한 포인트 컬러. 기본 #f0c1b2.
+                 * 앱 색(src/lib/tint)이 실행 중에 캐릭터 색으로 갈아 끼우므로 값은 globals.css 의 변수 한 곳에만 둔다.
+                 * 채널만 담은 변수라 `bg-cheek/60` 같은 투명도도 그대로 붙는다. */
+                cheek: "rgb(var(--color-cheek) / <alpha-value>)",
                 /** 삭제·오류 */
                 danger: "#d0554e",
             },

@@ -67,7 +67,7 @@ export const MOUTHS = {
 const cheeks = (r: number, opacity: number): Stroke[] => [
     // 왼쪽·오른쪽을 따로 둔다 — 두 볼의 색이 달라질 수 있다(#153)
     { d: circle(FACE.cheekLeftX, FACE.cheekY, r), fill: "cheek", opacity },
-    { d: circle(FACE.cheekRightX, FACE.cheekY, r), fill: "cheek", opacity },
+    { d: circle(FACE.cheekRightX, FACE.cheekY, r), fill: "cheek2", opacity },
 ];
 
 /** 볼터치 */

@@ -4,8 +4,10 @@ import { Gaegu, Noto_Sans_KR } from "next/font/google";
 import AppChrome from "./components/AppChrome";
 import LaunchSplash from "./components/LaunchSplash";
 import StoragePersist from "./components/StoragePersist";
+import TintProvider from "./components/TintProvider";
 import BottomNavigation from "@/components/common/BottomNavigation";
 import { RegisterQuickMenu } from "@/components/product/RegisterQuickMenu";
+import { TINT_BOOT_SCRIPT } from "@/lib/tint/storage";
 import "./globals.css";
 
 const hand = Gaegu({
@@ -47,7 +49,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="ko" className={`${hand.variable} ${noto.variable} antialiased`}>
+        // 앱 색(TINT_BOOT_SCRIPT)이 React 보다 먼저 <html> 의 style 과 data-tint 를 바꾼다 — 그 차이는 경고하지 않게 한다
+        <html lang="ko" className={`${hand.variable} ${noto.variable} antialiased`} suppressHydrationWarning>
+            <head>
+                {/* 지난번에 칠한 앱 색을 첫 화면부터 — 흑백이 잠깐 보였다가 색이 드는 깜빡임을 막는다 */}
+                <script dangerouslySetInnerHTML={{ __html: TINT_BOOT_SCRIPT }} />
+            </head>
             <body className="font-sans">
 
                 {/* 손그림 러프 라인 — SVG 변위 필터 정의 (캐릭터·아이콘이 참조) */}
@@ -79,13 +86,15 @@ export default function RootLayout({
 
                 {/* 좁은 화면은 하단 탭 바, 넓은 화면은 왼쪽 세로 레일.
                     전환은 뷰포트 리사이즈라 CSS만으로 즉시 따라간다. */}
-                <div className="mx-auto flex min-h-dvh w-full max-w-[1600px]">
-                    <AppChrome>
-                        <BottomNavigation />
-                        <RegisterQuickMenu />
-                    </AppChrome>
-                    <div className="w-full min-w-0 flex-1 pb-16 sm:pb-0">{children}</div>
-                </div>
+                <TintProvider>
+                    <div className="mx-auto flex min-h-dvh w-full max-w-[1600px]">
+                        <AppChrome>
+                            <BottomNavigation />
+                            <RegisterQuickMenu />
+                        </AppChrome>
+                        <div className="w-full min-w-0 flex-1 pb-16 sm:pb-0">{children}</div>
+                    </div>
+                </TintProvider>
                 <StoragePersist />
             </body>
         </html>

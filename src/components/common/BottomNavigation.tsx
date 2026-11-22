@@ -108,14 +108,15 @@ export default function BottomNavigation({ preview = false }: BottomNavigationPr
     /* 좁은 화면 = 화면 최하단 고정 탭 바.
        넓은 화면 = 왼쪽 세로 레일 — 흐름 안에 들어가 본문이 남는 가로 공간을 그대로 쓴다.
        레일 모드는 static이 아니라 relative — 물결 ::before(absolute)가 내비 자신을
-       기준으로 잡혀야 오른쪽 -3px이 레일 경계에 붙는다. */
+       기준으로 잡혀야 오른쪽 -3px이 레일 경계에 붙는다.
+       isolate — 현재 탭 알약(.tint-mark, z-index -1)이 내비 흰 바탕 아래로 숨지 않게 내비 안에 가둔다. */
     return (
         <nav
             aria-label="주요 메뉴"
             className={
                 preview
-                    ? "wavy-edge bg-paper relative w-full"
-                    : "wavy-edge pb-safe bg-paper fixed inset-x-0 bottom-0 z-40 sm:relative sm:inset-x-auto sm:w-[92px] sm:shrink-0 sm:pb-0"
+                    ? "wavy-edge bg-paper relative isolate w-full"
+                    : "wavy-edge pb-safe bg-paper isolate fixed inset-x-0 bottom-0 z-40 sm:relative sm:inset-x-auto sm:w-[92px] sm:shrink-0 sm:pb-0"
             }
         >
             <div
@@ -136,7 +137,10 @@ export default function BottomNavigation({ preview = false }: BottomNavigationPr
                                 active ? "text-ink font-bold" : "text-ink-soft"
                             }`}
                         >
-                            <Icon active={active} />
+                            {/* 앱 색이 칠해지면 현재 탭 아이콘 뒤에 볼터치 색 알약이 깔린다(globals.css 의 .tint-mark) */}
+                            <span className="tint-mark inline-flex">
+                                <Icon active={active} />
+                            </span>
                             {label}
                         </Link>
                     );

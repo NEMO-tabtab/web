@@ -14,6 +14,8 @@ export const COLORS = {
     ink: "#1c1b19",
     paper: "#ffffff",
     cheek: "#f0c1b2",
+    /** 오른쪽 볼. 내려받는 그림에서는 cheek 과 같다 — 화면에서만 앱 색을 따른다(NemoSvg) */
+    cheek2: "#f0c1b2",
     cream: "#f7f6f3",
 } as const;
 
