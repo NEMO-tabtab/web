@@ -43,7 +43,7 @@
 - 규칙: 버튼·입력·카드·모달·탭은 `@/components/common`의 부품을 쓰고, 맞는 부품이 없으면 화면에 따로 만들기 전에 공통 부품에 변형을 더한다. `Modal`, `Tabs`, `BottomNavigation`은 `@/components/common/Modal`처럼 직접 경로로 가져온다.
 - 이유: P5. 직접 경로의 까닭은 `src/components/common/index.ts`의 주석에 있다.
 - 강도: 권장 / 확인: 리뷰
-- 예시: 화면 코드의 날 `<button>`·`<input>`은 3개 파일에만 남아 있다(`src/app/product/components/Filter.tsx`, `ProductForm.tsx`, `src/app/(user)/user-info/myPage.tsx`).
+- 예시: 화면 코드의 날 `<button>`·`<input>`은 2개 파일에만 남아 있다(`ProductForm.tsx`, `src/app/(user)/user-info/myPage.tsx`). 예전 필터 `Filter.tsx`는 #85에서 지웠다. 검색 칸의 지우기 버튼은 화면에 따로 만들지 않고 `Input`에 `trailing` 자리를 더해 넣었다(#85).
 
 **U5. 데이터를 읽는 화면은 세 가지 상태를 모두 그린다**
 - 규칙: 읽는 중에는 `Skeleton`, 비었으면 `EmptyState`, 실패하면 `ErrorState`를 보여 준다. 로딩 자리는 실제 내용과 같은 크기로 잡는다.

@@ -32,6 +32,7 @@ import {
     type ProductInput,
 } from "@/lib/db/products";
 import { compressImage } from "@/lib/image";
+import { productListHref } from "@/lib/productSearch";
 import type { Series } from "@/lib/shops/schema";
 import { OriginField } from "./OriginField";
 
@@ -305,7 +306,8 @@ export default function ProductForm(props: ProductFormProps) {
                 });
             }
 
-            router.push("/product");
+            // 수정은 보던 목록(검색어·정렬·필터)으로 돌아간다. 새로 등록한 물건은 조건에 걸려 안 보일 수 있어 전체 목록으로 간다
+            router.push(props.mode === "edit" ? productListHref() : "/product");
         } catch (error) {
             console.error(`${mode === "add" ? "등록" : "수정"} 실패:`, error);
             alert(`제품 ${mode === "add" ? "등록" : "수정"}에 실패했습니다.`);
@@ -317,7 +319,7 @@ export default function ProductForm(props: ProductFormProps) {
     const handleDelete = async () => {
         if (props.mode !== "edit") return;
         // 먼저 목록으로 떠난다 — 지우고 나서 떠나면 이 화면이 잠깐 "찾을 수 없어요" 로 바뀐다
-        router.replace("/product");
+        router.replace(productListHref());
         try {
             await deleteProduct(props.product.id);
         } catch (error) {
@@ -338,7 +340,7 @@ export default function ProductForm(props: ProductFormProps) {
         <PageShell className="space-y-6">
             {/* 내비가 숨는 몰입 화면이라 빠져나갈 길을 헤더가 책임진다.
                 설치형 PWA(display: fullscreen)에는 주소창도 뒤로가기도 없다. */}
-            <PageHeader title={pageTitle} description={pageDescription} backHref="/product" />
+            <PageHeader title={pageTitle} description={pageDescription} backHref={productListHref()} />
 
             {barcodeNotice && (
                 <Text size="sm" tone={barcodeNotice.tone} weight="bold" role="status">
