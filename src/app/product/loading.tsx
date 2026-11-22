@@ -9,6 +9,9 @@ export default function Loading() {
                 <Skeleton className="h-4 w-10" />
             </div>
 
+            {/* 검색 칸 자리 */}
+            <Skeleton className="h-12 w-full rounded-nemo" />
+
             {/* 카드가 채워질 때와 같은 기울기를 미리 준다 */}
             <div className="paste-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(9.75rem,1fr))]">
                 {Array.from({ length: 8 }).map((_, index) => (

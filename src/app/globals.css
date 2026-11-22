@@ -202,6 +202,15 @@ nav[aria-label="주요 메뉴"] svg {
     padding: 0.625rem 0.875rem;
     font-size: 15px;
 }
+/* 검색 칸 — 브라우저 기본 모양과 지우기 버튼을 걷어 낸다. 지우기는 Input 의 trailing 버튼이 맡는다 */
+input[type="search"].field {
+    -webkit-appearance: none;
+    appearance: none;
+}
+input[type="search"].field::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
 .field:focus-visible {
     outline: 3px solid var(--color-ink);
     outline-offset: 2px;

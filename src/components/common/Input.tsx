@@ -9,6 +9,8 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
     hint?: string;
     fullWidth?: boolean;
     icon?: React.ReactNode;
+    /** 칸 오른쪽 끝에 붙는 요소. icon 과 달리 누를 수 있다(검색어 지우기 버튼 등) */
+    trailing?: React.ReactNode;
 }
 
 /**
@@ -23,7 +25,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
  * 나머지(글자색·placeholder)는 평범한 유틸리티로 얹는다.
  */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ label, error, hint, fullWidth = true, className, icon, id, ...props }, ref) => {
+    ({ label, error, hint, fullWidth = true, className, icon, trailing, id, ...props }, ref) => {
         const describedBy = id ? (error ? `${id}-error` : hint ? `${id}-hint` : undefined) : undefined;
 
         return (
@@ -50,11 +52,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                             "field text-ink placeholder:text-ink-soft block",
                             "disabled:!bg-cream disabled:text-ink-soft disabled:cursor-not-allowed",
                             icon && "!pl-10",
+                            trailing && "!pr-11",
                             error && "!border-danger",
                             className,
                         )}
                         {...props}
                     />
+                    {/* 라벨 안의 버튼을 눌러도 라벨이 입력 칸을 대신 누르지 않는다(누를 수 있는 요소는 제외되는 HTML 규칙) */}
+                    {trailing && (
+                        <span className="absolute inset-y-0 right-0 flex items-center pr-1.5">{trailing}</span>
+                    )}
                 </span>
                 {error ? (
                     <span id={id ? `${id}-error` : undefined} className="text-danger mt-1.5 block text-xs">
