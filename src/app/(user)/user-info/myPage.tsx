@@ -9,6 +9,7 @@ import { useProducts } from "@/lib/db/hooks";
 import { AccountSection, ProfileCard } from "./AccountSection";
 import { BackupSection } from "./BackupSection";
 import { PolicySection } from "./PolicySection";
+import { TintSection } from "./TintSection";
 
 /** 계정 진입점 — 전역 떠 있는 메뉴가 사라져 로그인·회원가입은 이 페이지에서만 들어간다 */
 const ACCOUNT_LINKS = [
@@ -93,6 +94,8 @@ export default function MyPage() {
                     </div>
                 </Section>
             )}
+
+            <TintSection />
 
             <BackupSection />
 
