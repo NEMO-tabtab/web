@@ -2,6 +2,8 @@ import type { Layout, MachineList, SeriesList, ShopList } from "./schema";
 
 /*
  * 형식을 보여 주는 가짜 굿즈샵. 실제 매장이 아니다 — 테스트와 화면 개발에만 쓰고 public/ 에는 넣지 않는다.
+ * 칸은 처음 형식의 50cm 다. 새 구조는 25cm 칸에 표준 기계 크기로 쓴다(schema.ts 의 CELL_CM,
+ * 본보기는 public/shops/layouts/nemo-virtual/v2.json). 형식 검사는 칸 크기와 상관없어 여기는 그대로 둔다.
  *
  * 바닥 8×6칸(4m×3m). 북쪽 벽에 기기 자리 둘, 가운데 진열대, 남쪽 가운데가 입구.
  *

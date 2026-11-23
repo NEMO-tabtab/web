@@ -67,7 +67,25 @@ describe("매장 구조 검사", () => {
     it("칸 단위가 정수가 아니거나 형식 버전이 다르면 거른다", () => {
         expect(layoutSchema.safeParse(withFloor((floor) => (floor.slots[0].w = 1.5))).success).toBe(false);
         expect(layoutSchema.safeParse({ ...sampleLayout, schemaVersion: 2 }).success).toBe(false);
+    });
+
+    it("칸 크기는 25cm 와, 처음 낸 구조가 쓴 50cm 만 받는다", () => {
+        expect(layoutSchema.safeParse({ ...sampleLayout, cellCm: 25 }).success).toBe(true);
+        expect(layoutSchema.safeParse({ ...sampleLayout, cellCm: 50 }).success).toBe(true);
         expect(layoutSchema.safeParse({ ...sampleLayout, cellCm: 100 }).success).toBe(false);
+        expect(layoutSchema.safeParse({ ...sampleLayout, cellCm: undefined }).success).toBe(false);
+    });
+
+    it("교환기와 수거함을 받고, 앞이 향하는 쪽은 적어도 되고 빼도 된다", () => {
+        const withFixture = (fixture: object) =>
+            layoutSchema.safeParse(
+                withFloor((floor) => floor.fixtures.push({ x: 0, y: 4, w: 1, d: 1, h: 3, ...fixture } as never)),
+            ).success;
+
+        expect(withFixture({ id: "changer", kind: "changer", facing: "e" })).toBe(true);
+        expect(withFixture({ id: "bin", kind: "bin" })).toBe(true);
+        expect(withFixture({ id: "odd", kind: "fountain" })).toBe(false);
+        expect(withFixture({ id: "changer", kind: "changer", facing: "up" })).toBe(false);
     });
 });
 
@@ -215,6 +233,18 @@ describe("저장소에 든 실제 데이터 (public/shops)", () => {
         for (const file of jsonFiles("layouts")) {
             const layout = layoutSchema.parse(read(file));
             expect(file).toBe(path.join("layouts", layout.shopId, `v${layout.version}.json`));
+        }
+    });
+
+    it("25cm 칸 구조의 기기는 표준 기계 크기다 — 폭 1칸 × 깊이 2칸, 2단 5칸·3단 8칸", () => {
+        for (const file of jsonFiles("layouts")) {
+            const layout = layoutSchema.parse(read(file));
+            if (layout.cellCm !== 25) continue;
+            for (const slot of layout.floors.flatMap((floor) => floor.slots)) {
+                const eastWest = slot.facing === "n" || slot.facing === "s";
+                expect([slot.id, slot.w, slot.d]).toEqual([slot.id, eastWest ? 1 : 2, eastWest ? 2 : 1]);
+                expect([slot.id, slot.h]).toEqual([slot.id, { 2: 5, 3: 8 }[slot.tiers]]);
+            }
         }
     });
 });
