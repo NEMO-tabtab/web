@@ -10,7 +10,7 @@ import path from "node:path";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 
-import { applyReviewed, isCandidate, mergeCandidates, splitCsvLine, toCandidate } from "./candidates.mjs";
+import { FRANCHISES, applyReviewed, mergeCandidates, splitCsvLine, toCandidate } from "./candidates.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const CANDIDATES = path.join(here, "candidates.json");
@@ -19,6 +19,9 @@ const INDEX = path.join(here, "../../public/shops/index.json");
 const readJson = (file) => JSON.parse(readFileSync(file, "utf8"));
 const writeJson = (file, value) => writeFileSync(file, `${JSON.stringify(value, null, 4)}\n`);
 const readCandidates = () => (existsSync(CANDIDATES) ? readJson(CANDIDATES) : { source: "", candidates: [] });
+
+/** 후보일 수 있는 줄에만 있는 글자 — 규칙(candidates.mjs)의 낱말 첫 글자와 프랜차이즈 이름 */
+const QUICK = new RegExp(`[가갓캡뽑크gG]|캐[치칭]|${FRANCHISES.map((each) => each[0]).join("|")}`);
 
 async function readCsv(file) {
     const lines = createInterface({ input: createReadStream(file, "utf8"), crlfDelay: Infinity });
@@ -29,7 +32,7 @@ async function readCsv(file) {
     for await (const raw of lines) {
         const line = head ? raw : raw.replace(/^﻿/, "");
         // 대부분의 줄은 후보가 아니다 — 칸을 나누기 전에 먼저 거른다
-        if (head && !/[가갓캡gG]/.test(line)) continue;
+        if (head && !QUICK.test(line)) continue;
         const cells = splitCsvLine(line);
         if (!head) {
             head = cells;
@@ -40,7 +43,6 @@ async function readCsv(file) {
             continue;
         }
         const row = Object.fromEntries(head.map((key, index) => [key, cells[index]]));
-        if (!isCandidate(row)) continue;
         const candidate = toCandidate(row);
         if (!candidate) continue;
         found.push(candidate);
@@ -58,6 +60,9 @@ async function find(files) {
         const merged = mergeCandidates(candidates, found, sidos);
         candidates = merged.candidates;
         console.log(`${path.basename(file)}: 후보 ${found.length}곳, 새로 더함 ${merged.added.length}곳`);
+        for (const kind of ["gacha", "claw", "franchise"]) {
+            console.log(`  ${kind}: ${merged.added.filter((each) => each.kind === kind).length}곳`);
+        }
         if (broken > 0) console.log(`  칸 수가 맞지 않아 건너뛴 줄 ${broken}개`);
         for (const each of merged.gone)
             console.log(`  이번 자료에 없음(폐업했을 수 있음): ${each.name} — ${each.address}`);
@@ -71,10 +76,13 @@ async function find(files) {
 }
 
 function apply() {
-    const { index, added } = applyReviewed(readJson(INDEX), readCandidates().candidates);
+    const file = readCandidates();
+    const { index, candidates, added } = applyReviewed(readJson(INDEX), file.candidates);
     writeJson(INDEX, index);
+    // 매긴 id 를 검수 파일에도 남긴다 — 다음에 돌려도 같은 id 다
+    writeJson(CANDIDATES, { ...file, candidates });
     console.log(`굿즈샵 ${added.length}곳을 더했다 → ${path.relative(process.cwd(), INDEX)}`);
-    for (const shop of added) console.log(`  ${shop.name} — ${shop.address}`);
+    for (const shop of added) console.log(`  ${shop.id} ${shop.name} — ${shop.address}`);
     console.log("pnpm test 로 형식 검사를 돌려 주세요.");
 }
 
