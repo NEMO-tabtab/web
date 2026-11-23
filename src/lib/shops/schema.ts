@@ -5,7 +5,7 @@ import { z } from "zod";
  *
  * 바뀌는 주기별로 네 묶음으로 나눈다:
  *   굿즈샵 목록   이름·좌표. 어느 구조 버전이 최신인지도 여기서 가리킨다
- *   매장 구조     벽·진열대·기기 자리. 위에서 내려다본 2D 격자(1칸 = 50cm)
+ *   매장 구조     벽·진열대·기기 자리. 위에서 내려다본 2D 격자(1칸 = 25cm, 예전 구조는 50cm)
  *   기기 내용     자리마다 어떤 시리즈가 들어 있는지 — 자주 바뀐다
  *   시리즈        이름·가격. 기기는 시리즈를 복사하지 않고 id 로 가리킨다
  *
@@ -13,8 +13,20 @@ import { z } from "zod";
  */
 
 export const SHOP_SCHEMA_VERSION = 1;
-/** 격자 한 칸의 실제 길이(cm) */
-export const CELL_CM = 50;
+/**
+ * 격자 한 칸의 실제 길이(cm). 구조 파일마다 `cellCm` 으로 적는다.
+ * 새 구조는 25 — 가챠 기계 한 대의 폭(28~29cm)이 한 칸이라 기기를 제 크기로 적을 수 있다.
+ * 50 은 처음 낸 구조(nemo-virtual v1)가 쓴다. 한 번 낸 파일은 고치지 않으므로 계속 읽는다.
+ * 받는 값을 넓힌 것이라 SHOP_SCHEMA_VERSION 은 올리지 않았다 — 이미 낸 파일이 그대로 맞아 변환할 것이 없다.
+ */
+export const CELL_CM = 25;
+const cellCm = z.union([z.literal(CELL_CM), z.literal(50)]);
+
+/*
+ * 표준 가챠 기계를 25cm 칸으로 적는 법 (반다이 캡슐 스테이션 280×450×1300mm, 타카라토미아츠 Gacha.2 Ez 290×450×1275mm 기준):
+ *   바닥   폭 1칸 × 깊이 2칸 — 손잡이가 남·북을 보면 w 1, d 2 / 동·서를 보면 w 2, d 1
+ *   높이   2단 5칸(125cm), 3단 8칸(200cm)
+ */
 
 /** 주소·파일 경로에 들어가는 이름 — 영문 소문자·숫자·하이픈 */
 const id = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
@@ -33,17 +45,25 @@ const box = {
     w: size,
     /** 남북 길이(칸) */
     d: size,
-    /** 높이(칸). 4칸 = 2m */
+    /** 높이(칸) */
     h: size,
 };
 
-export const FIXTURE_KINDS = ["wall", "pillar", "counter", "shelf"] as const;
+/**
+ * 기기가 아닌 것들.
+ *   wall 벽 / pillar 기둥 / counter 계산대 / shelf 진열대
+ *   changer 동전·토큰 교환기 / bin 빈 캡슐 수거함 — 가챠샵이면 꼭 있는 것이라 따로 둔다
+ * 종류를 더하는 것도 받는 값을 넓히는 것이라 SHOP_SCHEMA_VERSION 을 올리지 않는다.
+ */
+export const FIXTURE_KINDS = ["wall", "pillar", "counter", "shelf", "changer", "bin"] as const;
 export const FACINGS = ["n", "e", "s", "w"] as const;
 
 const fixtureSchema = z.object({
     id,
     kind: z.enum(FIXTURE_KINDS),
     ...box,
+    /** 앞이 향하는 쪽 — 교환기처럼 앞뒤가 있는 것만 적는다. 그 면에 화면과 동전 나오는 곳을 그린다 */
+    facing: z.enum(FACINGS).optional(),
 });
 
 /** 가챠 기기가 놓이는 자리. 한 자리에 기기가 위로 여러 단 쌓인다 */
@@ -80,7 +100,7 @@ export const layoutSchema = z
         shopId: id,
         /** 구조가 바뀔 때마다 올린다. 한 번 낸 버전의 내용은 바꾸지 않는다 */
         version,
-        cellCm: z.literal(CELL_CM),
+        cellCm,
         floors: z.array(floorSchema).min(1),
     })
     .superRefine((layout, context) => {
