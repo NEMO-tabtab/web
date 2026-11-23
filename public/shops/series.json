@@ -5,6 +5,17 @@
         { "id": "virtual-bread", "name": "(예시) 갓 구운 빵 키링", "price": 4000 },
         { "id": "virtual-chairs", "name": "(예시) 미니 의자 컬렉션", "price": 3000 },
         { "id": "virtual-fish", "name": "(예시) 심해어 마스코트", "price": 5000 },
-        { "id": "virtual-signs", "name": "(예시) 골목 간판 미니어처", "price": 4000 }
+        { "id": "virtual-signs", "name": "(예시) 골목 간판 미니어처", "price": 4000 },
+        { "id": "virtual-umbrellas", "name": "(예시) 비 오는 날 우산 참", "price": 3000 },
+        { "id": "virtual-bento", "name": "(예시) 한입 도시락 미니어처", "price": 4000 },
+        { "id": "virtual-frogs", "name": "(예시) 개구리 합창단", "price": 3000 },
+        { "id": "virtual-trams", "name": "(예시) 꼬마 전차 컬렉션", "price": 5000 },
+        { "id": "virtual-plants", "name": "(예시) 창가 화분 마스코트", "price": 3000 },
+        { "id": "virtual-ghosts", "name": "(예시) 수줍은 유령 키링", "price": 4000 },
+        { "id": "virtual-cameras", "name": "(예시) 필름 카메라 미니어처", "price": 5000 },
+        { "id": "virtual-sushi", "name": "(예시) 회전 초밥 자석", "price": 3000 },
+        { "id": "virtual-moons", "name": "(예시) 달 토끼 피규어", "price": 4000 },
+        { "id": "virtual-tools", "name": "(예시) 손바닥 공구함", "price": 6000 },
+        { "id": "virtual-socks", "name": "(예시) 짝짝이 양말 키링", "price": 2000 }
     ]
 }
