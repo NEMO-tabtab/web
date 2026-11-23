@@ -10,8 +10,7 @@ import { describeFloor, type SlotInfo } from "@/lib/shops/contents";
 import { ShopDataError, loadShopInterior, loadShops, type ShopInterior } from "@/lib/shops/load";
 import { makeOrigin } from "@/lib/shops/origin";
 import type { Series, Shop } from "@/lib/shops/schema";
-import { floorScene } from "./floorScene";
-import { IsoFloor } from "./IsoFloor";
+import { FloorCanvas } from "./FloorCanvas";
 import { MachineList } from "./MachineList";
 
 export interface OriginPickerProps {
@@ -38,7 +37,7 @@ const rowClass =
 
 /**
  * 물건을 뽑은 곳 고르기 — 굿즈샵 → 기기(내부 지도와 같은 번호) → 단.
- * 기기는 작은 내부 지도에서 눌러도 되고 목록에서 골라도 된다.
+ * 기기는 내부 지도에서 눌러도 되고 목록에서 골라도 된다.
  */
 export function OriginPicker({ open, onClose, onPick }: OriginPickerProps) {
     const [shops, setShops] = useState<Loaded<Shop[]>>({ status: "loading" });
@@ -211,7 +210,6 @@ function MachineStep({
     const { layout, machines, series } = interior;
     const floor = layout.floors.find((each) => each.id === floorId) ?? layout.floors[0];
     const slots = describeFloor(floor, machines, series);
-    const scene = floorScene(floor, 0);
     const pick = (slotId: string) => {
         const info = slots.find((each) => each.slot.id === slotId);
         if (info) onMachine(info);
@@ -227,17 +225,20 @@ function MachineStep({
                     onChange={onFloor}
                 />
             )}
-            {/* 고르기용 작은 지도 — 움직이지 않는다. 기기를 누르면 바로 다음 단계로 간다 */}
-            <div className="aspect-[4/3] w-full overflow-hidden rounded-nemo border border-line bg-paper">
-                <svg
-                    role="group"
-                    aria-label={`${floor.label} 내부 지도`}
-                    viewBox={`${scene.x} ${scene.y} ${scene.width} ${scene.height}`}
-                    className="h-full w-full select-none"
-                >
-                    <IsoFloor floor={floor} turn={0} slots={slots} selectedId={null} onSelect={pick} />
-                </svg>
-            </div>
+            {/* 내부 지도 화면과 같은 지도 — 실제 매장은 기기가 작게 보여서 크게 보고 눌러야 한다.
+                key — 층을 바꾸면 돌린 방향과 확대를 처음으로 되돌린다 */}
+            <FloorCanvas
+                key={floor.id}
+                floor={floor}
+                cellCm={layout.cellCm}
+                label={`${floor.label} 내부 지도`}
+                slots={slots}
+                selectedId={null}
+                onSelect={pick}
+            />
+            <p className="text-[13px] text-ink-soft">
+                지도에서 기기를 누르거나 아래 목록에서 골라 주세요. 기기가 작게 보일 때는 누른 곳이 먼저 커져요.
+            </p>
             <MachineList slots={slots} selectedId={null} onSelect={pick} />
         </div>
     );

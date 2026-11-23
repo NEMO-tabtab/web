@@ -131,12 +131,19 @@ function ShopView() {
                     볼터치 색으로 표시한 <strong>{marked.number}번 기기</strong>에서 뽑았어요.
                 </p>
             )}
+            {/* 기록해 둔 기기가 지금 구조에 없을 때 — 매장을 고쳐 새 구조 버전을 내면 예전 기록의 자리가 사라질 수 있다 */}
+            {slotId && !markedFloor && (
+                <p className="mt-4 text-[13px] text-ink-soft">
+                    물건을 뽑은 기기를 지금 지도에서 찾지 못했어요. 그 뒤로 매장 구조가 바뀌었을 수 있어요.
+                </p>
+            )}
 
             <div className="mt-4">
                 {/* key — 층을 바꾸면 돌린 방향과 확대를 처음으로 되돌린다 */}
                 <FloorMap
                     key={floor.id}
                     floor={floor}
+                    cellCm={layout.cellCm}
                     shopName={shop.name}
                     slots={slots}
                     initialSelectedId={marked?.slot.id ?? null}

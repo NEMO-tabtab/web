@@ -16,6 +16,38 @@ describe("층의 기기 정보", () => {
         ]);
     });
 
+    it("기계 줄마다 번호가 이어진다 — 세로로 선 줄이 다른 줄과 섞이지 않는다", () => {
+        // 북쪽 벽의 가로줄(n1 n2), 서쪽 벽의 세로줄(w1 w2), 가운데 세로줄(c1 c2). 25cm 칸의 표준 기계
+        const slot = (id: string, x: number, y: number, facing: "s" | "e") =>
+            facing === "s"
+                ? { id, x, y, w: 1, d: 2, h: 5, facing, tiers: 2 }
+                : { id, x, y, w: 2, d: 1, h: 5, facing, tiers: 2 };
+        const rows = {
+            ...floor,
+            width: 12,
+            depth: 10,
+            fixtures: [],
+            slots: [
+                slot("c2", 6, 5, "e"),
+                slot("w2", 0, 4, "e"),
+                slot("n2", 3, 0, "s"),
+                slot("c1", 6, 4, "e"),
+                slot("w1", 0, 3, "e"),
+                slot("n1", 2, 0, "s"),
+            ],
+        };
+        const empty: MachineList = { ...sampleMachines, machines: [] };
+        // 격자 순서(y, x)로 매기면 w1 c1 w2 c2 로 섞인다
+        expect(describeFloor(rows, empty, sampleSeries).map((info) => info.slot.id)).toEqual([
+            "n1",
+            "n2",
+            "w1",
+            "w2",
+            "c1",
+            "c2",
+        ]);
+    });
+
     it("단은 맨 위부터 늘어놓고, 기기 내용이 없는 단은 비워 둔다", () => {
         const [, slotB] = describeFloor(floor, sampleMachines, sampleSeries);
         expect(slotB.tiers.map((each) => [each.tier, each.series?.id ?? null])).toEqual([
