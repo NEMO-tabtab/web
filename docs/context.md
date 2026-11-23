@@ -37,3 +37,4 @@
 
 - 기기 안(IndexedDB): 물건 기록과 사진. PR #94 이후 로그인 전에는 기기가 유일한 원본. (확인)
 - 서버: 아이디, 비밀번호, 이름, 닉네임, 이메일, 성별, 주소. (확인: `src/app/signup/page.tsx`)
+- 예정(포인트, [decisions/0006](decisions/0006-points-and-achievements.md)): 기기에 출석일과 업적 달성(`activity` 표). 서버에 로그인한 사용자의 바코드 기여와 추천 관계. 아직 구현 전.
