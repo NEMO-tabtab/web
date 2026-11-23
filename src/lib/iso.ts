@@ -2,12 +2,17 @@
  * 내부 지도의 입체 그림 계산 (docs/decisions/0004-map-and-indoor-map.md).
  *
  * 데이터는 위에서 내려다본 2D 격자뿐이고, 입체는 여기서 계산한다.
+ * 여기서 길이 1은 늘 50cm 다(UNIT_CM). 격자 한 칸의 길이는 구조마다 다를 수 있으므로(25cm, 예전 것은 50cm)
+ * 칸으로 적힌 상자는 toUnits 로 맞춘 뒤에 넘긴다 — 그래야 칸 크기가 달라도 같은 크기로 그려진다.
  * 보는 사람은 늘 남동쪽 위에 있다 — 격자의 (0,0)이 화면 맨 위(가장 먼 곳)에 온다.
  * 지도를 돌릴 때는 시점을 옮기지 않고 격자를 90도씩 돌린 뒤 같은 식으로 그린다.
  */
 
-/** 격자 한 칸의 한 변이 화면에서 차지하는 길이(SVG 단위) */
-export const CELL = 28;
+/** 그림에서 길이 1이 뜻하는 실제 길이(cm) */
+export const UNIT_CM = 50;
+
+/** 길이 1(50cm)이 화면에서 차지하는 길이(SVG 단위) */
+export const UNIT = 28;
 
 const COS30 = Math.sqrt(3) / 2;
 const SIN30 = 0.5;
@@ -24,7 +29,7 @@ export interface Size {
     depth: number;
 }
 
-/** 바닥에 놓인 상자 — 단위는 칸. 화면에 그릴 때는 높이가 정수가 아닐 수 있다(낮춘 벽) */
+/** 바닥에 놓인 상자 — 길이 1은 50cm. 정수가 아닐 수 있다(25cm 칸, 낮춘 벽) */
 export interface Box {
     x: number;
     y: number;
@@ -33,10 +38,19 @@ export interface Box {
     h: number;
 }
 
-/** 격자 좌표(칸)와 높이(칸)를 화면 좌표로 바꾼다 */
-export function project(x: number, y: number, z = 0): Point {
-    return [(x - y) * CELL * COS30, (x + y) * CELL * SIN30 - z * CELL];
+/** 칸으로 적힌 상자를 그림의 길이(1 = 50cm)로 바꾼다. 자리·높이 말고는 그대로 둔다 */
+export function toUnits<T extends Box>(box: T, cellCm: number): T {
+    const scale = cellCm / UNIT_CM;
+    return { ...box, x: box.x * scale, y: box.y * scale, w: box.w * scale, d: box.d * scale, h: box.h * scale };
 }
+
+/** 바닥 위의 자리와 높이를 화면 좌표로 바꾼다 */
+export function project(x: number, y: number, z = 0): Point {
+    return [(x - y) * UNIT * COS30, (x + y) * UNIT * SIN30 - z * UNIT];
+}
+
+/** 바닥과 나란한 길이 1이 화면에서 가로로 차지하는 길이(SVG 단위) — 기기 하나가 화면에서 얼마나 넓은지 잴 때 쓴다 */
+export const UNIT_ACROSS = UNIT * COS30;
 
 /** 돌린 뒤의 바닥 크기 — 한 번 돌릴 때마다 가로와 세로가 바뀐다 */
 export function turnSize(size: Size, turn: Turn): Size {
@@ -74,21 +88,45 @@ export function boxFaces({ x, y, w, d, h }: Box): { top: Point[]; south: Point[]
     };
 }
 
-/**
- * 옆면 위의 네모 — 기기 창이나 단 사이의 금처럼 면에 붙여 그리는 것.
- * along 은 면을 따라 가는 방향의 비율(0~1), z 는 높이(칸)다.
- */
+export type SideFace = "south" | "east";
+
+/** 옆면 위의 한 점. along 은 면을 따라 가는 비율(0~1, 화면 왼쪽에서 오른쪽으로), z 는 높이다 */
+export function faceAt(box: Box, face: SideFace, along: number, z: number): Point {
+    return face === "south"
+        ? project(box.x + box.w * along, box.y + box.d, z)
+        : project(box.x + box.w, box.y + box.d * (1 - along), z);
+}
+
+/** 옆면 위의 네모 — 기기 창이나 단 사이의 금처럼 면에 붙여 그리는 것 */
 export function onFace(
     box: Box,
-    face: "south" | "east",
+    face: SideFace,
     along: readonly [number, number],
     z: readonly [number, number],
 ): Point[] {
-    const at = (t: number, height: number): Point =>
-        face === "south"
-            ? project(box.x + box.w * t, box.y + box.d, height)
-            : project(box.x + box.w, box.y + box.d * (1 - t), height);
-    return [at(along[0], z[0]), at(along[1], z[0]), at(along[1], z[1]), at(along[0], z[1])];
+    return [
+        faceAt(box, face, along[0], z[0]),
+        faceAt(box, face, along[1], z[0]),
+        faceAt(box, face, along[1], z[1]),
+        faceAt(box, face, along[0], z[1]),
+    ];
+}
+
+/** 원을 여러 각형으로 그릴 때의 꼭짓점 수 — 작게 보이는 것들이라 이만하면 둥글다 */
+const ROUND_STEPS = 14;
+const angles = Array.from({ length: ROUND_STEPS }, (_, step) => (step / ROUND_STEPS) * Math.PI * 2);
+
+/** 옆면에 붙은 원(기기 손잡이) — 가운데는 (along, z), 반지름 radius 는 길이다. 비스듬한 면 위라 화면에서는 찌그러진다 */
+export function roundOnFace(box: Box, face: SideFace, along: number, z: number, radius: number): Point[] {
+    const length = face === "south" ? box.w : box.d;
+    return angles.map((angle) =>
+        faceAt(box, face, along + (Math.cos(angle) * radius) / length, z + Math.sin(angle) * radius),
+    );
+}
+
+/** 바닥과 나란한 원(수거함 구멍) — 가운데는 (x, y), 높이 z */
+export function roundOnTop(x: number, y: number, z: number, radius: number): Point[] {
+    return angles.map((angle) => project(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius, z));
 }
 
 /** a 가 b 보다 먼저(뒤에) 그려져야 하는가 — 화면에서 겹칠 수 있는데 a 가 더 먼 경우 */
@@ -126,6 +164,17 @@ export function isNearWall(box: Box, size: Size): boolean {
     const alongSouth = box.y + box.d === size.depth && box.w > box.d;
     const alongEast = box.x + box.w === size.width && box.d > box.w;
     return alongSouth || alongEast;
+}
+
+/**
+ * 등을 그 벽에 대고 섰는가 — 북쪽을 보는 것은 남쪽 벽에, 서쪽을 보는 것은 동쪽 벽에 등을 댄다.
+ * 보는 사람 쪽 벽은 낮춰 그리므로(isNearWall), 거기에 등을 댄 기계 줄도 같이 낮춰야 뒷모습이 매장 안을 가리지 않는다.
+ * 남쪽·동쪽을 보는 것은 앞이 보이는 쪽이라 해당하지 않는다.
+ */
+export function backsOnto(box: Box, facing: Facing, wall: Box): boolean {
+    if (facing === "n") return wall.y === box.y + box.d && wall.x < box.x + box.w && box.x < wall.x + wall.w;
+    if (facing === "w") return wall.x === box.x + box.w && wall.y < box.y + box.d && box.y < wall.y + wall.d;
+    return false;
 }
 
 /** 바닥과 가장 높은 물체까지 모두 담는 화면 범위 */

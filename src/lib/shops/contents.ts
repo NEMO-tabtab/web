@@ -1,4 +1,5 @@
 import { formatWon } from "@/lib/format";
+import { groupBanks } from "./banks";
 import type { Floor, MachineList, Series, SeriesList, Slot } from "./schema";
 
 /*
@@ -19,7 +20,7 @@ export interface TierContent {
 
 export interface SlotInfo {
     slot: Slot;
-    /** 층 안에서 매긴 번호(1부터). 북쪽 줄부터, 같은 줄에서는 서쪽부터 */
+    /** 층 안에서 매긴 번호(1부터). 북쪽 기계 줄부터, 한 줄 안에서는 줄을 따라 이어서 */
     number: number;
     /** 맨 위 단부터 */
     tiers: TierContent[];
@@ -34,8 +35,12 @@ export function describeFloor(floor: Floor, machines: MachineList, series: Serie
     const seriesById = new Map(series.series.map((each) => [each.id, each]));
     const byPlace = new Map(machines.machines.map((machine) => [`${machine.slotId}/${machine.tier}`, machine]));
 
+    // 기계 줄마다 이어서 번호를 매긴다 — 줄은 북쪽 것부터(같으면 서쪽부터), 줄 안에서는 줄을 따라서.
+    // 자리 하나하나를 격자 순서로 매기면 세로로 선 줄의 번호가 다른 줄과 섞여 옆 기기와 번호가 이어지지 않는다.
     // 돌려도 번호가 바뀌지 않게 원래 격자 위치로 매긴다
-    const ordered = [...floor.slots].sort((a, b) => a.y - b.y || a.x - b.x);
+    const ordered = groupBanks(floor.slots)
+        .sort((a, b) => a.y - b.y || a.x - b.x)
+        .flatMap((bank) => bank.slots);
 
     return ordered.map((slot, index) => {
         const tiers: TierContent[] = Array.from({ length: slot.tiers }, (_, offset) => {

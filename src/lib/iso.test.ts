@@ -1,13 +1,18 @@
 import { describe, expect, it } from "vitest";
 
 import {
-    CELL,
+    UNIT,
+    backsOnto,
     boxFaces,
     drawOrder,
+    faceAt,
     isNearWall,
     onFace,
     project,
+    roundOnFace,
+    roundOnTop,
     sceneBounds,
+    toUnits,
     turnBox,
     turnFacing,
     turnSize,
@@ -24,13 +29,13 @@ describe("투영", () => {
         const [southX, southY] = project(0, 1);
         expect(eastX).toBeGreaterThan(0);
         expect(southX).toBeCloseTo(-eastX);
-        expect(eastY).toBeCloseTo(CELL / 2);
-        expect(southY).toBeCloseTo(CELL / 2);
+        expect(eastY).toBeCloseTo(UNIT / 2);
+        expect(southY).toBeCloseTo(UNIT / 2);
     });
 
-    it("높이는 화면 위쪽으로 한 칸에 CELL 만큼 올라간다", () => {
+    it("높이는 화면 위쪽으로 길이 1에 UNIT 만큼 올라간다", () => {
         expect(project(2, 3, 1)[0]).toBeCloseTo(project(2, 3)[0]);
-        expect(project(2, 3, 1)[1]).toBeCloseTo(project(2, 3)[1] - CELL);
+        expect(project(2, 3, 1)[1]).toBeCloseTo(project(2, 3)[1] - UNIT);
     });
 
     it("화면 범위가 바닥과 가장 높은 물체를 모두 담는다", () => {
@@ -49,6 +54,24 @@ describe("투영", () => {
             expect(y).toBeGreaterThanOrEqual(bounds.y - 1e-9);
             expect(y).toBeLessThanOrEqual(bounds.y + bounds.height + 1e-9);
         }
+    });
+});
+
+describe("칸 크기 맞추기", () => {
+    it("25cm 칸은 반으로 줄이고, 50cm 칸은 그대로 둔다", () => {
+        // 가챠 기계 한 대: 폭 1칸 × 깊이 2칸 × 높이 5칸 = 25×50×125cm
+        expect(toUnits(box(3, 1, 1, 2, 5), 25)).toEqual({ x: 1.5, y: 0.5, w: 0.5, d: 1, h: 2.5 });
+        expect(toUnits(box(3, 1, 1, 2, 5), 50)).toEqual(box(3, 1, 1, 2, 5));
+    });
+
+    it("칸 크기가 달라도 실제 크기가 같으면 화면에서 같은 자리에 온다", () => {
+        const fine = toUnits(box(4, 6, 2, 2, 10), 25);
+        const coarse = toUnits(box(2, 3, 1, 1, 5), 50);
+        expect(boxFaces(fine)).toEqual(boxFaces(coarse));
+    });
+
+    it("자리·높이 말고는 그대로다", () => {
+        expect(toUnits({ ...box(2, 2), id: "slot-a", tiers: 2 }, 25)).toMatchObject({ id: "slot-a", tiers: 2 });
     });
 });
 
@@ -132,6 +155,26 @@ describe("벽 낮추기", () => {
     });
 });
 
+describe("벽에 등 대기", () => {
+    const southWall = box(0, 5, 8, 1, 5);
+    const eastWall = box(7, 0, 1, 5, 5);
+
+    it("북쪽을 보는 줄은 남쪽 벽에, 서쪽을 보는 줄은 동쪽 벽에 등을 댄다", () => {
+        expect(backsOnto(box(2, 4, 3, 1, 3), "n", southWall)).toBe(true);
+        expect(backsOnto(box(6, 1, 1, 3, 3), "w", eastWall)).toBe(true);
+    });
+
+    it("벽에서 떨어져 있거나 옆으로 비켜나 있으면 아니다", () => {
+        expect(backsOnto(box(2, 3, 3, 1, 3), "n", southWall)).toBe(false); // 한 칸 떨어짐
+        expect(backsOnto(box(6, 5, 1, 1, 3), "w", eastWall)).toBe(false); // 벽이 끝난 곳 아래
+    });
+
+    it("앞이 보이는 쪽(남·동)을 보는 줄은 해당하지 않는다", () => {
+        expect(backsOnto(box(2, 4, 3, 1, 3), "s", southWall)).toBe(false);
+        expect(backsOnto(box(6, 1, 1, 3, 3), "e", eastWall)).toBe(false);
+    });
+});
+
 describe("면", () => {
     it("남쪽 면과 동쪽 면은 남동쪽 모서리에서 만난다", () => {
         const faces = boxFaces(box(1, 1, 2, 1, 3));
@@ -145,5 +188,32 @@ describe("면", () => {
         const faces = boxFaces(item);
         expect(onFace(item, "south", [0, 1], [0, 3])).toEqual(faces.south);
         expect(onFace(item, "east", [0, 1], [0, 3])).toEqual(faces.east);
+    });
+
+    it("면 위의 점은 화면 왼쪽에서 오른쪽으로 간다", () => {
+        const item = box(1, 1, 2, 1, 3);
+        for (const face of ["south", "east"] as const) {
+            expect(faceAt(item, face, 0, 0)[0]).toBeLessThan(faceAt(item, face, 1, 0)[0]);
+        }
+    });
+
+    it("면에 붙인 원은 그 면 안에 있고, 가운데가 원의 가운데다", () => {
+        const item = box(1, 1, 2, 1, 3);
+        const round = roundOnFace(item, "south", 0.5, 1.5, 0.4);
+        const [centerX, centerY] = faceAt(item, "south", 0.5, 1.5);
+        const xs = round.map(([x]) => x);
+        const ys = round.map(([, y]) => y);
+
+        expect((Math.min(...xs) + Math.max(...xs)) / 2).toBeCloseTo(centerX);
+        expect((Math.min(...ys) + Math.max(...ys)) / 2).toBeCloseTo(centerY, 0);
+        expect(Math.min(...xs)).toBeGreaterThan(faceAt(item, "south", 0, 0)[0]);
+        expect(Math.max(...xs)).toBeLessThan(faceAt(item, "south", 1, 0)[0]);
+    });
+
+    it("윗면의 원은 가운데 점을 둘러싼다", () => {
+        const round = roundOnTop(2, 2, 3, 0.25);
+        const [centerX, centerY] = project(2, 2, 3);
+        expect(round.reduce((sum, [x]) => sum + x, 0) / round.length).toBeCloseTo(centerX);
+        expect(round.reduce((sum, [, y]) => sum + y, 0) / round.length).toBeCloseTo(centerY);
     });
 });
