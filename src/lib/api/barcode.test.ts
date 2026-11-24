@@ -6,6 +6,7 @@ import {
     contributionPayload,
     fillEmptyFields,
     lookupBarcode,
+    isKoreanOrEnglish,
     shouldOfferContribution,
     tidyContributionText,
 } from "./barcode";
@@ -226,12 +227,34 @@ describe("올릴 값 다듬기", () => {
         expect(emoji?.name).toBe("가".repeat(49));
     });
 
-    it("표기가 갈라지는 글자(원 숫자·전각·반각 가타카나)는 한 가지로 맞추고, 한글 자모는 그대로 둔다", () => {
+    it("표기가 갈라지는 글자(원 숫자·전각)는 한 가지로 맞추고, 한글 자모는 그대로 둔다", () => {
         expect(
-            contributionPayload({ barcode: "4570117912345", name: "ﾁｲｶﾜ ﾏｽｺｯﾄ ｶﾞﾁｬ ③", brandName: "ＢＡＮＤＡＩ" }),
-        ).toEqual({ barcode: "4570117912345", name: "チイカワ マスコット ガチャ 3", brandName: "BANDAI" });
+            contributionPayload({ barcode: "4570117912345", name: "치이카와 마스코트 ③", brandName: "ＢＡＮＤＡＩ" }),
+        ).toEqual({ barcode: "4570117912345", name: "치이카와 마스코트 3", brandName: "BANDAI" });
 
         expect(contributionPayload({ barcode: "4570117912345", name: "ㅋㅋ 키링 ⑫" })?.name).toBe("ㅋㅋ 키링 12");
+    });
+
+    it("제품명·브랜드는 한국어나 영어여야 한다 — 숫자·기호·이모지는 함께 써도 된다", () => {
+        const barcode = "4570117912345";
+        expect(contributionPayload({ barcode, name: "Chiikawa 하치와레 vol.2 ♡🐱", brandName: "Pokémon" })).toEqual({
+            barcode,
+            name: "Chiikawa 하치와레 vol.2 ♡🐱",
+            brandName: "Pokémon",
+        });
+
+        expect(contributionPayload({ barcode, name: "ハチワレ マスコット" })).toBeNull();
+        expect(contributionPayload({ barcode, name: "ﾊﾁﾜﾚ" })).toBeNull();
+        expect(contributionPayload({ barcode, name: "치이카와 ー" })).toBeNull();
+        expect(contributionPayload({ barcode, name: "吉伊卡哇 키링" })).toBeNull();
+        expect(contributionPayload({ barcode, name: "치이카와", brandName: "バンダイ" })).toBeNull();
+    });
+
+    it("한국어·영어인지 따로 물을 수 있다 — 창이 이유를 보여 줄 때 쓴다", () => {
+        expect(isKoreanOrEnglish("하치와레 Mascot 1 ★")).toBe(true);
+        expect(isKoreanOrEnglish("")).toBe(true);
+        expect(isKoreanOrEnglish("ちいかわ")).toBe(false);
+        expect(isKoreanOrEnglish("東京 한정")).toBe(false);
     });
 
     it("칸에서 손을 뗐을 때 넣을 값은 보낼 값과 같다", () => {
@@ -264,7 +287,11 @@ describe("올릴지 물을 때", () => {
         expect(shouldOfferContribution("4570117912345", { ...saved, barcode: "" })).toBe(false);
     });
 
-    it("올릴 수 없는 값이면 묻지 않는다", () => {
+    it("서버가 받지 않는 바코드면 묻지 않는다", () => {
         expect(shouldOfferContribution("1".repeat(31), { ...saved, barcode: "1".repeat(31) })).toBe(false);
+    });
+
+    it("기록 이름이 일본어여도 묻는다 — 창에서 한국어·영어로 고쳐 공유할 수 있다", () => {
+        expect(shouldOfferContribution("4570117912345", { ...saved, name: "ハチワレ" })).toBe(true);
     });
 });

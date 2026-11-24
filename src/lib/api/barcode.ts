@@ -132,10 +132,22 @@ export interface BarcodeContribution {
 }
 
 /**
- * 표기가 갈라지기 쉬운 글자 — 원 숫자(①→1), 전각 영문·숫자(Ａ１→A1), 반각 가타카나(ｶﾞ→ガ).
+ * 표기가 갈라지기 쉬운 글자 — 원 숫자(①→1), 전각 영문·숫자(Ａ１→A1).
  * 글 전체를 NFKC 로 바꾸지 않는다: 한글 자모(ㅋ)까지 조합용 자모로 바뀌어 화면에서 깨진다.
  */
-const VARIANT_CHARS = /[\u2460-\u2473\u24EA\u3251-\u325F\u32B1-\u32BF\uFF01-\uFF5E\uFF61-\uFF9F]+/g;
+const VARIANT_CHARS = /[\u2460-\u2473\u24EA\u3251-\u325F\u32B1-\u32BF\uFF01-\uFF5E]+/g;
+
+/** 한글·로마자가 아닌 글자(가나·한자 등). 숫자·기호·이모지는 글자(\p{L})가 아니라 걸리지 않는다 */
+const OTHER_SCRIPT_LETTER = /(?![\p{Script=Hangul}\p{Script=Latin}])\p{L}/u;
+
+/**
+ * 공유할 이름이 한국어나 영어인가 — 다른 사용자가 읽을 수 있어야 한다.
+ * 일본 상품이 많아 원문(ハチワレ)을 그대로 적기 쉬운데, 그러면 한국 사용자에게 채워져도 못 읽는다.
+ * 숫자·기호·이모지는 함께 써도 된다.
+ */
+export function isKoreanOrEnglish(text: string): boolean {
+    return !OTHER_SCRIPT_LETTER.test(text);
+}
 
 /**
  * 서버 한도에 맞춘 글자 — 표기가 갈라지는 글자는 한 가지로, 줄바꿈·연속 공백은 한 칸으로,
@@ -160,24 +172,28 @@ export function tidyContributionText(value: string): string {
 
 /**
  * 실제로 올라갈 값. 확인 창에 보여 주는 값과 보내는 값이 같도록 둘 다 이것을 쓴다.
- * 올릴 수 없는 입력(바코드 형식이 다르거나 제품명이 비었음)이면 null.
+ * 올릴 수 없는 입력이면 null — 바코드 형식이 다르거나, 제품명이 비었거나,
+ * 제품명·브랜드가 한국어·영어가 아닐 때.
  */
 export function contributionPayload(input: BarcodeContribution): BarcodeContribution | null {
     const barcode = input.barcode.trim();
     const name = tidy(input.name, CONTRIBUTE_TEXT_LIMIT);
-    if (!CONTRIBUTE_PATTERN.test(barcode) || !name) return null;
     const brandName = tidy(input.brandName, CONTRIBUTE_TEXT_LIMIT);
+    if (!CONTRIBUTE_PATTERN.test(barcode) || !name) return null;
+    if (!isKoreanOrEnglish(name) || (brandName && !isKoreanOrEnglish(brandName))) return null;
     return brandName ? { barcode, name, brandName } : { barcode, name };
 }
 
 /**
  * 등록을 마친 뒤 "공유할까요?"를 물을지.
- * 조회가 "못 찾음"으로 끝난 바로 그 바코드를 저장했고, 올릴 수 있는 값일 때만 묻는다.
+ * 조회가 "못 찾음"으로 끝난 바로 그 바코드를 저장했고, 서버가 받는 바코드일 때만 묻는다.
  * 저장 전에 바코드 칸을 고쳤으면 묻지 않는다 — 서버에 없다고 확인한 것은 원래 바코드뿐이다.
+ * 이름은 보지 않는다 — 기록 이름이 일본어여도 창에서 한국어·영어로 고쳐 공유할 수 있다.
  */
 export function shouldOfferContribution(missedBarcode: string | null, saved: BarcodeContribution): boolean {
     if (!missedBarcode) return false;
-    return saved.barcode.trim() === missedBarcode.trim() && contributionPayload(saved) !== null;
+    const barcode = saved.barcode.trim();
+    return barcode === missedBarcode.trim() && CONTRIBUTE_PATTERN.test(barcode);
 }
 
 /** saved — 올렸다. exists — 그사이 누군가 먼저 올려 서버가 받지 않았다(덮어쓰지 않는다) */
