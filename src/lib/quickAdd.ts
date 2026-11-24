@@ -1,5 +1,6 @@
 import type { Product } from "@/lib/db";
 import type { ProductInput } from "@/lib/db/products";
+import { toCatalog } from "@/lib/series";
 
 /*
  * 빠른 등록(#199) — 사진만으로 물건을 기록하고 이름은 나중에 채운다.
@@ -74,13 +75,19 @@ export interface QuickCommon {
     price: string;
     purchasePlace: string;
     category: string;
+    /** 모든 물건에 넣을 시리즈 이름(#201). 비어 있으면 시리즈 없이 */
+    seriesName?: string;
 }
 
-/** 사진마다 적은 이름(비어 있어도 된다)과 함께 넣을 값으로 저장할 기록을 만든다. 사진 한 장이 물건 하나다 */
+/**
+ * 사진마다 적은 이름(비어 있어도 된다)과 함께 넣을 값으로 저장할 기록을 만든다. 사진 한 장이 물건 하나다.
+ * 시리즈를 골랐으면 사진마다 적은 이름은 그 시리즈의 종류이고, 적지 않은 물건의 이름은 시리즈 이름이 된다.
+ */
 export function quickInputs(names: string[], common: QuickCommon, today: string): ProductInput[] {
     const price = Number(common.price);
+    const seriesName = common.seriesName?.trim() ?? "";
     return names.map((name) => ({
-        name: nameOrUnnamed(name),
+        name: nameOrUnnamed(name.trim() || seriesName),
         price: Number.isFinite(price) && price > 0 ? Math.round(price) : 0,
         count: 1,
         isGift: false,
@@ -94,5 +101,6 @@ export function quickInputs(names: string[], common: QuickCommon, today: string)
         purchasePlace: common.purchasePlace.trim(),
         memo: "",
         origin: null,
+        catalog: toCatalog(seriesName, name),
     }));
 }

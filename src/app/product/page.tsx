@@ -6,7 +6,9 @@ import { useSearchParams } from "next/navigation";
 
 import { Badge, Button, Chip, EmptyState, Icon, Input, PageHeader, PageShell } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
+import { SeriesShelves } from "@/components/product/SeriesShelves";
 import { StoredProductCard } from "@/components/product/StoredProductCard";
+import { Tabs } from "@/components/common/Tabs";
 import type { Product } from "@/lib/db";
 import { useProducts } from "@/lib/db/hooks";
 import {
@@ -22,8 +24,10 @@ import {
     type FacetField,
     type FacetOption,
     type ProductQuery,
+    type ProductView,
 } from "@/lib/productSearch";
 import { isUnnamed } from "@/lib/quickAdd";
+import { collectSeries } from "@/lib/series";
 import Loading from "./loading";
 
 export default function ProductPage() {
@@ -135,10 +139,19 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
     const places = useMemo(() => facetOptions(products, shown, "place"), [products, shown]);
     // 빠른 등록(#199)으로 이름 없이 저장한 물건 — 다른 조건과 상관없이 전체에서 센다
     const unnamedCount = useMemo(() => products.filter(isUnnamed).length, [products]);
+    // 시리즈별 모아 보기(#201) — 시리즈를 적은 기록이 하나라도 있어야 보기 전환을 띄운다
+    const hasSeries = useMemo(() => products.some((product) => product.catalog), [products]);
+    const shelves = useMemo(() => collectSeries(results), [results]);
+    const loose = useMemo(() => results.filter((product) => !product.catalog).length, [results]);
+    const openSeries = useMemo(
+        () => (query.series === null ? null : (collectSeries(products).find((each) => each.key === query.series) ?? null)),
+        [products, query.series],
+    );
+    const seriesView = shown.view === "series" && hasSeries;
 
     const update = (patch: Partial<ProductQuery>) => setQuery((prev) => ({ ...prev, ...patch }));
     // 정렬은 물건을 빼지 않으므로 그대로 둔다
-    const clearConditions = () => setQuery((prev) => ({ ...EMPTY_QUERY, sort: prev.sort }));
+    const clearConditions = () => setQuery((prev) => ({ ...EMPTY_QUERY, sort: prev.sort, view: prev.view }));
 
     const narrowed = isNarrowed(query);
     const sortLabel = SORT_OPTIONS.find((option) => option.value === query.sort)?.label;
@@ -182,6 +195,24 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                     }
                 />
             </form>
+
+            {hasSeries && (
+                <Tabs<ProductView>
+                    aria-label="보기 방식"
+                    items={VIEW_TABS}
+                    value={query.view}
+                    // 시리즈별 보기로 갈 때는 걸려 있던 시리즈를 푼다 — 한 시리즈만 남은 선반은 뜻이 없다
+                    onChange={(view) => update(view === "series" ? { view, series: null } : { view })}
+                />
+            )}
+
+            {query.series !== null && (
+                <div>
+                    <Chip selected onRemove={() => update({ series: null })} onClick={() => update({ series: null })}>
+                        시리즈: {openSeries?.name ?? "알 수 없는 시리즈"}
+                    </Chip>
+                </div>
+            )}
 
             {(unnamedCount > 0 || query.unnamed) && (
                 <div>
@@ -235,7 +266,24 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                 </div>
             </div>
 
-            {results.length > 0 ? (
+            {seriesView && results.length > 0 ? (
+                <>
+                    {shelves.length > 0 ? (
+                        <SeriesShelves shelves={shelves} onOpen={(series) => update({ view: "list", series })} />
+                    ) : (
+                        <EmptyState
+                            title="시리즈를 적은 물건이 없어요"
+                            description="고른 조건에 맞는 물건 중에는 시리즈를 적은 것이 없어요."
+                        />
+                    )}
+                    {loose > 0 && (
+                        <p className="text-ink-soft text-center text-[13px] font-bold">
+                            시리즈를 안 적은 물건 <span className="font-sans tabular-nums">{loose}</span>개는 전체
+                            목록에서 볼 수 있어요.
+                        </p>
+                    )}
+                </>
+            ) : results.length > 0 ? (
                 /* 스크랩북처럼 카드가 조금씩 다른 각도로 붙는다 — 회전은 .paste-grid 가 맡는다 */
                 <div className="paste-grid grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(9.75rem,1fr))]">
                     {results.map((product) => (
@@ -301,6 +349,11 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
         </>
     );
 }
+
+const VIEW_TABS = [
+    { value: "list", label: "전체 목록" },
+    { value: "series", label: "시리즈별" },
+] as const satisfies readonly { value: ProductView; label: string }[];
 
 interface FacetRowProps {
     label: string;

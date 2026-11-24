@@ -11,6 +11,8 @@ import { createProduct, newId } from "@/lib/db/products";
 import { compressImage } from "@/lib/image";
 import { productListHref, productQueryHref } from "@/lib/productSearch";
 import { QUICK_CATEGORY, QUICK_MAX, localDay, quickDefaults, quickInputs } from "@/lib/quickAdd";
+import { mySeries } from "@/lib/series";
+import { SeriesField } from "../components/SeriesField";
 
 /** 화면에 올린 사진 한 장 = 물건 하나 */
 interface Draft {
@@ -46,6 +48,9 @@ export default function QuickAddPage() {
     const [drafts, setDrafts] = useState<Draft[]>([]);
     const [price, setPrice] = useState("");
     const [purchasePlace, setPurchasePlace] = useState("");
+    const [seriesName, setSeriesName] = useState("");
+    const seriesSuggestions = useMemo(() => mySeries(products ?? []), [products]);
+    const hasSeries = seriesName.trim() !== "";
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     /** 이 화면을 연 뒤로 기록한 수와, 그중 이름을 안 적은 수 */
@@ -97,7 +102,7 @@ export default function QuickAddPage() {
         const batch = drafts;
         const inputs = quickInputs(
             batch.map((draft) => draft.name),
-            { price, purchasePlace, category: defaults?.category ?? QUICK_CATEGORY },
+            { price, purchasePlace, category: defaults?.category ?? QUICK_CATEGORY, seriesName },
             localDay(new Date()),
         );
 
@@ -108,7 +113,8 @@ export default function QuickAddPage() {
             for (const [index, input] of inputs.entries()) {
                 await createProduct(input, [batch[index].blob]);
                 done += 1;
-                if (!batch[index].name.trim()) unnamed += 1;
+                // 시리즈를 골랐으면 이름을 안 적어도 시리즈 이름으로 저장된다
+                if (!batch[index].name.trim() && !hasSeries) unnamed += 1;
             }
         } catch {
             // 무엇을 적었는지는 로그에 남기지 않는다(R4). 화면에서 알리고 남은 사진은 다시 시도할 수 있게 둔다
@@ -199,8 +205,8 @@ export default function QuickAddPage() {
                                     <Thumbnail blob={draft.blob} alt={`물건 ${index + 1} 사진`} />
                                 </div>
                                 <Input
-                                    aria-label={`물건 ${index + 1} 이름`}
-                                    placeholder="이름 (나중에 적어도 돼요)"
+                                    aria-label={hasSeries ? `물건 ${index + 1} 종류` : `물건 ${index + 1} 이름`}
+                                    placeholder={hasSeries ? "종류 (몰라도 돼요)" : "이름 (나중에 적어도 돼요)"}
                                     value={draft.name}
                                     onChange={(event) =>
                                         setDrafts((prev) =>
@@ -228,6 +234,7 @@ export default function QuickAddPage() {
                 <Text size="sm" tone="muted">
                     아래 값은 이번에 등록하는 모든 물건에 똑같이 들어가요. 구매일은 오늘이에요.
                 </Text>
+                <SeriesField seriesName={seriesName} onSeriesChange={setSeriesName} suggestions={seriesSuggestions} />
                 <div className="grid grid-cols-2 gap-3">
                     {/* 금액은 손글씨를 쓰지 않는다 — Gaegu 는 숫자 글리프가 불규칙하다 */}
                     <Input

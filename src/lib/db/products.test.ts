@@ -125,6 +125,46 @@ describe("updateProduct", () => {
     });
 });
 
+describe("시리즈·종류 (catalog)", () => {
+    const catalog = { seriesId: null, seriesName: "치이카와 마스코트", variantId: null, variantName: "하치와레" };
+
+    it("등록할 때 넘긴 시리즈·종류가 그대로 저장된다", async () => {
+        const id = await createProduct(input({ catalog }));
+        expect((await getProduct(id))!.catalog).toEqual(catalog);
+    });
+
+    it("이름의 앞뒤 공백을 떼고, 종류 이름이 비면 종류를 모르는 것으로 저장한다", async () => {
+        const id = await createProduct(
+            input({ catalog: { seriesId: "s1", seriesName: " 산리오 ", variantId: "v1", variantName: "  " } }),
+        );
+        expect((await getProduct(id))!.catalog).toEqual({
+            seriesId: "s1",
+            seriesName: "산리오",
+            variantId: null,
+            variantName: null,
+        });
+    });
+
+    it("시리즈 이름이 비면 고르지 않은 것(null)으로 저장한다", async () => {
+        const id = await createProduct(input({ catalog: { ...catalog, seriesName: " " } }));
+        expect((await getProduct(id))!.catalog).toBeNull();
+    });
+
+    it("시리즈·종류를 넘기지 않고 고치면 기존 값이 남고, null 을 넘기면 지워진다", async () => {
+        const id = await createProduct(input({ catalog }));
+        await updateProduct(id, input({ name: "이름만 바꿈" }));
+        expect(await getProduct(id)).toMatchObject({ name: "이름만 바꿈", catalog });
+
+        await updateProduct(id, input({ catalog: null }));
+        expect((await getProduct(id))!.catalog).toBeNull();
+    });
+
+    it("시리즈·종류 없이 등록한 기록은 없는 것으로 읽힌다", async () => {
+        const id = await createProduct(input());
+        expect((await getProduct(id))!.catalog ?? null).toBeNull();
+    });
+});
+
 describe("뽑은 곳 (origin)", () => {
     it("등록할 때 고른 뽑은 곳을 그대로 저장한다", async () => {
         const id = await createProduct(input({ origin }));
