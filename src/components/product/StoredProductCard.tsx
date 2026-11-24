@@ -4,6 +4,7 @@ import { Icon, ProductCard, type ProductCardProps } from "@/components/common";
 import type { Product } from "@/lib/db";
 import { useCoverUrl } from "@/lib/db/hooks";
 import { productValue } from "@/lib/db/products";
+import { UNNAMED } from "@/lib/quickAdd";
 import { originShort } from "@/lib/shops/origin";
 
 export interface StoredProductCardProps extends Pick<ProductCardProps, "badge" | "meta" | "layout" | "className"> {
@@ -33,7 +34,7 @@ export function StoredProductCard({ product, showMemo = false, meta, ...props }:
     return (
         <ProductCard
             href={productEditHref(product.id)}
-            name={product.name || "이름 없는 물건"}
+            name={product.name || UNNAMED}
             price={productValue(product)}
             description={showMemo ? product.memo || undefined : undefined}
             // 사진이 없으면 넘기지 않는다 — ProductCard 가 손그림 상자 아이콘(fallbackIcon)을 세운다.

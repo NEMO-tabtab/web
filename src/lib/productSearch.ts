@@ -1,5 +1,6 @@
 import type { Product } from "@/lib/db";
 import { productValue } from "@/lib/db/products";
+import { isUnnamed } from "@/lib/quickAdd";
 
 /*
  * 내 제품 목록의 검색·정렬·필터.
@@ -30,16 +31,24 @@ export interface ProductQuery {
     /** null = 전체, "" = 값을 적지 않은 물건(미지정) */
     category: string | null;
     place: string | null;
+    /** 이름을 아직 적지 않은 물건만(#199) */
+    unnamed: boolean;
 }
 
-export const EMPTY_QUERY: ProductQuery = { q: "", sort: DEFAULT_SORT, category: null, place: null };
+export const EMPTY_QUERY: ProductQuery = {
+    q: "",
+    sort: DEFAULT_SORT,
+    category: null,
+    place: null,
+    unnamed: false,
+};
 
 /** 값이 빈 물건을 묶어 부르는 이름 — 홈의 분포 칩과 같은 말을 쓴다 */
 export const UNSET_LABEL = "미지정";
 
 const isSortKey = (value: string | null): value is SortKey => SORT_OPTIONS.some((option) => option.value === value);
 
-/** 주소의 `?q=&sort=&category=&place=` 를 읽는다. 모르는 정렬 값은 기본값으로 */
+/** 주소의 `?q=&sort=&category=&place=&unnamed=1` 를 읽는다. 모르는 정렬 값은 기본값으로 */
 export function parseProductQuery(params: { get(name: string): string | null }): ProductQuery {
     const sort = params.get("sort");
     return {
@@ -47,6 +56,7 @@ export function parseProductQuery(params: { get(name: string): string | null }):
         sort: isSortKey(sort) ? sort : DEFAULT_SORT,
         category: params.get("category"),
         place: params.get("place"),
+        unnamed: params.get("unnamed") === "1",
     };
 }
 
@@ -58,6 +68,7 @@ export function productQuerySearch(query: ProductQuery): string {
     // 빈 값("")도 "미지정만 보기" 라는 뜻이라 남긴다 → `place=`
     if (query.category !== null) params.set("category", query.category);
     if (query.place !== null) params.set("place", query.place);
+    if (query.unnamed) params.set("unnamed", "1");
     const search = params.toString();
     return search ? `?${search}` : "";
 }
@@ -69,7 +80,7 @@ export function productQueryHref(patch: Partial<ProductQuery>): string {
 
 /** 검색어나 필터가 걸려 있는가. 정렬은 물건을 빼지 않으므로 치지 않는다 */
 export function isNarrowed(query: ProductQuery): boolean {
-    return query.q.trim() !== "" || query.category !== null || query.place !== null;
+    return query.q.trim() !== "" || query.category !== null || query.place !== null || query.unnamed;
 }
 
 /* ------------------------------------------------------------------ *
@@ -285,6 +296,7 @@ export function facetOptions(products: Product[], query: ProductQuery, field: Fa
     const counts = new Map<string, number>();
     for (const product of products) {
         if (!matchesFacet(product, other, query[other]) || !matchesSearch(product, query.q)) continue;
+        if (query.unnamed && !isUnnamed(product)) continue;
         const value = facetValue(product, field);
         counts.set(value, (counts.get(value) ?? 0) + 1);
     }
@@ -336,6 +348,7 @@ export function queryProducts(products: Product[], query: ProductQuery): Product
             (product) =>
                 matchesFacet(product, "category", query.category) &&
                 matchesFacet(product, "place", query.place) &&
+                (!query.unnamed || isUnnamed(product)) &&
                 matchesSearch(product, query.q),
         )
         .sort(comparators[query.sort]);

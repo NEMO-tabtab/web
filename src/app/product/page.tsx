@@ -23,6 +23,7 @@ import {
     type FacetOption,
     type ProductQuery,
 } from "@/lib/productSearch";
+import { isUnnamed } from "@/lib/quickAdd";
 import Loading from "./loading";
 
 export default function ProductPage() {
@@ -103,7 +104,7 @@ function ProductList() {
                         description="첫 물건을 네모에게 보여주세요!"
                         action={
                             <Link
-                                href="/product/add"
+                                href="/product/quick"
                                 className="sticker sticker-press rounded-full bg-ink px-5 py-2.5 font-display text-paper"
                             >
                                 + 제품 등록하기
@@ -132,6 +133,8 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
     const results = useMemo(() => queryProducts(products, shown), [products, shown]);
     const categories = useMemo(() => facetOptions(products, shown, "category"), [products, shown]);
     const places = useMemo(() => facetOptions(products, shown, "place"), [products, shown]);
+    // 빠른 등록(#199)으로 이름 없이 저장한 물건 — 다른 조건과 상관없이 전체에서 센다
+    const unnamedCount = useMemo(() => products.filter(isUnnamed).length, [products]);
 
     const update = (patch: Partial<ProductQuery>) => setQuery((prev) => ({ ...prev, ...patch }));
     // 정렬은 물건을 빼지 않으므로 그대로 둔다
@@ -179,6 +182,15 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                     }
                 />
             </form>
+
+            {(unnamedCount > 0 || query.unnamed) && (
+                <div>
+                    <Chip selected={query.unnamed} onClick={() => update({ unnamed: !query.unnamed })}>
+                        이름을 안 적은 물건
+                        <span className="font-sans tabular-nums opacity-70">{unnamedCount}</span>
+                    </Chip>
+                </div>
+            )}
 
             {hasFacet(products, "category") && (
                 <FacetRow
@@ -232,9 +244,15 @@ function ProductBrowser({ products, query, setQuery }: ProductBrowserProps) {
                             product={product}
                             showMemo
                             badge={
-                                <Badge variant="success" size="sm">
-                                    보유 중
-                                </Badge>
+                                isUnnamed(product) ? (
+                                    <Badge variant="ink" size="sm">
+                                        이름 적기
+                                    </Badge>
+                                ) : (
+                                    <Badge variant="success" size="sm">
+                                        보유 중
+                                    </Badge>
+                                )
                             }
                         />
                     ))}
