@@ -198,6 +198,51 @@ nav[aria-label="주요 메뉴"] svg {
     }
 }
 
+/* 등록한 순간의 반응(#202) — 도장이 찍히고, 네모가 한 번 폴짝 뛴다. 새 것이 있을 때만 쓴다 */
+@keyframes stamp-in {
+    0% {
+        transform: scale(1.9) rotate(-14deg);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(0.94) rotate(-4deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(-4deg);
+        opacity: 1;
+    }
+}
+.stamp-in {
+    transform: rotate(-4deg);
+    animation: stamp-in 320ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+@keyframes hop {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+    30% {
+        transform: translateY(-9px) rotate(-5deg);
+    }
+    60% {
+        transform: translateY(0) rotate(3deg);
+    }
+    80% {
+        transform: translateY(-3px) rotate(0);
+    }
+}
+.hop {
+    display: inline-block;
+    animation: hop 620ms ease 1;
+}
+@media (prefers-reduced-motion: reduce) {
+    .stamp-in,
+    .hop {
+        animation: none;
+    }
+}
+
 /* 투명 배경 미리보기용 체커보드 (사진 등록 미리보기 맥락) */
 .checker {
     background-image: conic-gradient(#eceae5 0 25%, #ffffff 0 50%, #eceae5 0 75%, #ffffff 0);

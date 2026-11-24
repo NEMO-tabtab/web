@@ -9,7 +9,9 @@ import { cn } from "@/lib/cn";
 import { useObjectUrl, useProducts } from "@/lib/db/hooks";
 import { createProduct, newId } from "@/lib/db/products";
 import { compressImage } from "@/lib/image";
-import { productListHref, productQueryHref } from "@/lib/productSearch";
+import { PullResultCard } from "@/components/product/PullResultCard";
+import { productListHref } from "@/lib/productSearch";
+import { placeAll, type Placement } from "@/lib/pullResult";
 import { QUICK_CATEGORY, QUICK_MAX, localDay, quickDefaults, quickInputs } from "@/lib/quickAdd";
 import { mySeries } from "@/lib/series";
 import { SeriesField } from "../components/SeriesField";
@@ -55,6 +57,8 @@ export default function QuickAddPage() {
     const [error, setError] = useState<string | null>(null);
     /** 이 화면을 연 뒤로 기록한 수와, 그중 이름을 안 적은 수 */
     const [saved, setSaved] = useState({ count: 0, unnamed: 0 });
+    /** 방금 등록한 묶음의 반응(#202). seq 가 바뀌면 카드를 새로 그려 움직임을 다시 튼다 */
+    const [result, setResult] = useState<{ seq: number; placements: Placement[]; hasUnnamed: boolean } | null>(null);
 
     // 등록할 때마다 목록이 바뀌어도 "지난번 값"은 화면을 열었을 때의 것으로 둔다 — 방금 넣은 값이 되돌아와 덮지 않게
     const [defaults, setDefaults] = useState<ReturnType<typeof quickDefaults>>(null);
@@ -70,6 +74,15 @@ export default function QuickAddPage() {
             setPurchasePlace(found.purchasePlace);
         }
     }, [products]);
+
+    // 기록하기 버튼은 화면 아래에 있다 — 저장하면 맨 위의 결과가 보이도록 올려 준다
+    const resultRef = useRef<HTMLDivElement>(null);
+    const resultSeq = result?.seq;
+    useEffect(() => {
+        if (resultSeq === undefined) return;
+        const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        resultRef.current?.scrollIntoView({ block: "start", behavior: calm ? "auto" : "smooth" });
+    }, [resultSeq]);
 
     const room = QUICK_MAX - drafts.length;
     const canOfferLast = useMemo(
@@ -106,6 +119,8 @@ export default function QuickAddPage() {
             localDay(new Date()),
         );
 
+        // 저장하기 전의 기록 — 방금 넣은 것이 새 종류인지 가를 기준이다
+        const before = products ?? [];
         let done = 0;
         let unnamed = 0;
         try {
@@ -124,6 +139,13 @@ export default function QuickAddPage() {
         const savedKeys = new Set(batch.slice(0, done).map((draft) => draft.key));
         setDrafts((prev) => prev.filter((draft) => !savedKeys.has(draft.key)));
         setSaved((prev) => ({ count: prev.count + done, unnamed: prev.unnamed + unnamed }));
+        if (done > 0) {
+            setResult((prev) => ({
+                seq: (prev?.seq ?? 0) + 1,
+                placements: placeAll(before, inputs.slice(0, done)),
+                hasUnnamed: unnamed > 0,
+            }));
+        }
         savingRef.current = false;
         setIsSaving(false);
     };
@@ -136,26 +158,15 @@ export default function QuickAddPage() {
                 backHref={productListHref()}
             />
 
-            {saved.count > 0 && (
-                <Card padding="sm" className="space-y-3" role="status">
-                    <Text weight="bold">{saved.count}개 기록했어요. 이어서 더 등록할 수 있어요.</Text>
-                    <div className="flex flex-wrap gap-2">
-                        <Link
-                            href="/product"
-                            className="sticker sticker-press bg-paper text-ink rounded-full px-4 py-2 text-[13px] font-bold"
-                        >
-                            목록에서 보기
-                        </Link>
-                        {saved.unnamed > 0 && (
-                            <Link
-                                href={productQueryHref({ unnamed: true })}
-                                className="sticker sticker-press bg-paper text-ink rounded-full px-4 py-2 text-[13px] font-bold"
-                            >
-                                이름 채우기
-                            </Link>
-                        )}
-                    </div>
-                </Card>
+            {result && (
+                <div ref={resultRef} className="scroll-mt-4">
+                    <PullResultCard
+                        key={result.seq}
+                        placements={result.placements}
+                        totalCount={saved.count}
+                        hasUnnamed={result.hasUnnamed}
+                    />
+                </div>
             )}
 
             <Section title="사진" description={`사진 한 장이 물건 하나예요. 한 번에 ${QUICK_MAX}장까지.`}>
