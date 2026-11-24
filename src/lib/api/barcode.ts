@@ -108,8 +108,9 @@ export function lookupBarcode(barcode: string, now: number = Date.now()): Promis
 }
 
 /*
- * ── 못 찾은 바코드 올리기 ─────────────────────────────────────────
- * 올리는 것은 바코드·제품명·브랜드뿐이다. 가격·메모·사진·보관 위치는 올리지 않는다.
+ * ── 못 찾은 바코드 공유하기 ───────────────────────────────────────
+ * 올리는 것은 바코드·제품명·브랜드뿐이다 — 서버 바코드 DB에 지금 있는 칸 중 앱이 다시 읽는 것만 쓴다.
+ * 가격·메모·사진·보관 위치는 올리지 않는다.
  * 사용자에게 묻고 동의했을 때만 부른다 — 이 파일은 묻지 않는다(화면의 몫).
  * 서버는 이미 있는 바코드를 덮어쓰지 않는다(409).
  */
@@ -118,7 +119,7 @@ export function lookupBarcode(barcode: string, now: number = Date.now()): Promis
 const CONTRIBUTE_PATTERN = /^[0-9A-Za-z-]{4,30}$/;
 
 /** 서버가 받는 제품명·브랜드 길이. 넘으면 서버가 400 으로 돌려보내므로 여기서 맞춘다 */
-const CONTRIBUTE_TEXT_LIMIT = 50;
+export const CONTRIBUTE_TEXT_LIMIT = 50;
 
 /** 사용자가 창을 보고 기다리는 동안이라 조회보다 길게, 잠든 서버가 깨어날 시간보다는 짧게 */
 const CONTRIBUTE_TIMEOUT_MS = 30_000;
@@ -130,9 +131,19 @@ export interface BarcodeContribution {
     brandName?: string;
 }
 
-/** 서버 한도에 맞춘 글자 — 줄바꿈·연속 공백은 한 칸으로, 길면 자른다(이모지 반쪽은 버린다). 비었으면 undefined */
+/**
+ * 표기가 갈라지기 쉬운 글자 — 원 숫자(①→1), 전각 영문·숫자(Ａ１→A1), 반각 가타카나(ｶﾞ→ガ).
+ * 글 전체를 NFKC 로 바꾸지 않는다: 한글 자모(ㅋ)까지 조합용 자모로 바뀌어 화면에서 깨진다.
+ */
+const VARIANT_CHARS = /[\u2460-\u2473\u24EA\u3251-\u325F\u32B1-\u32BF\uFF01-\uFF5E\uFF61-\uFF9F]+/g;
+
+/**
+ * 서버 한도에 맞춘 글자 — 표기가 갈라지는 글자는 한 가지로, 줄바꿈·연속 공백은 한 칸으로,
+ * 길면 자른다(이모지 반쪽은 버린다). 비었으면 undefined
+ */
 function tidy(value: string | undefined, limit: number): string | undefined {
     const text = (value ?? "")
+        .replace(VARIANT_CHARS, (run) => run.normalize("NFKC"))
         .replace(/\p{Cc}+/gu, " ")
         .replace(/\s+/g, " ")
         .trim();
@@ -140,6 +151,11 @@ function tidy(value: string | undefined, limit: number): string | undefined {
     // 서버(Java)는 UTF-16 단위로 센다 — 같은 단위로 자른다
     const cut = text.slice(0, limit).replace(/[\uD800-\uDBFF]$/, "");
     return cut.trim() || undefined;
+}
+
+/** 공유할 제품명·브랜드 칸에서 손을 뗐을 때 칸에 다시 넣을 값 — 보낼 값과 화면의 값이 같아진다 */
+export function tidyContributionText(value: string): string {
+    return tidy(value, CONTRIBUTE_TEXT_LIMIT) ?? "";
 }
 
 /**
@@ -155,7 +171,7 @@ export function contributionPayload(input: BarcodeContribution): BarcodeContribu
 }
 
 /**
- * 등록을 마친 뒤 "올릴까요?"를 물을지.
+ * 등록을 마친 뒤 "공유할까요?"를 물을지.
  * 조회가 "못 찾음"으로 끝난 바로 그 바코드를 저장했고, 올릴 수 있는 값일 때만 묻는다.
  * 저장 전에 바코드 칸을 고쳤으면 묻지 않는다 — 서버에 없다고 확인한 것은 원래 바코드뿐이다.
  */
