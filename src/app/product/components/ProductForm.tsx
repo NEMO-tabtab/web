@@ -34,6 +34,7 @@ import {
 } from "@/lib/db/products";
 import { compressImage } from "@/lib/image";
 import { productListHref } from "@/lib/productSearch";
+import { editableName, nameOrUnnamed } from "@/lib/quickAdd";
 import type { Series } from "@/lib/shops/schema";
 import { OriginField } from "./OriginField";
 
@@ -96,7 +97,8 @@ const EMPTY_FORM: FormState = {
 };
 
 const fromProduct = (product: Product): FormState => ({
-    name: product.name,
+    // 이름을 안 적고 저장한 물건(#199)은 칸을 비워 보여 준다 — 바로 적을 수 있게
+    name: editableName(product.name),
     price: product.price ? String(product.price) : "",
     count: String(product.count),
     isGift: product.isGift,
@@ -281,9 +283,9 @@ export default function ProductForm(props: ProductFormProps) {
         e.preventDefault();
         if (savingRef.current) return;
 
-        // required 는 공백도 값으로 친다 — 공백뿐인 이름은 여기서 막는다
-        if (!formData.name.trim()) {
-            nameInputRef.current?.setCustomValidity("제품명을 입력해 주세요.");
+        // 사진이 있으면 이름은 나중에 적어도 된다(#199). 이름도 사진도 없는 기록만 막는다
+        if (!formData.name.trim() && photos.length === 0) {
+            nameInputRef.current?.setCustomValidity("제품명을 적거나 사진을 넣어 주세요.");
             nameInputRef.current?.reportValidity();
             return;
         }
@@ -292,7 +294,7 @@ export default function ProductForm(props: ProductFormProps) {
         setIsSaving(true);
 
         try {
-            const input = toInput(formData);
+            const input = { ...toInput(formData), name: nameOrUnnamed(formData.name) };
 
             if (props.mode === "add") {
                 await createProduct(
@@ -420,7 +422,9 @@ export default function ProductForm(props: ProductFormProps) {
                         ref={nameInputRef}
                         label="제품명"
                         placeholder="예: 맥북 프로 16인치"
-                        required
+                        hint="사진이 있으면 나중에 적어도 돼요."
+                        // 이름을 안 적고 저장한 물건을 열면 바로 적게 한다
+                        autoFocus={mode === "edit" && formData.name === ""}
                         value={formData.name}
                         onChange={(e) => {
                             e.target.setCustomValidity("");

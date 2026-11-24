@@ -86,7 +86,7 @@ const TABS = [
 ];
 
 /** 몰입 플로우 — 내비를 숨긴다 (등록 저장 바·스캐너와의 충돌 방지) */
-const IMMERSIVE = ["/product/add", "/product/edit", "/barcode"];
+const IMMERSIVE = ["/product/add", "/product/quick", "/product/edit", "/barcode"];
 
 export interface BottomNavigationProps {
     /** 문서 페이지에서 흐름 안에 전시할 때 — fixed 대신 relative 로 둔다. */

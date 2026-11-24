@@ -16,6 +16,7 @@ const OFFLINE_PAGES = [
     "/",
     "/product",
     "/product/add",
+    "/product/quick",
     "/product/edit",
     "/barcode",
     "/shops",
