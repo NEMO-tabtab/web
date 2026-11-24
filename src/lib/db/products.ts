@@ -1,6 +1,6 @@
 import Dexie from "dexie";
 
-import { db, type Product, type ProductImage } from "./index";
+import { db, type Product, type ProductCatalog, type ProductImage } from "./index";
 
 /** 제품 한 건에 붙일 수 있는 사진 수 */
 export const MAX_IMAGES = 3;
@@ -33,13 +33,13 @@ const isAlive = (product: Product) => product.deletedAt === null;
 /**
  * 저장 직전에 값을 정리한다 — 선물이면 가격 0, 수량은 1 이상 정수. 이름이 비면 저장하지 않는다.
  * 뽑은 곳(origin)은 넘겨준 때만 바꾼다. 빠져 있으면 수정할 때 기존 값을 그대로 둔다 — 뽑은 곳을 모르는
- * 호출이 기록을 지우지 않게 하기 위해서다. 지우려면 null 을 넘긴다.
+ * 호출이 기록을 지우지 않게 하기 위해서다. 지우려면 null 을 넘긴다. 시리즈·종류(catalog)도 같다.
  */
 function normalize(input: ProductInput): ProductInput {
     if (!input.name.trim()) throw new Error("제품명이 비어 있습니다");
     const price = Number.isFinite(input.price) && input.price > 0 ? Math.round(input.price) : 0;
     const count = Number.isFinite(input.count) && input.count >= 1 ? Math.floor(input.count) : 1;
-    const { origin, ...rest } = input;
+    const { origin, catalog, ...rest } = input;
     return {
         ...rest,
         name: input.name.trim(),
@@ -48,6 +48,22 @@ function normalize(input: ProductInput): ProductInput {
         place: input.place.trim(),
         barcode: input.barcode.trim(),
         ...(origin === undefined ? {} : { origin }),
+        ...(catalog === undefined ? {} : { catalog: normalizeCatalog(catalog) }),
+    };
+}
+
+/** 이름의 앞뒤 공백을 떼고, 시리즈 이름이 비면 "고르지 않음"(null)으로, 종류 이름이 비면 "모름"(null)으로 */
+function normalizeCatalog(catalog: ProductCatalog | null): ProductCatalog | null {
+    if (!catalog) return null;
+    const seriesName = catalog.seriesName.trim();
+    if (!seriesName) return null;
+    const variantName = catalog.variantName?.trim() || null;
+    return {
+        seriesId: catalog.seriesId,
+        seriesName,
+        // 종류 이름이 없으면 종류 id 도 뜻이 없다
+        variantId: variantName ? catalog.variantId : null,
+        variantName,
     };
 }
 

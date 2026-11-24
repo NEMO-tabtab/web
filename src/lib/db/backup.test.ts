@@ -136,6 +136,36 @@ describe("내보내기 → 가져오기", () => {
         expect((await getProduct(id))!.origin ?? null).toBeNull();
     });
 
+    it("시리즈·종류(catalog)도 내보냈다가 가져오면 그대로 남는다", async () => {
+        const catalog = { seriesId: null, seriesName: "치이카와 마스코트", variantId: null, variantName: "하치와레" };
+        const id = await createProduct(input({ name: "하치와레", catalog }));
+        const built = await buildBackup();
+        await clear();
+        await applyImport(await readBackup(built.blob));
+        expect((await getProduct(id))!.catalog).toEqual(catalog);
+    });
+
+    it("형식 2 백업(시리즈·종류가 없던 때)도 그대로 가져온다", async () => {
+        const id = await createProduct(input({ name: "옛 기록", origin }));
+        const old = await tamper((await buildBackup()).blob, (manifest) => {
+            manifest.formatVersion = 2;
+            for (const product of manifest.products as Record<string, unknown>[]) delete product.catalog;
+        });
+        await clear();
+        await applyImport(await readBackup(old));
+        const restored = (await getProduct(id))!;
+        expect(restored.origin).toEqual(origin);
+        expect(restored.catalog ?? null).toBeNull();
+    });
+
+    it("시리즈·종류의 모양이 틀리면 백업 전체를 거부한다", async () => {
+        await createProduct(input({ catalog: { seriesId: null, seriesName: "산리오", variantId: null, variantName: null } }));
+        const broken = await tamper((await buildBackup()).blob, (manifest) => {
+            (manifest.products as Record<string, unknown>[])[0].catalog = { seriesName: "" };
+        });
+        await expectRejected(broken, "invalid");
+    });
+
     it("뽑은 곳의 모양이 틀리면 백업 전체를 거부한다", async () => {
         await createProduct(input({ origin }));
         const broken = await tamper((await buildBackup()).blob, (manifest) => {

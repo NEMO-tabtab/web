@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -22,8 +22,8 @@ import { Modal } from "@/components/common/Modal";
 import { fillEmptyFields, lookupBarcode } from "@/lib/api/barcode";
 import { API_CONFIGURED } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
-import type { Product, ProductImage, ProductOrigin, ProductStatus } from "@/lib/db";
-import { useObjectUrl } from "@/lib/db/hooks";
+import type { Product, ProductCatalog, ProductImage, ProductOrigin, ProductStatus } from "@/lib/db";
+import { useObjectUrl, useProducts } from "@/lib/db/hooks";
 import {
     MAX_IMAGES,
     createProduct,
@@ -35,8 +35,10 @@ import {
 import { compressImage } from "@/lib/image";
 import { productListHref } from "@/lib/productSearch";
 import { editableName, nameOrUnnamed } from "@/lib/quickAdd";
+import { mySeries, toCatalog } from "@/lib/series";
 import type { Series } from "@/lib/shops/schema";
 import { OriginField } from "./OriginField";
+import { SeriesField } from "./SeriesField";
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
 
@@ -70,6 +72,9 @@ interface FormState {
     memo: string;
     /** 뽑은 굿즈샵·기기·단. 고르지 않았으면 null */
     origin: ProductOrigin | null;
+    /** 시리즈·종류 이름(#201). 저장할 때 catalog 로 바꾼다 */
+    seriesName: string;
+    variantName: string;
 }
 
 /** 화면에 올린 사진 한 장. 이미 저장된 사진이면 storedId 가 있다. */
@@ -94,6 +99,8 @@ const EMPTY_FORM: FormState = {
     purchasePlace: "",
     memo: "",
     origin: null,
+    seriesName: "",
+    variantName: "",
 };
 
 const fromProduct = (product: Product): FormState => ({
@@ -113,12 +120,16 @@ const fromProduct = (product: Product): FormState => ({
     memo: product.memo,
     // 이 필드가 생기기 전에 만든 기록에는 없다
     origin: product.origin ?? null,
+    seriesName: product.catalog?.seriesName ?? "",
+    variantName: product.catalog?.variantName ?? "",
 });
 
-const toInput = (form: FormState): ProductInput => ({
+/** `known` — 고치기 전의 시리즈·종류나 굿즈샵 기기에서 고른 시리즈. 이름이 그대로면 그 id 를 잇는다 */
+const toInput = ({ seriesName, variantName, ...form }: FormState, known: ProductCatalog | null): ProductInput => ({
     ...form,
     price: Number(form.price) || 0,
     count: Number(form.count) || 1,
+    catalog: toCatalog(seriesName, variantName, known),
 });
 
 /** 상세 정보 칸에 무엇이든 적혀 있으면 처음부터 펼쳐 둔다 */
@@ -179,6 +190,12 @@ export default function ProductForm(props: ProductFormProps) {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [barcodeNotice, setBarcodeNotice] = useState<BarcodeNotice>(null);
     const [originNotice, setOriginNotice] = useState<string | null>(null);
+
+    // 전에 적은 시리즈 — 칩으로 골라 다시 적지 않게 한다
+    const allProducts = useProducts();
+    const seriesSuggestions = useMemo(() => mySeries(allProducts ?? []), [allProducts]);
+    // 이름이 그대로일 때 이을 id 의 출처. 굿즈샵 기기를 고르면 그 시리즈로 바뀐다
+    const knownCatalog = useRef<ProductCatalog | null>(props.mode === "edit" ? (props.product.catalog ?? null) : null);
 
     // 조회 결과가 왔을 때의 입력값을 본다 — 그사이 사용자가 적은 칸은 건드리지 않기 위해서다
     const formDataRef = useRef(formData);
@@ -272,6 +289,11 @@ export default function ProductForm(props: ProductFormProps) {
             next.purchasePlace = origin.shopName;
             filled.push("구매처");
         }
+        if (series && !current.seriesName.trim()) {
+            next.seriesName = series.name;
+            knownCatalog.current = { seriesId: series.id, seriesName: series.name, variantId: null, variantName: null };
+            filled.push("시리즈");
+        }
         setFormData(next);
         nameInputRef.current?.setCustomValidity("");
         setOriginNotice(
@@ -294,7 +316,7 @@ export default function ProductForm(props: ProductFormProps) {
         setIsSaving(true);
 
         try {
-            const input = { ...toInput(formData), name: nameOrUnnamed(formData.name) };
+            const input = { ...toInput(formData, knownCatalog.current), name: nameOrUnnamed(formData.name) };
 
             if (props.mode === "add") {
                 await createProduct(
@@ -487,6 +509,19 @@ export default function ProductForm(props: ProductFormProps) {
                             ))}
                         </div>
                     </div>
+                </Card>
+
+                <Card padding="sm" className="space-y-5">
+                    <Heading level={3} as="h2">
+                        시리즈
+                    </Heading>
+                    <SeriesField
+                        seriesName={formData.seriesName}
+                        onSeriesChange={(value) => updateFormData("seriesName", value)}
+                        variantName={formData.variantName}
+                        onVariantChange={(value) => updateFormData("variantName", value)}
+                        suggestions={seriesSuggestions}
+                    />
                 </Card>
 
                 <OriginField

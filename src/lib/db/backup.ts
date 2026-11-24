@@ -20,8 +20,9 @@ export const BACKUP_FORMAT = "nemo-backup";
  *   1: 처음
  *   2: 물건에 뽑은 곳(origin) 추가. 1 은 origin 이 없을 뿐이라 그대로 읽는다.
  *      버전을 올린 까닭 — 1 만 아는 앱이 2 를 읽으면 origin 을 모르는 필드로 버려 기록이 사라진다. 대신 "새 버전 파일"로 거부하게 한다.
+ *   3: 물건에 시리즈·종류(catalog) 추가(#167). 1·2 는 catalog 가 없을 뿐이라 그대로 읽는다. 올린 까닭은 2 와 같다.
  */
-export const BACKUP_FORMAT_VERSION = 2;
+export const BACKUP_FORMAT_VERSION = 3;
 const MANIFEST_NAME = "backup.json";
 
 /**
@@ -57,6 +58,13 @@ const originSchema = z.object({
     seriesName: z.string().nullable(),
 });
 
+const catalogSchema = z.object({
+    seriesId: z.string().min(1).nullable(),
+    seriesName: z.string().min(1),
+    variantId: z.string().min(1).nullable(),
+    variantName: z.string().min(1).nullable(),
+});
+
 const productSchema = z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -79,6 +87,8 @@ const productSchema = z.object({
     ownerId: z.number().int().nullable(),
     // 형식 1 의 파일에는 없다
     origin: originSchema.nullable().optional(),
+    // 형식 1·2 의 파일에는 없다
+    catalog: catalogSchema.nullable().optional(),
 });
 
 const imageEntrySchema = z.object({

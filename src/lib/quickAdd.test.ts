@@ -122,6 +122,27 @@ describe("quickInputs", () => {
         }
     });
 
+    it("시리즈를 골랐으면 적은 이름은 종류가 되고, 안 적은 물건의 이름은 시리즈 이름이 된다", () => {
+        const inputs = quickInputs(
+            ["하치와레", ""],
+            { price: "", purchasePlace: "", category: "", seriesName: " 치이카와 마스코트 " },
+            "2026-11-24",
+        );
+        expect(inputs[0]).toMatchObject({
+            name: "하치와레",
+            catalog: { seriesId: null, seriesName: "치이카와 마스코트", variantId: null, variantName: "하치와레" },
+        });
+        expect(inputs[1]).toMatchObject({
+            name: "치이카와 마스코트",
+            catalog: { seriesId: null, seriesName: "치이카와 마스코트", variantId: null, variantName: null },
+        });
+    });
+
+    it("시리즈를 고르지 않았으면 시리즈·종류 없이 저장한다", () => {
+        const [input] = quickInputs(["하치와레"], { price: "", purchasePlace: "", category: "" }, "2026-11-24");
+        expect(input.catalog).toBeNull();
+    });
+
     it("값을 적지 않았거나 숫자가 아니면 0원", () => {
         const common = { purchasePlace: "", category: "" };
         expect(quickInputs([""], { ...common, price: "" }, "2026-11-24")[0].price).toBe(0);
@@ -143,6 +164,18 @@ describe("목록에서 이름을 안 적은 물건만 보기", () => {
         expect(search).toBe("?unnamed=1");
         expect(parseProductQuery(new URLSearchParams(search)).unnamed).toBe(true);
         expect(parseProductQuery(new URLSearchParams("")).unnamed).toBe(false);
+    });
+
+    it("series 로 한 시리즈의 물건만 남기고, 주소에 적고 읽는다", () => {
+        const catalog = { seriesId: null, seriesName: "치이카와", variantId: null, variantName: null };
+        const list = [product({ catalog }), product({ catalog: null }), product()];
+        const query = { ...EMPTY_QUERY, series: "name:치이카와", view: "series" as const };
+        expect(queryProducts(list, query)).toHaveLength(1);
+        const search = productQuerySearch(query);
+        expect(parseProductQuery(new URLSearchParams(search))).toMatchObject({ series: "name:치이카와", view: "series" });
+        expect(isNarrowed(query)).toBe(true);
+        // 보기 방식만 바꾼 것은 좁힌 것이 아니다
+        expect(isNarrowed({ ...EMPTY_QUERY, view: "series" })).toBe(false);
     });
 
     it("unnamed 는 목록을 좁히는 조건이다", () => {

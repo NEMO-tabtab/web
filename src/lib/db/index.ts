@@ -27,6 +27,21 @@ export interface ProductOrigin {
 }
 
 /**
+ * 물건이 어느 시리즈의 어떤 종류인지(#167, #201).
+ * 카탈로그(public/shops)에서 골랐으면 id 가 있고, 사용자가 직접 적은 시리즈("내 시리즈")면 id 가 null 이다 —
+ * 그때는 이름으로 묶는다. 카탈로그가 바뀌거나 빠져도 읽히도록 고른 순간의 이름을 함께 적는다(origin 과 같은 방식).
+ */
+export interface ProductCatalog {
+    /** 카탈로그의 시리즈 id. 사용자가 적은 시리즈면 null */
+    seriesId: string | null;
+    seriesName: string;
+    /** 카탈로그의 종류 id. 사용자가 적었거나 종류를 모르면 null */
+    variantId: string | null;
+    /** 종류 이름. 아직 모르면(안 뜯었거나 안 적었으면) null */
+    variantName: string | null;
+}
+
+/**
  * 기기에 저장되는 물건 한 건.
  *
  * 로그인 전에는 이 기기가 유일한 원본이다. 나중에 서버와 동기화할 수 있도록
@@ -63,6 +78,11 @@ export interface Product {
      * 색인이 아니라서 Dexie 버전을 올리지 않았다 — 읽을 때 없는 것과 null 을 같게 다룬다.
      */
     origin?: ProductOrigin | null;
+    /**
+     * 시리즈·종류. 고르지 않았으면 null, 이 필드가 생기기 전에 만든 기록에는 아예 없다.
+     * origin 처럼 색인이 아니라서 Dexie 버전을 올리지 않았다 — 읽을 때 없는 것과 null 을 같게 다룬다.
+     */
+    catalog?: ProductCatalog | null;
 }
 
 /** 제품 사진. 원본 대신 줄인 JPEG Blob 을 저장한다 (src/lib/image.ts) */

@@ -1,6 +1,7 @@
 import type { Product } from "@/lib/db";
 import { productValue } from "@/lib/db/products";
 import { isUnnamed } from "@/lib/quickAdd";
+import { inSeries } from "@/lib/series";
 
 /*
  * 내 제품 목록의 검색·정렬·필터.
@@ -33,7 +34,13 @@ export interface ProductQuery {
     place: string | null;
     /** 이름을 아직 적지 않은 물건만(#199) */
     unnamed: boolean;
+    /** 이 시리즈의 물건만(#201). 값은 seriesKey. null = 전체 */
+    series: string | null;
+    /** 낱개 목록으로 볼지, 시리즈별로 모아 볼지 */
+    view: ProductView;
 }
+
+export type ProductView = "list" | "series";
 
 export const EMPTY_QUERY: ProductQuery = {
     q: "",
@@ -41,6 +48,8 @@ export const EMPTY_QUERY: ProductQuery = {
     category: null,
     place: null,
     unnamed: false,
+    series: null,
+    view: "list",
 };
 
 /** 값이 빈 물건을 묶어 부르는 이름 — 홈의 분포 칩과 같은 말을 쓴다 */
@@ -57,6 +66,8 @@ export function parseProductQuery(params: { get(name: string): string | null }):
         category: params.get("category"),
         place: params.get("place"),
         unnamed: params.get("unnamed") === "1",
+        series: params.get("series"),
+        view: params.get("view") === "series" ? "series" : "list",
     };
 }
 
@@ -69,6 +80,8 @@ export function productQuerySearch(query: ProductQuery): string {
     if (query.category !== null) params.set("category", query.category);
     if (query.place !== null) params.set("place", query.place);
     if (query.unnamed) params.set("unnamed", "1");
+    if (query.series !== null) params.set("series", query.series);
+    if (query.view !== "list") params.set("view", query.view);
     const search = params.toString();
     return search ? `?${search}` : "";
 }
@@ -78,9 +91,9 @@ export function productQueryHref(patch: Partial<ProductQuery>): string {
     return `/product${productQuerySearch({ ...EMPTY_QUERY, ...patch })}`;
 }
 
-/** 검색어나 필터가 걸려 있는가. 정렬은 물건을 빼지 않으므로 치지 않는다 */
+/** 검색어나 필터가 걸려 있는가. 정렬과 보기 방식은 물건을 빼지 않으므로 치지 않는다 */
 export function isNarrowed(query: ProductQuery): boolean {
-    return query.q.trim() !== "" || query.category !== null || query.place !== null || query.unnamed;
+    return query.q.trim() !== "" || query.category !== null || query.place !== null || query.unnamed || query.series !== null;
 }
 
 /* ------------------------------------------------------------------ *
@@ -219,6 +232,8 @@ function searchText(product: Product): string {
         product.barcode,
         product.origin?.shopName,
         product.origin?.seriesName,
+        product.catalog?.seriesName,
+        product.catalog?.variantName,
     ]
         .map((field) => normalizeText(field ?? ""))
         .join(FIELD_GAP);
@@ -297,6 +312,7 @@ export function facetOptions(products: Product[], query: ProductQuery, field: Fa
     for (const product of products) {
         if (!matchesFacet(product, other, query[other]) || !matchesSearch(product, query.q)) continue;
         if (query.unnamed && !isUnnamed(product)) continue;
+        if (query.series !== null && !inSeries(product, query.series)) continue;
         const value = facetValue(product, field);
         counts.set(value, (counts.get(value) ?? 0) + 1);
     }
@@ -349,6 +365,7 @@ export function queryProducts(products: Product[], query: ProductQuery): Product
                 matchesFacet(product, "category", query.category) &&
                 matchesFacet(product, "place", query.place) &&
                 (!query.unnamed || isUnnamed(product)) &&
+                (query.series === null || inSeries(product, query.series)) &&
                 matchesSearch(product, query.q),
         )
         .sort(comparators[query.sort]);
