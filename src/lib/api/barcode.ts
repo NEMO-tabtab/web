@@ -4,10 +4,11 @@ import { ApiError, apiFetch } from "./client";
 
 /*
  * 바코드로 상품 정보 조회 — `GET /api/barcode/{barcode}`.
+ * 못 찾은 바코드는 사용자가 동의하면 서버의 바코드 DB에 올린다 — `POST /api/barcode/insert` (#128).
  *
- * 명세에 응답 형식(BarcodeRead)이 없어 가정한 것 (실제 응답을 보면 여기만 고친다):
- * - data 는 객체이고, 이름·브랜드·모델명이 아래 후보 이름 중 하나로 온다
- * - 못 찾으면 404 가 아니라 500 으로 온다 (명세 설명). 그래서 "못 찾음"과 "서버 고장"을 구분할 수 없다
+ * 조회 응답(BarcodeRead)의 필드는 barcode·productNm·type·color·brandNm 이다(2026-11-19 실제 응답).
+ * 다른 이름도 받아 두는 것은 서버가 바뀌어도 화면이 깨지지 않게 하려는 것이다.
+ * 못 찾으면 404 가 아니라 500 으로 온다 (명세 설명). 그래서 "못 찾음"과 "서버 고장"을 구분할 수 없다.
  */
 
 export interface BarcodeInfo {
@@ -104,6 +105,96 @@ export function lookupBarcode(barcode: string, now: number = Date.now()): Promis
         .finally(() => inFlight.delete(code));
     inFlight.set(code, request);
     return request;
+}
+
+/*
+ * ── 못 찾은 바코드 올리기 ─────────────────────────────────────────
+ * 올리는 것은 바코드·제품명·브랜드뿐이다. 가격·메모·사진·보관 위치는 올리지 않는다.
+ * 사용자에게 묻고 동의했을 때만 부른다 — 이 파일은 묻지 않는다(화면의 몫).
+ * 서버는 이미 있는 바코드를 덮어쓰지 않는다(409).
+ */
+
+/** 서버가 받는 바코드 — 영문·숫자·하이픈 4~30자. 조회(4~48자)보다 좁다: 서버 DB 한쪽의 칸이 30자다 */
+const CONTRIBUTE_PATTERN = /^[0-9A-Za-z-]{4,30}$/;
+
+/** 서버가 받는 제품명·브랜드 길이. 넘으면 서버가 400 으로 돌려보내므로 여기서 맞춘다 */
+const CONTRIBUTE_TEXT_LIMIT = 50;
+
+/** 사용자가 창을 보고 기다리는 동안이라 조회보다 길게, 잠든 서버가 깨어날 시간보다는 짧게 */
+const CONTRIBUTE_TIMEOUT_MS = 30_000;
+
+export interface BarcodeContribution {
+    barcode: string;
+    name: string;
+    /** 비었으면 올리지 않는다 */
+    brandName?: string;
+}
+
+/** 서버 한도에 맞춘 글자 — 줄바꿈·연속 공백은 한 칸으로, 길면 자른다(이모지 반쪽은 버린다). 비었으면 undefined */
+function tidy(value: string | undefined, limit: number): string | undefined {
+    const text = (value ?? "")
+        .replace(/\p{Cc}+/gu, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    if (!text) return undefined;
+    // 서버(Java)는 UTF-16 단위로 센다 — 같은 단위로 자른다
+    const cut = text.slice(0, limit).replace(/[\uD800-\uDBFF]$/, "");
+    return cut.trim() || undefined;
+}
+
+/**
+ * 실제로 올라갈 값. 확인 창에 보여 주는 값과 보내는 값이 같도록 둘 다 이것을 쓴다.
+ * 올릴 수 없는 입력(바코드 형식이 다르거나 제품명이 비었음)이면 null.
+ */
+export function contributionPayload(input: BarcodeContribution): BarcodeContribution | null {
+    const barcode = input.barcode.trim();
+    const name = tidy(input.name, CONTRIBUTE_TEXT_LIMIT);
+    if (!CONTRIBUTE_PATTERN.test(barcode) || !name) return null;
+    const brandName = tidy(input.brandName, CONTRIBUTE_TEXT_LIMIT);
+    return brandName ? { barcode, name, brandName } : { barcode, name };
+}
+
+/**
+ * 등록을 마친 뒤 "올릴까요?"를 물을지.
+ * 조회가 "못 찾음"으로 끝난 바로 그 바코드를 저장했고, 올릴 수 있는 값일 때만 묻는다.
+ * 저장 전에 바코드 칸을 고쳤으면 묻지 않는다 — 서버에 없다고 확인한 것은 원래 바코드뿐이다.
+ */
+export function shouldOfferContribution(missedBarcode: string | null, saved: BarcodeContribution): boolean {
+    if (!missedBarcode) return false;
+    return saved.barcode.trim() === missedBarcode.trim() && contributionPayload(saved) !== null;
+}
+
+/** saved — 올렸다. exists — 그사이 누군가 먼저 올려 서버가 받지 않았다(덮어쓰지 않는다) */
+export type ContributeResult = "saved" | "exists";
+
+/**
+ * 못 찾은 바코드의 정보를 서버의 바코드 DB에 올린다.
+ * 서버에 닿지 못했거나 거절당하면(409 제외) ApiError 를 던진다.
+ * 올린 뒤에는 이 앱에서 같은 바코드를 다시 물을 때 서버를 부르지 않고 올린 값을 돌려준다.
+ */
+export async function contributeBarcode(input: BarcodeContribution): Promise<ContributeResult> {
+    const payload = contributionPayload(input);
+    if (!payload) throw new RangeError("올릴 수 없는 바코드 정보입니다.");
+    const { barcode, name, brandName } = payload;
+
+    try {
+        await apiFetch({
+            method: "POST",
+            path: "/api/barcode/insert",
+            json: { barcode, productNm: name, ...(brandName ? { brandNm: brandName } : {}) },
+            timeoutMs: CONTRIBUTE_TIMEOUT_MS,
+        });
+    } catch (error) {
+        if (error instanceof ApiError && error.kind === "http" && error.status === 409) {
+            // 기억해 둔 "못 찾음"을 지운다 — 다음 조회는 서버에 다시 물어 먼저 올라간 값을 받는다
+            cache.delete(barcode);
+            return "exists";
+        }
+        throw error;
+    }
+
+    cache.set(barcode, { info: brandName ? { name, brandName } : { name }, expiresAt: Infinity });
+    return "saved";
 }
 
 const FIELD_LABELS: Record<keyof BarcodeInfo, string> = {

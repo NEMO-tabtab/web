@@ -13,6 +13,8 @@ import type { ApiEnvelope } from "./client";
  *   바코드 `0000…`    — 못 찾음 (명세대로 500)
  *   바코드 `9999…`    — 응답 자체를 못 받음
  *   바코드 `7777…`    — 성공인데 쓸 만한 값이 없음
+ *   바코드 등록 `8888…` — 이미 누가 올린 바코드 (409)
+ *   바코드 등록 `9999…` — 응답 자체를 못 받음
  *   번호 `999999`     — 없는 상품·카테고리·알람
  */
 
@@ -156,6 +158,14 @@ export const expected = {
         code: 500,
         error: "등록된 바코드 정보를 찾을 수 없습니다.",
     },
+    /** 바코드 등록 (NEMO-tabtab/api#4) — 서버 코드의 응답을 옮긴 것 */
+    barcodeSaved: (data: unknown): ApiEnvelope => ({ success: true, message: "등록되었습니다.", code: 200, data }),
+    barcodeExists: {
+        success: false,
+        message: "이미 등록된 바코드입니다.",
+        code: 409,
+        error: "이미 등록된 바코드입니다.",
+    },
     /* 아래는 실제 응답을 옮긴 것 (2026-11-19) */
     health: { success: true, message: "ok", code: 200 },
     found: (data: unknown): ApiEnvelope => ({ success: true, message: "조회되었습니다.", code: 200, data }),
@@ -236,6 +246,21 @@ export function createMockFetch({ delayMs }: { delayMs: number }) {
                 if (dto.password === "wrong") return json(401, expected.loginWrong);
                 if (loginId === "odd") return json(200, expected.oddShape);
                 return json(200, expected.loginOk(loginId));
+            case "POST /api/barcode/insert": {
+                const barcode = String(dto.barcode ?? "");
+                if (barcode.startsWith("9999")) throw new TypeError("Failed to fetch");
+                if (barcode.startsWith("8888")) return json(409, expected.barcodeExists);
+                return json(
+                    200,
+                    expected.barcodeSaved({
+                        barcode,
+                        productNm: dto.productNm ?? null,
+                        type: null,
+                        color: null,
+                        brandNm: dto.brandNm ?? null,
+                    }),
+                );
+            }
             case "GET /api/health":
                 return json(200, expected.health);
             case "GET /api/user/checkId":

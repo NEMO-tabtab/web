@@ -19,7 +19,12 @@ import {
     Textarea,
 } from "@/components/common";
 import { Modal } from "@/components/common/Modal";
-import { fillEmptyFields, lookupBarcode } from "@/lib/api/barcode";
+import {
+    fillEmptyFields,
+    lookupBarcode,
+    shouldOfferContribution,
+    type BarcodeContribution,
+} from "@/lib/api/barcode";
 import { API_CONFIGURED } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
 import type { Product, ProductImage, ProductOrigin, ProductStatus } from "@/lib/db";
@@ -35,6 +40,7 @@ import {
 import { compressImage } from "@/lib/image";
 import { productListHref } from "@/lib/productSearch";
 import type { Series } from "@/lib/shops/schema";
+import { BarcodeShareDialog } from "./BarcodeShareDialog";
 import { OriginField } from "./OriginField";
 
 const CATEGORIES = ["전자기기", "가구", "의류", "도서", "기타"];
@@ -177,6 +183,10 @@ export default function ProductForm(props: ProductFormProps) {
     const [confirmDelete, setConfirmDelete] = useState(false);
     const [barcodeNotice, setBarcodeNotice] = useState<BarcodeNotice>(null);
     const [originNotice, setOriginNotice] = useState<string | null>(null);
+    /** 서버가 못 찾은 바코드. 이 바코드 그대로 저장하면 정보를 올릴지 묻는다(#128) */
+    const [missedBarcode, setMissedBarcode] = useState<string | null>(null);
+    /** 저장을 마치고 올릴지 묻는 중인 바코드 정보 */
+    const [contribution, setContribution] = useState<BarcodeContribution | null>(null);
 
     // 조회 결과가 왔을 때의 입력값을 본다 — 그사이 사용자가 적은 칸은 건드리지 않기 위해서다
     const formDataRef = useRef(formData);
@@ -202,6 +212,7 @@ export default function ProductForm(props: ProductFormProps) {
                 if (cancelled) return;
                 if (!info) {
                     setBarcodeNotice(BARCODE_NOTICES.notFound);
+                    setMissedBarcode(initialBarcode);
                     return;
                 }
                 const { filled } = fillEmptyFields(formDataRef.current, info);
@@ -299,6 +310,13 @@ export default function ProductForm(props: ProductFormProps) {
                     input,
                     photos.map((photo) => photo.blob),
                 );
+
+                // 저장은 끝났다. 서버에 없던 바코드면 목록으로 가기 전에 정보를 올릴지 묻는다
+                const saved = { barcode: formData.barcode, name: formData.name, brandName: formData.brandName };
+                if (navigator.onLine !== false && shouldOfferContribution(missedBarcode, saved)) {
+                    setContribution(saved);
+                    return;
+                }
             } else {
                 const keptIds = new Set(photos.map((photo) => photo.storedId).filter(Boolean));
                 await updateProduct(props.product.id, input, {
@@ -631,6 +649,10 @@ export default function ProductForm(props: ProductFormProps) {
             >
                 <p className="text-ink-soft text-sm">사진도 함께 지워지고 되돌릴 수 없어요.</p>
             </Modal>
+
+            {contribution && (
+                <BarcodeShareDialog contribution={contribution} onFinish={() => router.push("/product")} />
+            )}
         </PageShell>
     );
 }

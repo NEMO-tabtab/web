@@ -302,4 +302,17 @@ export const ENDPOINTS: readonly EndpointDef[] = [
         note: "자체 DB → 외부(UPCitemdb) 순으로 찾는다. 어디에도 없으면 404 가 아니라 500 이 온다.",
         params: [{ name: "barcode", in: "path", required: true, placeholder: "8801234567890" }],
     },
+    {
+        id: "barcode-insert",
+        group: "barcode",
+        method: "POST",
+        path: "/api/barcode/insert",
+        summary: "바코드 정보 등록",
+        note: "못 찾은 바코드를 사용자가 등록한다. 이미 있으면 덮어쓰지 않고 409. 한 번 올리면 지울 수 없다 — 시험용 바코드를 쓸 것.",
+        destructive: true,
+        body: {
+            type: "json",
+            template: () => ({ barcode: "", productNm: "", brandNm: "" }),
+        },
+    },
 ];
