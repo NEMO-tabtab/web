@@ -8,6 +8,7 @@ import {
     CONTRIBUTE_TEXT_LIMIT,
     contributeBarcode,
     contributionPayload,
+    isKoreanOrEnglish,
     tidyContributionText,
     type BarcodeContribution,
     type ContributeResult,
@@ -43,9 +44,21 @@ interface BarcodeShareDialogProps {
  * 묻지 않고 올리지 않는다 — "공유하기"를 누를 때만 서버로 나간다. 물건은 이미 기기에 저장된 뒤라
  * 공유에 실패해도 기록은 그대로다.
  *
- * 기록에 적은 이름은 "언니가 준 하치와레"처럼 자기만 아는 이름일 수 있어서, 공유할 이름은 여기서 따로 고친다.
- * 고쳐도 기기에 저장한 기록은 바뀌지 않는다.
+ * 기록에 적은 이름은 "언니가 준 하치와레"처럼 자기만 아는 이름이거나 일본어 원문일 수 있어서,
+ * 공유할 이름은 여기서 따로 고친다. 고쳐도 기기에 저장한 기록은 바뀌지 않는다.
+ * 공유할 이름은 다른 사용자가 읽을 수 있게 한국어나 영어만 받는다.
  */
+
+const OTHER_SCRIPT_MESSAGE = "일본어·한자 같은 글자는 다른 사용자가 읽기 어려워요. 한국어나 영어로 적어 주세요";
+
+function nameError(name: string): string | undefined {
+    if (!name.trim()) return "공유할 제품명을 적어 주세요";
+    return isKoreanOrEnglish(name) ? undefined : OTHER_SCRIPT_MESSAGE;
+}
+
+function brandError(brandName: string): string | undefined {
+    return isKoreanOrEnglish(brandName) ? undefined : OTHER_SCRIPT_MESSAGE;
+}
 export function BarcodeShareDialog({ contribution, onFinish }: BarcodeShareDialogProps) {
     const [step, setStep] = useState<Step>({ kind: "ask" });
     const [name, setName] = useState(() => tidyContributionText(contribution.name));
@@ -127,7 +140,7 @@ export function BarcodeShareDialog({ contribution, onFinish }: BarcodeShareDialo
             <div className="space-y-4">
                 <Text size="sm">
                     물건은 저장했어요. 이 바코드는 아직 앱에 제품 정보가 없어요. 공유하면 다른 사용자가 이 바코드를 찍을
-                    때 제품명이 자동으로 채워져요.
+                    때 제품명이 자동으로 채워져요. 누구나 읽을 수 있게 한국어나 영어로 적어 주세요.
                 </Text>
                 <div className="space-y-3 rounded-nemo border border-line px-3 py-3">
                     <InfoRow label="바코드" value={contribution.barcode.trim()} />
@@ -140,7 +153,7 @@ export function BarcodeShareDialog({ contribution, onFinish }: BarcodeShareDialo
                         disabled={sending}
                         onChange={(event) => setName(event.target.value)}
                         onBlur={() => setName(tidyContributionText(name))}
-                        error={name.trim() ? undefined : "공유할 제품명을 적어 주세요"}
+                        error={nameError(name)}
                         hint={`고쳐도 내 기록의 이름은 그대로예요 · ${name.length}/${CONTRIBUTE_TEXT_LIMIT}`}
                     />
                     <Input
@@ -152,6 +165,7 @@ export function BarcodeShareDialog({ contribution, onFinish }: BarcodeShareDialo
                         placeholder="모르면 비워 두세요"
                         onChange={(event) => setBrandName(event.target.value)}
                         onBlur={() => setBrandName(tidyContributionText(brandName))}
+                        error={brandError(brandName)}
                         hint={`${brandName.length}/${CONTRIBUTE_TEXT_LIMIT}`}
                     />
                 </div>
