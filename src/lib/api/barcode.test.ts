@@ -7,6 +7,7 @@ import {
     fillEmptyFields,
     lookupBarcode,
     shouldOfferContribution,
+    tidyContributionText,
 } from "./barcode";
 import { createMockFetch } from "./mock";
 
@@ -144,7 +145,7 @@ describe("빈 칸만 채우기", () => {
     });
 });
 
-describe("못 찾은 바코드 올리기", () => {
+describe("못 찾은 바코드 공유하기", () => {
     /** fetch 로 나간 요청 중 바코드 등록만 골라 본문을 읽는다 */
     const sentBodies = () =>
         vi
@@ -223,6 +224,19 @@ describe("올릴 값 다듬기", () => {
 
         const emoji = contributionPayload({ barcode: "4570117912345", name: `${"가".repeat(49)}🐻` });
         expect(emoji?.name).toBe("가".repeat(49));
+    });
+
+    it("표기가 갈라지는 글자(원 숫자·전각·반각 가타카나)는 한 가지로 맞추고, 한글 자모는 그대로 둔다", () => {
+        expect(
+            contributionPayload({ barcode: "4570117912345", name: "ﾁｲｶﾜ ﾏｽｺｯﾄ ｶﾞﾁｬ ③", brandName: "ＢＡＮＤＡＩ" }),
+        ).toEqual({ barcode: "4570117912345", name: "チイカワ マスコット ガチャ 3", brandName: "BANDAI" });
+
+        expect(contributionPayload({ barcode: "4570117912345", name: "ㅋㅋ 키링 ⑫" })?.name).toBe("ㅋㅋ 키링 12");
+    });
+
+    it("칸에서 손을 뗐을 때 넣을 값은 보낼 값과 같다", () => {
+        expect(tidyContributionText(" 치이카와\n  마스코트 ①")).toBe("치이카와 마스코트 1");
+        expect(tidyContributionText(" \t ")).toBe("");
     });
 
     it("서버가 받지 않는 바코드(30자 넘음·다른 글자)나 빈 이름이면 null", () => {
