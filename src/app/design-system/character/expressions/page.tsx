@@ -4,6 +4,7 @@ import { DETAIL_HIDDEN_MAX, SMALL_FILTER_MAX } from "@/lib/nemo/compose";
 import { EXPRESSIONS, EXPRESSION_IDS } from "@/lib/nemo/expressions";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../../_components/DocSection";
+import { nemoSvg } from "../_components/exports";
 import { SheetTile } from "../_components/SheetTile";
 
 /** 테이프 네 가지 — 그 테이프를 쓰는 표정으로 보인다 */
@@ -41,7 +42,13 @@ export default function ExpressionsPage() {
             >
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {EXPRESSION_IDS.map((id) => (
-                        <SheetTile key={id} id={id} label={EXPRESSIONS[id].label} when={EXPRESSIONS[id].when}>
+                        <SheetTile
+                            key={id}
+                            id={id}
+                            label={EXPRESSIONS[id].label}
+                            when={EXPRESSIONS[id].when}
+                            download={{ name: `nemo-face-${id}`, svg: nemoSvg({ expression: id }) }}
+                        >
                             <Nemo expression={id} size={112} />
                         </SheetTile>
                     ))}

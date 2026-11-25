@@ -5,6 +5,8 @@ import { POSES, POSE_IDS, type Pose, type PoseId } from "@/lib/nemo/poses";
 import { DEPTH, SOLID_MIN } from "@/lib/nemo/solid";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../../_components/DocSection";
+import { DownloadButtons } from "../_components/DownloadButtons";
+import { nemoSvg } from "../_components/exports";
 
 const pose = (id: PoseId): Pose => POSES[id];
 
@@ -43,6 +45,10 @@ export default function SolidPage() {
                         <div key={id} className="flex flex-col items-center gap-1">
                             <Nemo view="solid" expression={id} size={SOLID_MIN} />
                             <p className="font-display text-base">{EXPRESSIONS[id].label}</p>
+                            <DownloadButtons
+                                name={`nemo-solid-face-${id}`}
+                                svg={nemoSvg({ view: "solid", expression: id })}
+                            />
                         </div>
                     ))}
                 </ExamplePreview>
@@ -54,6 +60,7 @@ export default function SolidPage() {
                         <div key={id} className="flex flex-col items-center gap-1">
                             <Nemo view="solid" pose={id} size={SOLID_MIN} />
                             <p className="font-display text-base">{pose(id).label}</p>
+                            <DownloadButtons name={`nemo-solid-pose-${id}`} svg={nemoSvg({ view: "solid", pose: id })} />
                         </div>
                     ))}
                 </ExamplePreview>
