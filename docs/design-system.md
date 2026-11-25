@@ -19,11 +19,12 @@
 | 포커스 링 | `outline-3` (3px) | |
 | 손그림 장치 | `.sticker`, `.field`, `.scribble`, `.wavy-edge`, `.paste-grid` | `src/app/globals.css` |
 | 아이콘 | `Icon` (`@/components/common`), 카테고리는 `categoryIcon()` | 먹선 2px·손그림 필터. 목록은 `/design-system/icons` |
+| 캐릭터 | `Nemo`·`NemoSymbol` (`@/components/nemo/Nemo`), 예전 이름 `NemoFace`·`NemoLogo` | 그림의 원본은 `src/lib/nemo`. 표정 목록은 `/design-system/character/expressions` |
 
 ## 규칙
 
 **U1. 색·모서리·글꼴은 토큰만 쓴다**
-- 규칙: 화면 코드에 색 코드(`#…`), Tailwind 기본 색(`gray-200` 등), `rounded-[…]`를 쓰지 않는다. 캐릭터 SVG(`src/components/NemoFace.tsx`, `NemoLogo.tsx`)는 예외다.
+- 규칙: 화면 코드에 색 코드(`#…`), Tailwind 기본 색(`gray-200` 등), `rounded-[…]`를 쓰지 않는다. 캐릭터 그림의 색은 예외다 — `src/lib/nemo/geometry.ts`의 `COLORS` 한 곳에 리터럴로 둔다.
 - 이유: P5.
 - 강도: 권장 / 확인: 리뷰
 - 예시: 남은 예외는 `border-gray-200` 1곳과 `src/components/analysis/Charts.tsx`의 색 상수(토큰 값의 사본)다.

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Card, Text } from "@/components/common";
 import { NemoFace } from "@/components/NemoFace";
 import { NemoLogo } from "@/components/NemoLogo";
@@ -14,10 +16,11 @@ const FACE_SIZES = [
 ];
 
 const LOGO_SIZES = [
-    { size: 24, use: "좁은 화면 헤더" },
+    { size: 24, use: "가장 작은 크기" },
     { size: 28, use: "문서 상단 스트립" },
     { size: 36, use: "문서 사이드바" },
-    { size: 56, use: "로그인 · 스플래시" },
+    { size: 42, use: "홈 헤더" },
+    { size: 72, use: "로그인 · 회원가입" },
 ];
 
 /** 두 필터의 실제 파라미터. layout.tsx 의 정의와 값을 맞춰 적는다. */
@@ -58,7 +61,7 @@ export default function CharacterPage() {
         <div className="space-y-16">
             <PageHeader
                 title="Character & Logo"
-                description="네모는 종이 상자에 테이프를 붙인 얼굴입니다. 두 개의 SVG 변위 필터가 모든 획에 손떨림을 얹습니다."
+                description="네모는 뽑은 것을 담아 두고 전부 기억하는 종이 상자입니다. 그림의 원본은 src/lib/nemo 한 곳에 있고, 두 개의 SVG 변위 필터가 모든 획에 손떨림을 얹습니다."
             />
 
             <DocSection
@@ -80,11 +83,18 @@ export default function CharacterPage() {
                     <ClassName>aria-hidden</ClassName> 이 박혀 있어 스크린 리더는 캐릭터를 읽지 않습니다. 뜻은 언제나 옆
                     문장이 전달해야 합니다.
                 </Text>
+                <Text size="sm" tone="muted">
+                    NemoFace 는 기본 표정입니다. 다른 표정은{" "}
+                    <Link href="/design-system/character/expressions" className="text-ink font-bold underline underline-offset-4">
+                        Character · Expressions
+                    </Link>{" "}
+                    에서 고르고 <ClassName>Nemo</ClassName> 부품으로 그립니다.
+                </Text>
             </DocSection>
 
             <DocSection
                 title="NemoLogo"
-                description="심볼 약식 — 팔다리를 덜어낸 앱 아이콘형. 헤더·스플래시처럼 좁은 자리에 씁니다."
+                description="심볼 — 팔다리를 덜어 낸 얼굴. 몸·테이프·얼굴은 전신과 같은 원본에서 나오고 선만 한 단계 굵습니다. 헤더·로그인처럼 좁은 자리에 씁니다."
             >
                 <ExamplePreview className="justify-center gap-10" caption="size 는 px 단위 정사각. 기본값 40">
                     {LOGO_SIZES.map((item) => (
@@ -173,8 +183,9 @@ export default function CharacterPage() {
                         </li>
                         <li>
                             <Text size="sm" tone="muted">
-                                캐릭터 SVG 의 색은 토큰이 아니라 리터럴(#1c1b19 먹 · #f0c1b2 볼터치 · #ffffff 종이)로
-                                박혀 있습니다. 토큰 값을 바꾸면 두 컴포넌트도 함께 고쳐야 합니다.
+                                캐릭터의 색은 토큰이 아니라 리터럴(#1c1b19 먹 · #f0c1b2 볼터치 · #ffffff 종이)이고{" "}
+                                <ClassName>src/lib/nemo/geometry.ts</ClassName> 한 곳에 있습니다. 토큰 값을 바꾸면 그곳도
+                                함께 고쳐야 합니다.
                             </Text>
                         </li>
                         <li>
