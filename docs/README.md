@@ -10,7 +10,7 @@
 | [issues.md](issues.md) | 이슈 쓰기 (I1~I4) |
 | [pull-requests.md](pull-requests.md) | PR 쓰기와 머지 (PR1~PR4) |
 | [code-conventions.md](code-conventions.md) | 코드 구조와 규칙 (K1~K7) |
-| [design-system.md](design-system.md) | 화면 규칙 (U1~U7) |
+| [design-system.md](design-system.md) | 화면 규칙 (U1~U8) |
 | [production.md](production.md) | 위험 영역, 사용자 데이터, 배포와 되돌리기 (R1~R6) |
 | [decisions/](decisions/) | 주요 결정의 기록 |
 
@@ -37,7 +37,7 @@
 | | **PR3** 확인한 것과 되돌리는 방법을 적는다 | 리뷰 |
 | P4 기기가 먼저, 서버는 아껴서 | **R6** 기기에 먼저 저장, 서버에는 바뀐 것만 | 리뷰 1명 |
 | P5 공통 부품과 토큰으로만 | U1 토큰만 / U2 색은 두 곳 함께 / U3 글자 크기 단계 | 리뷰 |
-| | U4 공통 부품 먼저 / U5 세 가지 상태 / U6 이름표와 포커스 / U7 문구 | 리뷰 |
+| | U4 공통 부품 먼저 / U5 세 가지 상태 / U6 이름표와 포커스 / U7 문구 / U8 캐릭터 | 리뷰 |
 | | K4 실패는 화면 안에서 | 리뷰 → 자동(예정: 린트) |
 | P6 도구가 지키게, 작게 | C3 브랜치 이름 / K6 파일 이름 / K7 이유 주석 | 자율 |
 | | C4 제목 형식 | 리뷰 → 자동(예정: PR 제목 검사) |
