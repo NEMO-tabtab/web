@@ -6,6 +6,8 @@ import { NemoLogo } from "@/components/NemoLogo";
 import { cn } from "@/lib/cn";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../_components/DocSection";
+import { DownloadButtons } from "./_components/DownloadButtons";
+import { symbolSvg } from "./_components/exports";
 
 /** 캐릭터는 시안 크기 그대로 놓았을 때 가장 손맛이 산다 — 표에 실제로 쓰는 치수만 남긴다 */
 const FACE_SIZES = [
@@ -110,6 +112,7 @@ export default function CharacterPage() {
                 <Text size="sm" tone="muted">
                     24px 밑으로는 눈·입이 뭉개집니다. 더 작은 자리에는 심볼 대신 글자 로고를 쓰세요.
                 </Text>
+                <DownloadButtons name="nemo-symbol" svg={symbolSvg()} />
             </DocSection>
 
             <DocSection

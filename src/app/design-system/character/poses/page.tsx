@@ -4,6 +4,7 @@ import { DETAIL_HIDDEN_MAX } from "@/lib/nemo/compose";
 import { POSES, POSE_IDS, type Pose, type PoseId } from "@/lib/nemo/poses";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../../_components/DocSection";
+import { nemoSvg } from "../_components/exports";
 import { SheetTile } from "../_components/SheetTile";
 
 const pose = (id: PoseId): Pose => POSES[id];
@@ -45,7 +46,13 @@ export default function PosesPage() {
             >
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {POSE_IDS.map((id) => (
-                        <SheetTile key={id} id={id} label={pose(id).label} when={pose(id).when}>
+                        <SheetTile
+                            key={id}
+                            id={id}
+                            label={pose(id).label}
+                            when={pose(id).when}
+                            download={{ name: `nemo-pose-${id}`, svg: nemoSvg({ pose: id }) }}
+                        >
                             <Nemo pose={id} size={104} />
                         </SheetTile>
                     ))}

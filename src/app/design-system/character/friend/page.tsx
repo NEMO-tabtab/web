@@ -4,6 +4,7 @@ import { CAPSULE_EXPRESSIONS, CAPSULE_EXPRESSION_IDS } from "@/lib/nemo/capsule"
 import { SCENES, SCENE_IDS } from "@/lib/nemo/scenes";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../../_components/DocSection";
+import { capsuleSvg, sceneSvg } from "../_components/exports";
 import { SheetTile } from "../_components/SheetTile";
 
 /** 뚜껑 틈 세 가지 — 그 뚜껑을 쓰는 표정으로 보인다 */
@@ -40,6 +41,7 @@ export default function FriendPage() {
                             id={id}
                             label={CAPSULE_EXPRESSIONS[id].label}
                             when={CAPSULE_EXPRESSIONS[id].when}
+                            download={{ name: `capsule-${id}`, svg: capsuleSvg({ expression: id }) }}
                         >
                             <NemoCapsule expression={id} size={104} />
                         </SheetTile>
@@ -84,7 +86,13 @@ export default function FriendPage() {
             >
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {SCENE_IDS.map((id) => (
-                        <SheetTile key={id} id={id} label={SCENES[id].label} when={SCENES[id].when}>
+                        <SheetTile
+                            key={id}
+                            id={id}
+                            label={SCENES[id].label}
+                            when={SCENES[id].when}
+                            download={{ name: `scene-${id}`, svg: sceneSvg(id) }}
+                        >
                             <NemoScene scene={id} size={160} />
                         </SheetTile>
                     ))}
