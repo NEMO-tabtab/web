@@ -4,7 +4,9 @@ import { DETAIL_HIDDEN_MAX, SMALL_FILTER_MAX, composeNemo, composeSymbol } from 
 import { EXPRESSIONS, EXPRESSION_IDS } from "./expressions";
 import { BODY, CANVAS, FACE, SYMBOL, TAPE } from "./geometry";
 import { CANVAS_BOX, POSES, POSE_IDS, type Pose } from "./poses";
+import { FREE_ARMS, arm } from "./limbs";
 import { PROPS } from "./props";
+import { DEPTH, SIDE_SHIFT, SOLID_BACK, SOLID_BACK_OPEN, SOLID_BOX, SOLID_MIN } from "./solid";
 import type { Drawing } from "./types";
 
 const strokesOf = (drawing: Drawing) => drawing.layers.flatMap((layer) => layer.strokes);
@@ -187,6 +189,83 @@ describe("전신", () => {
         expect(drawing.layers[0].transform).toBe(`rotate(${EXPRESSIONS.curious.lean} ${BODY.cx} ${BODY.bottom})`);
         // 표시는 기울지 않는다
         expect(drawing.layers[1].transform).toBeUndefined();
+    });
+});
+
+describe("입체 보기", () => {
+    it("뒤로 물러나는 높이는 정면에서 테이프가 몸 위로 솟은 높이와 같다", () => {
+        expect(DEPTH.y).toBe(-(BODY.top - TAPE.top));
+        expect(DEPTH.x).toBeGreaterThan(0);
+    });
+
+    it("큰 그림에서만 그린다 — 작으면 정면과 똑같다", () => {
+        expect(composeNemo({ view: "solid", size: SOLID_MIN - 1 })).toEqual(composeNemo({ size: SOLID_MIN - 1 }));
+        expect(composeNemo({ view: "solid", size: SOLID_MIN })).not.toEqual(composeNemo({ size: SOLID_MIN }));
+    });
+
+    it("앞면과 얼굴은 정면 보기와 같은 획이다", () => {
+        for (const id of EXPRESSION_IDS) {
+            const front = paths(composeNemo({ expression: id, size: SOLID_MIN }));
+            const solid = paths(composeNemo({ expression: id, view: "solid", size: SOLID_MIN }));
+            // 몸의 앞면
+            expect(solid).toContain(BODY.path);
+            // 볼 2 + 눈 2 + 입 1 — 정면에서 테이프 바로 뒤에 오는 다섯 획
+            const face = front.slice(6, 11);
+            for (const d of face) expect(solid).toContain(d);
+        }
+    });
+
+    it("윗면과 옆면은 앞면 뒤에, 오른팔은 옆면 앞에 온다", () => {
+        const solid = paths(composeNemo({ view: "solid", size: SOLID_MIN }));
+        // 내린 팔은 옆면 가운데로 옮겨 그린다
+        const rightArm = arm("right", "rest", [SIDE_SHIFT.x, SIDE_SHIFT.y]).d;
+        const lastBack = solid.indexOf(SOLID_BACK[SOLID_BACK.length - 1].d);
+        expect(lastBack).toBeGreaterThan(-1);
+        expect(solid.indexOf(rightArm)).toBeGreaterThan(lastBack);
+        expect(solid.indexOf(BODY.path)).toBeGreaterThan(solid.indexOf(rightArm));
+    });
+
+    it("몸이나 소품에 닿아 있는 오른팔은 옮기지 않는다", () => {
+        // 돋보기의 손잡이를 쥔 팔, 지도의 옆을 잡은 팔, 허리에 짚은 팔
+        for (const id of ["search", "map", "pack"] as const) {
+            const front = paths(composeNemo({ pose: id, size: SOLID_MIN }));
+            const solid = paths(composeNemo({ pose: id, view: "solid", size: SOLID_MIN }));
+            expect(FREE_ARMS.has(POSES[id].arms[1])).toBe(false);
+            expect(solid).toContain(front[1]);
+        }
+        // 카메라는 오른팔과 함께 옮긴다
+        const snap = composeNemo({ pose: "snap", view: "solid", size: SOLID_MIN });
+        const moved = snap.layers.filter((layer) => layer.transform === `translate(${SIDE_SHIFT.x} ${SIDE_SHIFT.y})`);
+        expect(moved).toHaveLength(1);
+    });
+
+    it("그림 칸이 옆면과 윗면만큼 넓어지고, 자세의 그림 칸도 함께 담는다", () => {
+        // 오른팔을 옮기지 않는 자세 — 입체의 그림 칸 그대로
+        const map = composeNemo({ pose: "map", view: "solid", size: SOLID_MIN }).box;
+        expect(map).toEqual(SOLID_BOX);
+        expect(map.x + map.width).toBeGreaterThan(CANVAS + DEPTH.x);
+        expect(map.y).toBeLessThan(BODY.top + DEPTH.y);
+        // 오른팔을 옮기는 자세 — 옮긴 만큼 오른쪽 위로 더 넓다
+        const plain = composeNemo({ view: "solid", size: SOLID_MIN }).box;
+        expect(plain.x + plain.width).toBe(SOLID_BOX.x + SOLID_BOX.width + SIDE_SHIFT.x);
+        expect(plain.y).toBe(SOLID_BOX.y + SIDE_SHIFT.y);
+        expect(plain.y + plain.height).toBe(SOLID_BOX.y + SOLID_BOX.height);
+        // 자세의 그림 칸(왼쪽으로 넓은 바코드)도 담는다
+        const scan = composeNemo({ pose: "scan", view: "solid", size: SOLID_MIN }).box;
+        expect(scan.x).toBe(POSES.scan.box.x);
+    });
+
+    it("표정에 딸린 표시는 옆면 너머로 옮긴다", () => {
+        const drawing = composeNemo({ expression: "proud", view: "solid", size: SOLID_MIN });
+        const marks = drawing.layers[drawing.layers.length - 1];
+        expect(marks.transform).toBe(`translate(${DEPTH.x + 2} ${DEPTH.y})`);
+    });
+
+    it("뚜껑이 열린 입체에는 날개가 서고, 테이프는 앞면의 자락만 남는다", () => {
+        const open = paths(composeNemo({ pose: "empty", view: "solid", size: SOLID_MIN }));
+        for (const stroke of SOLID_BACK_OPEN) expect(open).toContain(stroke.d);
+        // 윗면을 가로지르는 테이프(뒤 변에서 시작)는 없다
+        expect(open.some((d) => d.startsWith(`M${TAPE.left + DEPTH.x} `))).toBe(false);
     });
 });
 

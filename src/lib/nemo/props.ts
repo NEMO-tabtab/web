@@ -66,3 +66,6 @@ export const PROPS = {
 } satisfies Record<string, readonly Stroke[]>;
 
 export type PropId = keyof typeof PROPS;
+
+/** 오른손에 든 소품 — 입체 보기에서 오른팔과 함께 옆면 가운데로 옮긴다 */
+export const RIGHT_HAND_PROPS: ReadonlySet<PropId> = new Set<PropId>(["camera"]);
