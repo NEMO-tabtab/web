@@ -14,6 +14,8 @@ export const DS_NAV = [
             { href: "/design-system/character/poses", label: "Character · Poses" },
             // 큰 그림용 입체 보기
             { href: "/design-system/character/solid", label: "Character · Solid view" },
+            // 네모의 짝과, 둘이 함께 있는 장면
+            { href: "/design-system/character/friend", label: "Character · Capsule friend" },
             // 아이콘도 토큰과 같은 층 — 모든 부품이 가져다 쓴다
             { href: "/design-system/icons", label: "Icons" },
         ],
