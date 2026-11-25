@@ -39,10 +39,12 @@ export interface NemoOptions {
     view?: NemoView;
     /** 그릴 크기(px). 작으면 소품과 표시를 빼고 필터를 바꾼다 */
     size?: number;
+    /** 자세의 팔다리만 그리고 소품은 뺀다 — 장면에서 캡슐 친구가 소품 자리를 대신할 때 */
+    bare?: boolean;
 }
 
 /** 두 칸을 모두 담는 가장 작은 칸 */
-const union = (a: Box, b: Box): Box => {
+export const union = (a: Box, b: Box): Box => {
     const x = Math.min(a.x, b.x);
     const y = Math.min(a.y, b.y);
     return {
@@ -54,12 +56,18 @@ const union = (a: Box, b: Box): Box => {
 };
 
 /** 전신 */
-export function composeNemo({ expression, pose = "stand", view = "front", size = CANVAS }: NemoOptions = {}): Drawing {
+export function composeNemo({
+    expression,
+    pose = "stand",
+    view = "front",
+    size = CANVAS,
+    bare = false,
+}: NemoOptions = {}): Drawing {
     const stance: Pose = POSES[pose];
     const picked: Expression = EXPRESSIONS[expression ?? stance.expression];
     const detailed = size > DETAIL_HIDDEN_MAX;
     const solid = view === "solid" && size >= SOLID_MIN;
-    const props = detailed ? (stance.props ?? []) : [];
+    const props = detailed && !bare ? (stance.props ?? []) : [];
     // 소품을 뺀 작은 그림에서는 소품을 들던 팔이 허공에 뜬다 — 서 있는 팔다리로 돌아간다
     const limbs: Pose = stance.props && !detailed ? POSES.stand : stance;
     const body = BODIES[stance.body];
