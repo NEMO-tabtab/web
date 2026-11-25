@@ -9,7 +9,11 @@ import { cn } from "@/lib/cn";
 export default function SidebarNav() {
     const pathname = usePathname();
 
-    const isActive = (href: string) => (href === "/design-system" ? pathname === href : pathname?.startsWith(href));
+    // 주소가 겹치는 항목(/character 와 /character/expressions)이 함께 켜지지 않게, 가장 길게 맞는 하나만 고른다
+    const current = DS_NAV.flatMap((section) => section.items.map((item) => item.href as string))
+        .filter((href) => pathname === href || pathname?.startsWith(`${href}/`))
+        .sort((a, b) => b.length - a.length)[0];
+    const isActive = (href: string) => href === current;
 
     return (
         <nav className="space-y-6">

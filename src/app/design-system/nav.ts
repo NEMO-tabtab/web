@@ -8,6 +8,8 @@ export const DS_NAV = [
             { href: "/design-system/layout", label: "Page Layout" },
             // 캐릭터·심볼은 토큰과 같은 층의 브랜드 자산이라 Foundations 에 둔다
             { href: "/design-system/character", label: "Character & Logo" },
+            // 표정 목록은 src/lib/nemo/expressions.ts 를 돌며 그린다
+            { href: "/design-system/character/expressions", label: "Character · Expressions" },
             // 아이콘도 토큰과 같은 층 — 모든 부품이 가져다 쓴다
             { href: "/design-system/icons", label: "Icons" },
         ],
