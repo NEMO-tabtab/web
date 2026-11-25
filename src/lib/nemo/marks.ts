@@ -27,6 +27,10 @@ export const MARKS = {
     ticks: [line("M43.5 8.5 l-4.5 -4.5"), line("M76.5 8.5 l4.5 -4.5")],
     /** 테이프가 펄럭일 때의 바람 */
     wind: [line("M80.5 7.5 q4 -1.5 7.5 0.5"), line("M81.5 15.5 q3 -1 5.5 0")],
+    /** 든 손을 흔드는 선 — 오른손 옆 */
+    wave: [line("M116.5 34 q4.5 4.5 3.5 10.5"), line("M122.5 29.5 q6.5 6.5 5 16", 3)],
+    /** 폴짝 뛴 자리 — 발밑 */
+    hop: [line("M30 117 q5 2.5 10 0"), line("M80 117 q5 2.5 10 0")],
 } satisfies Record<string, readonly Stroke[]>;
 
 export type MarkId = keyof typeof MARKS;

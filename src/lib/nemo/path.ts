@@ -31,6 +31,21 @@ export const cutDisc = (cx: number, cy: number, r: number, leftDeg: number, righ
     return `M${n(x1)} ${n(y1)} L${n(x2)} ${n(y2)} A${n(r)} ${n(r)} 0 1 1 ${n(x1)} ${n(y1)} Z`;
 };
 
+/** 모서리가 둥근 사각 */
+export const roundRect = (x: number, y: number, width: number, height: number, r: number) =>
+    [
+        `M${n(x + r)} ${n(y)}`,
+        `h${n(width - r * 2)}`,
+        `a${n(r)} ${n(r)} 0 0 1 ${n(r)} ${n(r)}`,
+        `v${n(height - r * 2)}`,
+        `a${n(r)} ${n(r)} 0 0 1 ${n(-r)} ${n(r)}`,
+        `h${n(-(width - r * 2))}`,
+        `a${n(r)} ${n(r)} 0 0 1 ${n(-r)} ${n(-r)}`,
+        `v${n(-(height - r * 2))}`,
+        `a${n(r)} ${n(r)} 0 0 1 ${n(r)} ${n(-r)}`,
+        "Z",
+    ].join(" ");
+
 /** 네 갈래 별(반짝). pinch 가 작을수록 가늘다 */
 export const star = (cx: number, cy: number, r: number, pinch = 0.2) => {
     const k = r * pinch;

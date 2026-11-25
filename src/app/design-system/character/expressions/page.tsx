@@ -1,6 +1,6 @@
 import { Card, Text } from "@/components/common";
 import { Nemo, NemoSymbol } from "@/components/nemo/Nemo";
-import { MARKS_HIDDEN_MAX, SMALL_FILTER_MAX } from "@/lib/nemo/compose";
+import { DETAIL_HIDDEN_MAX, SMALL_FILTER_MAX } from "@/lib/nemo/compose";
 import { EXPRESSIONS, EXPRESSION_IDS } from "@/lib/nemo/expressions";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../../_components/DocSection";
@@ -67,7 +67,7 @@ export default function ExpressionsPage() {
 
             <DocSection
                 title="작은 크기에서"
-                description={`${MARKS_HIDDEN_MAX}px 이하에서는 표시(땀방울·물음표 등)를 빼고, ${SMALL_FILTER_MAX}px 이하에서는 작은 필터를 씁니다. 표정은 눈·입·테이프만으로 읽혀야 합니다.`}
+                description={`${DETAIL_HIDDEN_MAX}px 이하에서는 표시(땀방울·물음표 등)를 빼고, ${SMALL_FILTER_MAX}px 이하에서는 작은 필터를 씁니다. 표정은 눈·입·테이프만으로 읽혀야 합니다.`}
             >
                 {SMALL_SIZES.map((size) => (
                     <ExamplePreview key={size} className="justify-center gap-x-5 gap-y-4 p-5" caption={`${size}px`}>
