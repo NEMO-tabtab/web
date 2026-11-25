@@ -34,3 +34,6 @@ export const MARKS = {
 } satisfies Record<string, readonly Stroke[]>;
 
 export type MarkId = keyof typeof MARKS;
+
+/** 오른손 옆에 붙는 표시 — 입체 보기에서 오른팔과 함께 옆면 가운데로 옮긴다 */
+export const RIGHT_HAND_MARKS: ReadonlySet<MarkId> = new Set<MarkId>(["wave"]);

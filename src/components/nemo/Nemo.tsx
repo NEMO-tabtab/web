@@ -1,7 +1,7 @@
 import React from "react";
 
 import { NemoSvg } from "@/components/nemo/NemoSvg";
-import { composeNemo, composeSymbol } from "@/lib/nemo/compose";
+import { composeNemo, composeSymbol, type NemoView } from "@/lib/nemo/compose";
 import type { ExpressionId } from "@/lib/nemo/expressions";
 import type { PoseId } from "@/lib/nemo/poses";
 
@@ -14,8 +14,13 @@ export interface NemoProps {
     /** 자세. 목록과 쓰는 순간은 src/lib/nemo/poses.ts, 그림은 /design-system/character/poses */
     pose?: PoseId;
     /**
+     * 보기. 화면에는 정면(기본)을 쓴다. 입체("solid")는 윗면과 옆면이 보이는 큰 그림용이고
+     * 160px 이상에서만 그려진다 — 그보다 작으면 정면으로 그린다.
+     */
+    view?: NemoView;
+    /**
      * 캐릭터의 크기(px) — 서 있는 네모가 이 크기의 정사각에 들어간다.
-     * 소품을 든 자세는 그림이 그보다 넓거나 높을 수 있다.
+     * 소품을 든 자세와 입체 보기는 그림이 그보다 넓거나 높을 수 있다.
      */
     size?: number;
     /**
@@ -30,13 +35,18 @@ export interface NemoProps {
  * 네모 — 전신. 64px 이하에서는 소품과 표시(땀방울·물음표 등)를 빼고, 40px 이하에서는 작은 필터를 쓴다.
  * 그보다 좁은 자리(24~32px)에는 `NemoSymbol` 을 쓴다.
  */
-export function Nemo({ expression, pose = "stand", size = 120, title, className }: NemoProps) {
+export function Nemo({ expression, pose = "stand", view = "front", size = 120, title, className }: NemoProps) {
     return (
-        <NemoSvg drawing={composeNemo({ expression, pose, size })} size={size} title={title} className={className} />
+        <NemoSvg
+            drawing={composeNemo({ expression, pose, view, size })}
+            size={size}
+            title={title}
+            className={className}
+        />
     );
 }
 
 /** 네모 심볼 — 팔다리를 덜어 낸 얼굴. 24px 밑으로는 눈·입이 뭉개진다 */
-export function NemoSymbol({ expression = "base", size = 40, title, className }: Omit<NemoProps, "pose">) {
+export function NemoSymbol({ expression = "base", size = 40, title, className }: Omit<NemoProps, "pose" | "view">) {
     return <NemoSvg drawing={composeSymbol({ expression })} size={size} title={title} className={className} />;
 }

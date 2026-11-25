@@ -13,10 +13,11 @@ type Bend = readonly [Point, Point, Point];
 
 const flip = ([x, y]: Point): Point => [CANVAS - x, y];
 const curve = ([from, via, to]: Bend) => `M${from[0]} ${from[1]} Q${via[0]} ${via[1]} ${to[0]} ${to[1]}`;
-const limb = (bend: Bend, side: "left" | "right"): Stroke => ({
-    d: curve(side === "left" ? bend : [flip(bend[0]), flip(bend[1]), flip(bend[2])]),
-    w: LINE.body,
-});
+const limb = (bend: Bend, side: "left" | "right", [dx, dy]: Point = [0, 0]): Stroke => {
+    const placed = side === "left" ? bend : ([flip(bend[0]), flip(bend[1]), flip(bend[2])] as const);
+    const moved = placed.map(([x, y]): Point => [x + dx, y + dy]) as unknown as Bend;
+    return { d: curve(moved), w: LINE.body };
+};
 
 /** 왼팔(화면의 왼쪽). 몸 뒤에서 나온다 */
 const ARMS = {
@@ -47,6 +48,13 @@ const FEET = {
 export type ArmId = keyof typeof ARMS;
 export type FeetId = keyof typeof FEET;
 
-export const arm = (side: "left" | "right", id: ArmId): Stroke => limb(ARMS[id], side);
+/**
+ * 몸에 붙어 있지 않아도 되는 팔 — 입체 보기에서 옆면 가운데로 옮겨 그릴 수 있다.
+ * 나머지(hold·grip·hip)는 끝이 몸이나 얼굴 앞의 소품에 닿아 있어 옮기면 어긋난다.
+ */
+export const FREE_ARMS: ReadonlySet<ArmId> = new Set<ArmId>(["rest", "up", "out", "limp"]);
+
+/** shift 는 팔을 통째로 옮기는 만큼(칸) */
+export const arm = (side: "left" | "right", id: ArmId, shift?: Point): Stroke => limb(ARMS[id], side, shift);
 /** 두 발 — 왼쪽, 오른쪽 */
 export const feet = (id: FeetId): Stroke[] => [limb(FEET[id], "left"), limb(FEET[id], "right")];
