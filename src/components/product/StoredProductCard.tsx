@@ -1,7 +1,6 @@
 "use client";
 
 import { Icon, ProductCard, type ProductCardProps } from "@/components/common";
-import defaultThumbnail from "@/app/assets/images/product_default_thumbnail.jpg";
 import type { Product } from "@/lib/db";
 import { useCoverUrl } from "@/lib/db/hooks";
 import { productValue } from "@/lib/db/products";
@@ -37,9 +36,9 @@ export function StoredProductCard({ product, showMemo = false, meta, ...props }:
             name={product.name || "이름 없는 물건"}
             price={productValue(product)}
             description={showMemo ? product.memo || undefined : undefined}
-            imageSrc={coverUrl ?? defaultThumbnail}
-            // 기본 썸네일은 원본(10KB)이 미리 받아 둔 목록에 있다 — 최적화 경로를 타면 오프라인에서 깨진다
-            imageUnoptimized={!coverUrl}
+            // 사진이 없으면 넘기지 않는다 — ProductCard 가 손그림 상자 아이콘(fallbackIcon)을 세운다.
+            // 여러 장이 한꺼번에 나오는 자리라 캐릭터를 세우지 않는다(docs/design-system.md U8)
+            imageSrc={coverUrl}
             meta={
                 meta || origin ? (
                     <>
