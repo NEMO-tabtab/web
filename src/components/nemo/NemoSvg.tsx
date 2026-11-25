@@ -18,11 +18,14 @@ export interface NemoSvgProps {
  * 패스는 곧고, 손떨림은 루트 레이아웃의 필터(#rough-line)가 낸다.
  */
 export function NemoSvg({ drawing, size, title, className }: NemoSvgProps) {
+    const { box, unit } = drawing;
+    // size 는 캐릭터의 크기다. 소품 때문에 그림 칸이 넓어지면 그만큼 자리를 더 차지한다
+    const scale = size / unit;
     return (
         <svg
-            width={size}
-            height={size}
-            viewBox={drawing.viewBox}
+            width={box.width * scale}
+            height={box.height * scale}
+            viewBox={`${box.x} ${box.y} ${box.width} ${box.height}`}
             role={title ? "img" : undefined}
             aria-hidden={title ? undefined : true}
             aria-label={title}

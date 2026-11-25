@@ -26,9 +26,22 @@ export interface Layer {
 /** 손떨림 필터 — src/app/layout.tsx 에 정의돼 있다 */
 export type FilterId = "rough-line" | "rough-line-sm";
 
+/** 그림이 차지하는 칸. SVG 의 viewBox 가 된다 */
+export interface Box {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+
 /** 다 조합한 그림 한 장 */
 export interface Drawing {
-    viewBox: string;
+    box: Box;
+    /**
+     * `size`(px)가 가리키는 칸 수 — 전신 120, 심볼 100.
+     * 소품 때문에 box 가 이보다 넓어져도 캐릭터의 크기는 그대로다. 그림만 옆으로(위로) 더 자리를 차지한다.
+     */
+    unit: number;
     filter: FilterId;
     /** 아래에서 위로 쌓는 순서 */
     layers: Layer[];

@@ -8,6 +8,7 @@ import {
     Skeleton,
     Text,
 } from "@/components/common";
+import { Nemo } from "@/components/nemo/Nemo";
 
 import { ClassName, DocSection, PageHeader } from "../_components/DocSection";
 
@@ -27,11 +28,11 @@ export default function FeedbackPage() {
             </DocSection>
 
             <DocSection
-                title="EmptyState — 아이콘 · 액션"
-                description="맥락이 분명할 때는 캐릭터 대신 이모지를 세운다."
+                title="EmptyState — 자세 · 액션"
+                description="상황에 맞는 자세가 있으면 그 자세의 네모를 세웁니다. 이모지는 쓰지 않습니다(U4)."
             >
                 <EmptyState
-                    icon="🔍"
+                    icon={<Nemo pose="search" size={88} />}
                     title="검색 결과가 없어요"
                     description="다른 이름이나 카테고리로 찾아보세요."
                     action={<Button variant="secondary">필터 초기화</Button>}
