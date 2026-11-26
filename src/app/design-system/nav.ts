@@ -16,6 +16,8 @@ export const DS_NAV = [
             { href: "/design-system/character/solid", label: "Character · Solid view" },
             // 네모의 짝과, 둘이 함께 있는 장면
             { href: "/design-system/character/friend", label: "Character · Capsule friend" },
+            // 가챠 기계의 종류와 그림. 원본은 src/lib/machine
+            { href: "/design-system/machines", label: "Gacha machines" },
             // 아이콘도 토큰과 같은 층 — 모든 부품이 가져다 쓴다
             { href: "/design-system/icons", label: "Icons" },
         ],
