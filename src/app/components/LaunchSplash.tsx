@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-import { SPLASH_FADE_MS, SPLASH_MAX_WAIT_MS, SPLASH_SEEN_ATTR, splashRemainingMs } from "@/lib/launchSplash";
+import { NemoSymbol } from "@/components/nemo/Nemo";
+import {
+    SPLASH_FADE_MS,
+    SPLASH_MAX_WAIT_MS,
+    SPLASH_SEEN_ATTR,
+    SPLASH_SYMBOL_SIZE,
+    splashRemainingMs,
+} from "@/lib/launchSplash";
 
 type Phase = "shown" | "leaving" | "gone";
 
@@ -18,8 +25,10 @@ type Phase = "shown" | "leaving" | "gone";
  *   새로고침·배포 뒤 이동처럼 페이지가 통째로 다시 열려도 같은 세션이면 `<head>` 스크립트(LAUNCH_BOOT_SCRIPT)가
  *   `<html data-splash-seen>` 을 붙여 CSS 가 처음부터 숨긴다. 여기서도 바로 뺀다.
  *
- * 그림은 앱 아이콘(public/images/app-icon-maskable.svg)의 캐릭터 그대로다. Android 로딩 이미지(docs/android/splash/)와
- * 같은 그림·같은 크기여야 넘어갈 때 튀지 않는다. viewBox 를 캐릭터 경계로 잘라 두어 너비가 곧 캐릭터의 폭이다.
+ * 그림은 앱 안의 로고와 같은 심볼이다(NemoSymbol, docs/design-system.md U8 — 캐릭터 SVG 를 따로 그리지 않는다, #248).
+ * 몸 폭은 휴대폰 96px, 태블릿 120px(src/lib/launchSplash.ts). Android 로딩 이미지(docs/android/splash/)도 같은 원본에서
+ * 같은 크기로 만든다 — 넘어갈 때 튀지 않게. 볼터치는 NemoSvg 가 앱 색 변수로 칠하고, `<head>` 스크립트가 React 보다
+ * 먼저 변수를 칠해 두어 켜는 순간부터 같은 색이다.
  */
 export default function LaunchSplash() {
     const [phase, setPhase] = useState<Phase>("shown");
@@ -62,56 +71,10 @@ export default function LaunchSplash() {
 
     return (
         <div className="launch-splash" data-phase={phase} aria-hidden="true">
-            <svg
-                viewBox="17.5 16.5 65 70"
-                className="h-auto w-24 overflow-visible min-[600px]:w-[120px]"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <defs>
-                    <filter id="launch-rough" x="-6%" y="-6%" width="112%" height="112%">
-                        <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves={2} seed={5} result="n" />
-                        <feDisplacementMap
-                            in="SourceGraphic"
-                            in2="n"
-                            scale="1.3"
-                            xChannelSelector="R"
-                            yChannelSelector="G"
-                        />
-                    </filter>
-                </defs>
-                <g filter="url(#launch-rough)">
-                    <rect
-                        x="20"
-                        y="31"
-                        width="60"
-                        height="53"
-                        rx="12"
-                        fill="#ffffff"
-                        stroke="#1c1b19"
-                        strokeWidth="5"
-                    />
-                    <path
-                        d="M42.5 19 L57.5 19 L57.5 39 L53.75 42.5 L50 39 L46.25 42.5 L42.5 39 Z"
-                        fill="#ffffff"
-                        stroke="#1c1b19"
-                        strokeWidth="5"
-                        strokeLinejoin="round"
-                    />
-                    {/* 볼터치는 앱 색을 따른다 — <head> 스크립트가 React 보다 먼저 변수를 칠해 두어 켜는 순간부터 같은 색이다 */}
-                    <circle cx="32.5" cy="64" r="4.6" style={{ fill: "rgb(var(--color-cheek))" }} opacity="0.8" />
-                    <circle cx="67.5" cy="64" r="4.6" style={{ fill: "rgb(var(--color-cheek-2))" }} opacity="0.8" />
-                    <circle cx="41" cy="57" r="3.8" fill="#1c1b19" />
-                    <circle cx="59" cy="57" r="3.8" fill="#1c1b19" />
-                    <path
-                        d="M44 67.5 q3 5 6 0 q3 5 6 0"
-                        fill="none"
-                        stroke="#1c1b19"
-                        strokeWidth="3.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </g>
-            </svg>
+            {/* 태블릿에서 1.25배 — SPLASH_TABLET_SCALE 과 같아야 한다 */}
+            <div className="min-[600px]:scale-125">
+                <NemoSymbol size={SPLASH_SYMBOL_SIZE} />
+            </div>
         </div>
     );
 }

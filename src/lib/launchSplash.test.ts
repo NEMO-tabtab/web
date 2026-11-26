@@ -1,12 +1,18 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import {
     LAUNCH_BOOT_SCRIPT,
+    SPLASH_BODY_PX,
     SPLASH_FADE_MS,
     SPLASH_MIN_MS,
     SPLASH_SEEN_ATTR,
     SPLASH_SEEN_KEY,
+    SPLASH_SYMBOL_SIZE,
+    SPLASH_TABLET_SCALE,
     splashRemainingMs,
+    symbolSizeForBody,
 } from "./launchSplash";
 
 /** 세션 저장소 흉내 — 앱 하나를 켠 동안 남는다 */
@@ -77,5 +83,25 @@ describe("로딩 화면을 더 보여 줄 시간", () => {
 
     it("흐려지는 시간까지 더해도 1초를 넘지 않는다 (Google 권장)", () => {
         expect(SPLASH_MIN_MS + SPLASH_FADE_MS).toBeLessThanOrEqual(1_000);
+    });
+});
+
+describe("로딩 화면 네모의 크기 (#248)", () => {
+    it("몸 폭이 휴대폰 96px — 심볼 캔버스 100칸 중 몸이 80칸(선 포함)이라 size 는 120", () => {
+        expect(SPLASH_BODY_PX).toBe(96);
+        expect(SPLASH_SYMBOL_SIZE).toBe(120);
+        expect(symbolSizeForBody(80)).toBe(100);
+    });
+
+    it("태블릿에서는 몸 폭 120px", () => {
+        expect(SPLASH_BODY_PX * SPLASH_TABLET_SCALE).toBe(120);
+    });
+
+    it("로딩 화면이 태블릿 배율을 같은 값으로 쓰고, 캐릭터를 따로 그리지 않는다 (U8)", () => {
+        const source = readFileSync("src/app/components/LaunchSplash.tsx", "utf8");
+        expect(source).toContain(`min-[600px]:scale-${SPLASH_TABLET_SCALE * 100}`);
+        expect(source).toContain("<NemoSymbol");
+        expect(source).not.toContain("<circle");
+        expect(source).not.toContain("<path");
     });
 });
