@@ -2,6 +2,7 @@ import { Card, Text } from "@/components/common";
 import { GachaMachine } from "@/components/machine/GachaMachine";
 import { FULL_FROM, MID_FROM, composeMachine, sizeAtScale } from "@/lib/machine/compose";
 import { MACHINE_MODELS, modelCells, sizeLabel, type MachineModel } from "@/lib/machine/models";
+import type { MachineView } from "@/lib/machine/sketch";
 import { toSvgString } from "@/lib/nemo/exportSvg";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../_components/DocSection";
@@ -9,15 +10,18 @@ import { DownloadButtons } from "../character/_components/DownloadButtons";
 
 /** 내려받는 그림에서 기계의 키(px). PNG 는 이 두 배로 나온다 */
 const EXPORT_SIZE = 512;
-/** 종류마다 한 칸씩 보여 줄 때의 키(px) — 모든 종류가 가장 자세히 그려지는 크기다 */
+/** 종류마다 한 칸씩 보여 줄 때 입체 그림의 키(px). 정면은 같은 축척으로 옆에 세운다 */
 const TILE_SIZE = 176;
 /** 나란히 세울 때의 축척(px/cm) */
 const ROW_SCALE = 1.2;
 /** 크기에 따라 덜어 내는 것을 보여 줄 키(px) — 2단 표준형 */
 const STEPS = [40, 72, 120, 200];
 
+const VIEW_LABEL: Record<MachineView, string> = { solid: "입체", front: "정면" };
+
 const RULES = [
     "기계 그림은 이 부품으로만 그립니다. 화면에 기계 SVG 를 따로 그리지 않고, 없는 종류는 카탈로그(src/lib/machine)에 더합니다.",
+    "보기는 둘입니다. 입체는 가게 장면처럼 여러 대를 세울 때, 정면은 앞면이 크게 보여야 하는 작은 자리와 움직임에 씁니다. 두 보기는 같은 부품을 다른 쪽에서 본 것이라 따로 그리지 않습니다.",
     "크기는 기계의 키입니다. 작게 그리면 캡슐과 동전 넣는 곳 같은 작은 부품부터 빠지고, 덩어리와 손잡이는 끝까지 남습니다.",
     "색은 먹·종이·cream 에 볼터치 한 점입니다. 볼터치는 손잡이에만 씁니다. 그림자와 그라디언트는 쓰지 않습니다.",
     "실제 기계의 생김새를 줄여 그린 것입니다. 제조사의 상표·글자·캐릭터는 그리지 않습니다.",
@@ -30,6 +34,9 @@ const LEFT_OUT = [
     "같은 종류 안의 차이(캡슐 스테이션과 가챠 2 이지의 손잡이 모양 등) — 종류 하나에 그림 하나만 둡니다.",
 ];
 
+const machineSvg = (model: MachineModel, view: MachineView) =>
+    toSvgString(composeMachine(model.id, { size: EXPORT_SIZE, view }), EXPORT_SIZE);
+
 function Spec({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <div className="flex gap-2">
@@ -41,10 +48,22 @@ function Spec({ label, children }: { label: string; children: React.ReactNode })
 
 function ModelTile({ model }: { model: MachineModel }) {
     const cells = modelCells(model);
+    // 입체가 TILE_SIZE 로 그려지는 축척으로 정면도 그린다 — 두 그림의 크기가 서로 맞는다
+    const scale = TILE_SIZE / sizeAtScale(model.id, 1, "solid");
     return (
         <figure className="sticker flex flex-col overflow-hidden rounded-nemo bg-paper">
-            <div className="flex h-60 items-end justify-center bg-cream px-3 pb-5 pt-6">
-                <GachaMachine model={model.id} size={TILE_SIZE} title={`${model.name} 그림`} />
+            <div className="flex h-64 items-end justify-center gap-6 bg-cream px-3 pb-4 pt-6">
+                {(["solid", "front"] as const).map((view) => (
+                    <div key={view} className="flex flex-col items-center gap-1.5">
+                        <GachaMachine
+                            model={model.id}
+                            view={view}
+                            size={sizeAtScale(model.id, scale, view)}
+                            title={`${model.name} ${VIEW_LABEL[view]} 그림`}
+                        />
+                        <p className="text-[11px] font-bold text-ink-soft">{VIEW_LABEL[view]}</p>
+                    </div>
+                ))}
             </div>
             <figcaption className="flex flex-1 flex-col gap-3 border-t-2 border-ink px-4 py-3">
                 <div className="space-y-1">
@@ -87,12 +106,42 @@ function ModelTile({ model }: { model: MachineModel }) {
                         ))}
                     </ul>
                 </div>
-                <DownloadButtons
-                    name={`gacha-machine-${model.id}`}
-                    svg={toSvgString(composeMachine(model.id, { size: EXPORT_SIZE }), EXPORT_SIZE)}
-                />
+                <div className="space-y-1.5">
+                    {(["solid", "front"] as const).map((view) => (
+                        <div key={view} className="flex items-center gap-2">
+                            <span className="w-7 shrink-0 text-[11px] font-bold text-ink-soft">{VIEW_LABEL[view]}</span>
+                            <DownloadButtons
+                                name={
+                                    view === "solid" ? `gacha-machine-${model.id}` : `gacha-machine-${model.id}-front`
+                                }
+                                svg={machineSvg(model, view)}
+                            />
+                        </div>
+                    ))}
+                </div>
             </figcaption>
         </figure>
+    );
+}
+
+/** 모든 종류를 한 보기로, 같은 축척으로 세운다 */
+function Lineup({ view }: { view: MachineView }) {
+    return (
+        <ExamplePreview
+            className="items-end justify-center gap-x-8 gap-y-6"
+            caption={`${VIEW_LABEL[view]} — 1cm 를 ${ROW_SCALE}px 로 · sizeAtScale(id, ${ROW_SCALE}, "${view}")`}
+        >
+            {MACHINE_MODELS.map((model) => (
+                <div key={model.id} className="flex flex-col items-center gap-2">
+                    <GachaMachine model={model.id} view={view} size={sizeAtScale(model.id, ROW_SCALE, view)} />
+                    <p className="text-center text-[11px] leading-tight">
+                        <span className="font-bold">{model.name}</span>
+                        <br />
+                        <span className="text-ink-soft">높이 {model.size.height / 10}cm</span>
+                    </p>
+                </div>
+            ))}
+        </ExamplePreview>
     );
 }
 
@@ -101,7 +150,7 @@ export default function MachinesPage() {
         <div className="space-y-16">
             <PageHeader
                 title="Gacha machines"
-                description="가챠 기계의 종류와 손그림 입체 그림입니다. 실제 기계의 제원을 기준으로 삼았고, 업적에 쓸 가챠 기계 디자인은 이 종류들을 바탕으로 만듭니다."
+                description="가챠 기계의 종류와 손그림 그림입니다. 실제 기계의 제원을 기준으로 삼았고, 종류마다 입체와 정면 두 가지 보기가 있습니다. 업적에 쓸 가챠 기계 디자인은 이 종류들을 바탕으로 만듭니다."
             />
 
             <DocSection
@@ -114,46 +163,37 @@ export default function MachinesPage() {
                     ))}
                 </div>
                 <Text size="sm" tone="muted">
-                    <ClassName>{'<GachaMachine model="standard-2" size={160} />'}</ClassName> 처럼 씁니다.
+                    <ClassName>{'<GachaMachine model="standard-2" size={160} />'}</ClassName> 처럼 씁니다. 정면은{" "}
+                    <ClassName>{'view="front"'}</ClassName> 를 줍니다.
                 </Text>
             </DocSection>
 
             <DocSection
                 title="같은 축척으로 나란히"
-                description="종류마다 실제 크기가 다릅니다. 한 장면에 함께 세울 때는 같은 축척으로 그립니다."
+                description="종류마다 실제 크기가 다릅니다. 한 장면에 함께 세울 때는 같은 축척으로 그립니다. 정면은 깊이가 보이지 않아 같은 축척에서 그림이 더 작습니다."
             >
-                <ExamplePreview
-                    className="items-end justify-center gap-x-8 gap-y-6"
-                    caption={`1cm 를 ${ROW_SCALE}px 로 — sizeAtScale(id, ${ROW_SCALE})`}
-                >
-                    {MACHINE_MODELS.map((model) => (
-                        <div key={model.id} className="flex flex-col items-center gap-2">
-                            <GachaMachine model={model.id} size={sizeAtScale(model.id, ROW_SCALE)} />
-                            <p className="text-center text-[11px] leading-tight">
-                                <span className="font-bold">{model.name}</span>
-                                <br />
-                                <span className="text-ink-soft">높이 {model.size.height / 10}cm</span>
-                            </p>
-                        </div>
-                    ))}
-                </ExamplePreview>
+                <Lineup view="solid" />
+                <Lineup view="front" />
             </DocSection>
 
             <DocSection
                 title="크기에 따라"
-                description={`화면에서 1cm 가 ${FULL_FROM}px 이상이면 모든 부품을, ${MID_FROM}px 이상이면 캡슐과 상품 카드까지 그립니다. 그보다 작으면 덩어리와 손잡이만 남깁니다.`}
+                description={`화면에서 1cm 가 ${FULL_FROM}px 이상이면 모든 부품을, ${MID_FROM}px 이상이면 캡슐과 상품 카드까지 그립니다. 그보다 작으면 덩어리와 손잡이만 남깁니다. 정면은 같은 키에서 앞면이 더 크게 보여서 더 작은 크기부터 자세히 그려집니다.`}
             >
-                <ExamplePreview
-                    className="items-end justify-center gap-10"
-                    caption="2단 표준형 — 키 40 · 72 · 120 · 200px"
-                >
-                    {STEPS.map((size) => (
-                        <div key={size} className="flex flex-col items-center gap-2">
-                            <GachaMachine model="standard-2" size={size} />
-                            <p className="font-sans text-[11px] font-bold">{size}px</p>
-                        </div>
-                    ))}
-                </ExamplePreview>
+                {(["solid", "front"] as const).map((view) => (
+                    <ExamplePreview
+                        key={view}
+                        className="items-end justify-center gap-10"
+                        caption={`2단 표준형 ${VIEW_LABEL[view]} — 키 ${STEPS.join(" · ")}px`}
+                    >
+                        {STEPS.map((size) => (
+                            <div key={size} className="flex flex-col items-center gap-2">
+                                <GachaMachine model="standard-2" view={view} size={size} />
+                                <p className="font-sans text-[11px] font-bold">{size}px</p>
+                            </div>
+                        ))}
+                    </ExamplePreview>
+                ))}
             </DocSection>
 
             <DocSection title="쓸 때" description="까닭은 docs/decisions/0009-indoor-map-on-hold.md 에 있습니다.">

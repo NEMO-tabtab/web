@@ -2,10 +2,11 @@ import { roundRect } from "@/lib/nemo/path";
 import type { Drawing, Paint } from "@/lib/nemo/types";
 
 import { MACHINE_MODEL_IDS, type MachineModelId } from "./models";
-import { KAN_PER_CM, Sketch, at, frontOf, n, widthOf, type Block, type Face, type Point } from "./sketch";
+import { KAN_PER_CM, Sketch, n, type Block, type Face, type MachineView, type Point } from "./sketch";
 
 /*
  * 기계 종류마다의 그림 — 실제 치수(cm)로 부품을 놓고, 크기에 따라 덜어 낼 것을 정한다.
+ * 부품은 한 번만 적는다. 입체와 정면은 같은 부품을 다른 쪽에서 본 것이다(sketch.ts).
  * 색은 먹·종이·cream 에 볼터치 한 점(손잡이)뿐이다. 물러난 옆면과 색이 있는 부품을 cream 으로 칠한다.
  * 생김새는 실제 기계의 사진을 보고 줄인 것이고, 상표나 글자는 그리지 않는다.
  */
@@ -123,8 +124,10 @@ function cap(pen: Pen, z: number, w: number, d: number) {
 /** 2단 표준형 28 × 45 × 130cm — 바퀴 달린 받침 위에 두 단, 맨 위에 머리 */
 function standard(pen: Pen) {
     const [w, d] = [28, 45];
-    const base: Block = { x: 0, y: 0, z: 3, w, d, h: 6 };
-    if (pen.detail !== "low") {
+    // 작게 그릴 때는 바퀴를 빼고 받침을 바닥까지 내린다 — 기계가 떠 보이지 않게
+    const wheels = pen.detail !== "low";
+    const base: Block = wheels ? { x: 0, y: 0, z: 3, w, d, h: 6 } : { x: 0, y: 0, z: 0, w, d, h: 9 };
+    if (wheels) {
         for (const along of [0.2, 0.8]) pen.s.roundOn(base, "front", along, 2.3, 2.3, { fill: "ink" });
         pen.s.roundOn(base, "side", 0.86, 2.3, 2.3, { fill: "ink" });
     }
@@ -196,15 +199,15 @@ function cube(pen: Pen) {
 function spiral(pen: Pen) {
     const { s, detail } = pen;
     const c = 29;
-    const yAt = (z: number) => at(c, c, z)[1];
-    const x = at(c, c, 0)[0];
+    const yAt = (z: number) => s.at(c, c, z)[1];
+    const x = s.at(c, c, 0)[0];
 
     s.cylinder(c, c, [0, 9], 29, { side: "cream", top: "paper" }, pen.out);
     s.cylinder(c, c, [9, 33], 15, { side: "paper", top: "paper" }, pen.out);
     // 캡슐이 나오는 곳 — 몸통에서 보는 사람 쪽으로
-    const exitTop = frontOf(c, c, 15, 25);
-    const exitBottom = frontOf(c, c, 15, 13);
-    const exitHalf = widthOf(15) * 0.42;
+    const exitTop = s.frontOf(c, c, 15, 25);
+    const exitBottom = s.frontOf(c, c, 15, 13);
+    const exitHalf = s.widthOf(15) * 0.42;
     s.path(
         roundRect(exitTop[0] - exitHalf, exitTop[1], exitHalf * 2, exitBottom[1] - exitTop[1], 1.2),
         [
@@ -216,13 +219,13 @@ function spiral(pen: Pen) {
 
     s.cylinder(c, c, [33, 92], 11, { side: "paper", top: "paper" }, pen.in);
     if (detail !== "low") {
-        // 나선 — 기둥의 앞쪽으로 도는 반 바퀴만 그린다. 오른쪽으로 내려간다
-        const reach = widthOf(11);
-        const sag = (reach / Math.sqrt(3)) * 2;
+        // 나선 — 기둥의 앞쪽으로 도는 반 바퀴만 그린다. 오른쪽으로 내려간다. 정면에서는 비스듬한 곧은 선이 된다
+        const reach = s.widthOf(11);
+        const sink = s.sinkOf(11);
         for (const z of [40, 53, 66, 79]) {
             const left: Point = [x - reach, yAt(z + 5)];
             const right: Point = [x + reach, yAt(z)];
-            const dip: Point = [x, yAt(z + 2.5) + sag];
+            const dip: Point = [x, yAt(z + 2.5) + sink * 2];
             s.path(
                 `M${n(left[0])} ${n(left[1])} Q${n(dip[0])} ${n(dip[1])} ${n(right[0])} ${n(right[1])}`,
                 [left, right],
@@ -232,7 +235,7 @@ function spiral(pen: Pen) {
             );
             // 나선을 타고 내려오는 캡슐
             if (detail === "full" && (z === 53 || z === 79)) {
-                s.spot([x - reach * 0.15, yAt(z + 2.5) + sag * 0.5 - widthOf(CAPSULE) * 0.6], widthOf(CAPSULE), {
+                s.spot([x - reach * 0.15, yAt(z + 2.5) + sink - s.widthOf(CAPSULE) * 0.6], s.widthOf(CAPSULE), {
                     fill: "cream",
                     w: pen.fine,
                 });
@@ -241,18 +244,18 @@ function spiral(pen: Pen) {
     }
 
     s.cylinder(c, c, [92, 109], 14.5, { side: "cream", top: "paper" }, pen.out);
-    const knob = frontOf(c, c, 14.5, 100.5);
+    const knob = s.frontOf(c, c, 14.5, 100.5);
     s.spot(knob, 5.2 * KAN_PER_CM, { fill: "paper", w: pen.in });
     s.spot(knob, 2.7 * KAN_PER_CM, { fill: "cheek", w: detail === "low" ? undefined : pen.fine });
     if (detail === "full") {
-        const slot: Point = [knob[0] + widthOf(14.5) * 0.56, knob[1] - 2.2 * KAN_PER_CM];
+        const slot: Point = [knob[0] + s.widthOf(14.5) * 0.56, knob[1] - 2.2 * KAN_PER_CM];
         s.path(roundRect(slot[0], slot[1], 1.5 * KAN_PER_CM, 4.4 * KAN_PER_CM, 0.2), [slot], { fill: "ink" });
     }
 
     // 둥근 통과 그 안의 캡슐
     const radius = 15.5;
-    const center = at(c, c, 109 + radius);
-    const seen = widthOf(radius);
+    const center = s.at(c, c, 109 + radius);
+    const seen = s.widthOf(radius);
     s.ball(c, c, 109 + radius, radius, { fill: "paper", w: pen.out });
     if (detail !== "low") {
         const inside: Point[] = [
@@ -262,7 +265,7 @@ function spiral(pen: Pen) {
         ];
         if (detail === "full") inside.push([-0.12, 0.1], [0.3, -0.05]);
         for (const [dx, dy] of inside) {
-            s.spot([center[0] + dx * seen, center[1] + dy * seen], widthOf(CAPSULE), { fill: "cream", w: pen.fine });
+            s.spot([center[0] + dx * seen, center[1] + dy * seen], s.widthOf(CAPSULE), { fill: "cream", w: pen.fine });
         }
     }
     if (detail === "full") {
@@ -288,42 +291,57 @@ const DRAW: Record<MachineModelId, (pen: Pen) => void> = {
     "spiral-tower": spiral,
 };
 
-const sketchOf = (id: MachineModelId, detail: Detail, widths: { out: number; in: number; fine: number }) => {
-    const pen: Pen = { s: new Sketch(), detail, ...widths };
+type Widths = { out: number; in: number; fine: number };
+
+const sketchOf = (id: MachineModelId, view: MachineView, detail: Detail, widths: Widths) => {
+    const pen: Pen = { s: new Sketch(view), detail, ...widths };
     DRAW[id](pen);
     return pen.s;
 };
 
+const VIEWS: readonly MachineView[] = ["solid", "front"];
+const spanKey = (id: MachineModelId, view: MachineView) => `${view}:${id}`;
+
 /**
- * 그림의 키(칸) — 선과 여백을 뺀, 기계가 그림에서 차지하는 높이.
+ * 그림의 키(칸) — 선과 여백을 뺀, 기계가 그림에서 차지하는 높이. 보기마다 다르다:
+ * 입체에서는 폭과 깊이가 세로로도 자리를 차지하고, 정면에서는 실제 높이 그대로다.
  * 가장 자세한 그림으로 잰다. 작게 그릴 때 바퀴 같은 부품이 빠져도 키는 그대로 둔다.
  */
-const SPANS = new Map<MachineModelId, number>(
-    MACHINE_MODEL_IDS.map((id) => [id, sketchOf(id, "full", { out: 0, in: 0, fine: 0 }).box(0).height]),
+const SPANS = new Map<string, number>(
+    VIEWS.flatMap((view) =>
+        MACHINE_MODEL_IDS.map((id): [string, number] => [
+            spanKey(id, view),
+            sketchOf(id, view, "full", { out: 0, in: 0, fine: 0 }).box(0).height,
+        ]),
+    ),
 );
-export const machineSpan = (id: MachineModelId): number => SPANS.get(id) as number;
+export const machineSpan = (id: MachineModelId, view: MachineView = "solid"): number =>
+    SPANS.get(spanKey(id, view)) as number;
 
 /** 이 크기(px)로 그리면 얼마나 자세히 그려지는가 */
-export function detailFor(id: MachineModelId, size: number): Detail {
-    const pxPerCm = (size / machineSpan(id)) * KAN_PER_CM;
+export function detailFor(id: MachineModelId, size: number, view: MachineView = "solid"): Detail {
+    const pxPerCm = (size / machineSpan(id, view)) * KAN_PER_CM;
     return pxPerCm >= FULL_FROM ? "full" : pxPerCm >= MID_FROM ? "mid" : "low";
 }
 
 /** 여러 기계를 같은 축척으로 나란히 세울 때의 크기(px) — 1cm 를 몇 px 로 그릴지를 준다 */
-export const sizeAtScale = (id: MachineModelId, pxPerCm: number): number => (machineSpan(id) / KAN_PER_CM) * pxPerCm;
+export const sizeAtScale = (id: MachineModelId, pxPerCm: number, view: MachineView = "solid"): number =>
+    (machineSpan(id, view) / KAN_PER_CM) * pxPerCm;
 
 export interface MachineOptions {
     /** 그릴 크기(px) — 기계의 키. 작으면 작은 부품을 덜어 낸다 */
     size?: number;
+    /** 보기. 입체(기본)는 위에서 비스듬히 내려다본 모습, 정면은 손잡이가 달린 앞면을 똑바로 본 모습 */
+    view?: MachineView;
 }
 
 /** 기계 한 대의 그림. 캐릭터와 같은 자료형이라 같은 부품으로 그리고 같은 방법으로 내보낸다 */
-export function composeMachine(id: MachineModelId, { size = 160 }: MachineOptions = {}): Drawing {
-    const unit = machineSpan(id);
+export function composeMachine(id: MachineModelId, { size = 160, view = "solid" }: MachineOptions = {}): Drawing {
+    const unit = machineSpan(id, view);
     const pxPerKan = size / unit;
     const weight = (line: keyof typeof WEIGHT) => Math.max(WEIGHT[line].min, size * WEIGHT[line].ratio) / pxPerKan;
     const widths = { out: weight("out"), in: weight("in"), fine: weight("fine") };
-    const sketch = sketchOf(id, detailFor(id, size), widths);
+    const sketch = sketchOf(id, view, detailFor(id, size, view), widths);
     return {
         // 여백 — 테두리 굵기의 절반과 손떨림이 밀어내는 만큼
         box: sketch.box(widths.out / 2 + 1.5),
