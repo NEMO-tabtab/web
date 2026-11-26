@@ -4,7 +4,15 @@ import { project } from "@/lib/iso";
 import { ROUGH_FILTERS, toSvgString } from "@/lib/nemo/exportSvg";
 import type { Drawing } from "@/lib/nemo/types";
 
-import { FULL_FROM, MID_FROM, composeMachine, detailFor, machineSpan, sizeAtScale } from "./compose";
+import {
+    FULL_FROM,
+    MID_FROM,
+    composeMachine,
+    composeMachinePull,
+    detailFor,
+    machineSpan,
+    sizeAtScale,
+} from "./compose";
 import { MACHINE_MODELS, MACHINE_MODEL_IDS, machineModel, modelCells, sizeLabel } from "./models";
 import { KAN_PER_CM, Sketch, frontAt, solidAt, type MachineView } from "./sketch";
 
@@ -244,6 +252,110 @@ describe("기계 그림", () => {
         expect(sizeAtScale("standard-2", scale)).toBeGreaterThan(sizeAtScale("half-1", scale));
         expect(sizeAtScale("half-1", scale)).toBeGreaterThan(sizeAtScale("tabletop-box", scale));
         expect(sizeAtScale("standard-2", scale, "front")).toBeGreaterThan(sizeAtScale("half-1", scale, "front"));
+    });
+});
+
+describe("기계가 돌아가는 움직임", () => {
+    const PULL_SIZES = [48, 96, 200];
+    /** 캡슐 층이 놓인 자리 — transform 의 translate */
+    const startOf = (transform: string | undefined) => {
+        const [, x, y] = /^translate\((-?[\d.]+) (-?[\d.]+)\)$/.exec(transform ?? "") ?? [];
+        return { x: Number(x), y: Number(y) };
+    };
+    const capsuleRadius = 3 * KAN_PER_CM;
+
+    it("어느 종류든 돌아가는 손잡이와 캡슐을 따로 떼어 낸다", () => {
+        for (const id of MACHINE_MODEL_IDS) {
+            for (const size of PULL_SIZES) {
+                const pull = composeMachinePull(id, { size });
+                expect(pull.drawing.layers).toHaveLength(4);
+                expect(pull.handleLayer).toBe(1);
+                expect(pull.capsuleLayer).toBe(3);
+
+                // 돌아가는 것은 볼터치 꼭지와 가로대뿐이다 — 가로대가 있어야 도는 것이 보인다
+                const turning = pull.drawing.layers[pull.handleLayer].strokes;
+                expect(turning).toHaveLength(2);
+                expect(turning.filter((stroke) => stroke.fill === "cheek")).toHaveLength(1);
+                expect(turning.filter((stroke) => !stroke.fill && stroke.w)).toHaveLength(1);
+
+                for (const stroke of strokesOf(pull.drawing)) expect(stroke.d).not.toMatch(/NaN|undefined|Infinity/);
+                expect(pull.drawing.unit).toBe(machineSpan(id, "front"));
+            }
+        }
+    });
+
+    it("조각을 다시 이으면 정면 그림이다 — 작게 그릴 때 빠지던 가로대만 더해진다", () => {
+        for (const id of MACHINE_MODEL_IDS) {
+            for (const size of PULL_SIZES) {
+                const pull = composeMachinePull(id, { size });
+                const machine = pull.drawing.layers.slice(0, 3).flatMap((layer) => layer.strokes);
+                const still = strokesOf(composeMachine(id, { size, view: "front" }));
+                const bars = detailFor(id, size, "front") === "full" ? 0 : machineModel(id).tiers;
+                expect(machine).toHaveLength(still.length + bars);
+                // 볼터치는 그대로 단마다 하나다
+                expect(machine.filter((stroke) => stroke.fill === "cheek")).toHaveLength(machineModel(id).tiers);
+            }
+        }
+    });
+
+    it("캡슐은 나오는 곳에서 바닥으로 내려가 왼쪽으로 구른다", () => {
+        for (const id of MACHINE_MODEL_IDS) {
+            const pull = composeMachinePull(id, { size: 200 });
+            const start = startOf(pull.drawing.layers[pull.capsuleLayer].transform);
+            expect(Number.isFinite(start.x) && Number.isFinite(start.y)).toBe(true);
+            // 그림에서 아래가 +y 다. 바닥은 y = 0
+            expect(start.y).toBeLessThan(0);
+            expect(pull.travel.y).toBeGreaterThan(0);
+            // 멈췄을 때 캡슐의 아래 끝이 바닥에 닿는다
+            expect(start.y + pull.travel.y + capsuleRadius).toBeCloseTo(0, 1);
+            expect(pull.travel.x).toBeLessThan(0);
+            expect(pull.roll).toBeGreaterThan(0);
+            expect(pull.hop).toBeGreaterThan(0);
+        }
+    });
+
+    it("캡슐이 굴러가 멈추는 곳까지 그림의 칸에 담긴다", () => {
+        for (const id of MACHINE_MODEL_IDS) {
+            for (const size of PULL_SIZES) {
+                const pull = composeMachinePull(id, { size });
+                const { box } = pull.drawing;
+                const start = startOf(pull.drawing.layers[pull.capsuleLayer].transform);
+                const restLeft = start.x + pull.travel.x - pull.roll - capsuleRadius;
+                expect(box.x).toBeLessThanOrEqual(restLeft);
+                expect(box.y + box.height).toBeGreaterThanOrEqual(0);
+                // 기계만 그린 정면 그림보다 좁아지지 않는다
+                const still = composeMachine(id, { size, view: "front" }).box;
+                expect(box.x).toBeLessThanOrEqual(still.x);
+                expect(box.x + box.width).toBeCloseTo(still.x + still.width, 1);
+            }
+        }
+    });
+
+    it("손잡이는 가로대의 가운데를 중심으로 돌고, 기계는 바닥의 가운데를 중심으로 기운다", () => {
+        for (const id of MACHINE_MODEL_IDS) {
+            for (const size of PULL_SIZES) {
+                const pull = composeMachinePull(id, { size });
+                // 가로대는 곧은 선 하나다: "M x1 y1 L x2 y2"
+                const bar = pull.drawing.layers[pull.handleLayer].strokes.find((stroke) => !stroke.fill);
+                const [, x1, y1, x2, y2] = /^M(-?[\d.]+) (-?[\d.]+) L(-?[\d.]+) (-?[\d.]+)$/.exec(bar?.d ?? "") ?? [];
+                expect(pull.pivot.x).toBeCloseTo((Number(x1) + Number(x2)) / 2, 1);
+                expect(pull.pivot.y).toBeCloseTo((Number(y1) + Number(y2)) / 2, 1);
+
+                const still = composeMachine(id, { size, view: "front" }).box;
+                expect(pull.foot.x).toBeCloseTo(still.x + still.width / 2, 1);
+                expect(pull.foot.y).toBeCloseTo(0, 6);
+            }
+        }
+    });
+
+    it("단이 여럿이면 맨 위 단이 돈다", () => {
+        const pull = composeMachinePull("standard-2", { size: 200 });
+        const start = startOf(pull.drawing.layers[pull.capsuleLayer].transform);
+        // 2단 표준형의 위 단은 바닥에서 67cm 위부터다
+        expect(-start.y / KAN_PER_CM).toBeGreaterThan(67);
+        // 아래 단의 손잡이는 그대로 서 있는 조각에 남는다
+        const before = pull.drawing.layers[0].strokes;
+        expect(before.filter((stroke) => stroke.fill === "cheek")).toHaveLength(1);
     });
 });
 

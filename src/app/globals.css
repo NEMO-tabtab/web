@@ -243,6 +243,108 @@ nav[aria-label="주요 메뉴"] svg {
     }
 }
 
+/* 가챠 기계가 돌아가는 움직임(#244, src/components/machine/GachaPull.tsx)
+   - 손잡이가 네 번 딸깍 돌고(1초), 그때마다 기계가 살짝 기울고, 캡슐이 나오는 곳에서 캡슐이 떨어져 한 번 튀고 굴러간다
+   - 화면에 올라올 때 한 번만 돈다
+   - 길이의 px 는 SVG 안이라 그림의 칸이다. 캡슐이 갈 길(--gacha-*)과 도는 중심(transform-origin)은 부품이 그림에서 재서 준다 */
+@keyframes gacha-turn {
+    0% {
+        transform: rotate(0deg);
+    }
+    17%,
+    25% {
+        transform: rotate(90deg);
+    }
+    42%,
+    50% {
+        transform: rotate(180deg);
+    }
+    67%,
+    75% {
+        transform: rotate(270deg);
+    }
+    92%,
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes gacha-shake {
+    0%,
+    9%,
+    25%,
+    34%,
+    50%,
+    59%,
+    75%,
+    84%,
+    100% {
+        transform: rotate(0deg);
+    }
+    17% {
+        transform: rotate(1.6deg);
+    }
+    42% {
+        transform: rotate(-1.3deg);
+    }
+    67% {
+        transform: rotate(1.3deg);
+    }
+    92% {
+        transform: rotate(-1deg);
+    }
+}
+@keyframes gacha-drop {
+    /* 나오는 곳에서 솟아난다 */
+    0% {
+        transform: translate(0, 0) rotate(0deg) scale(0.2);
+        opacity: 0;
+    }
+    14% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+        animation-timing-function: ease-in;
+    }
+    /* 바닥에 닿고 */
+    52% {
+        transform: translate(var(--gacha-dx), var(--gacha-dy)) rotate(-60deg) scale(1);
+        opacity: 1;
+        animation-timing-function: ease-out;
+    }
+    /* 한 번 튀었다가 */
+    68% {
+        transform: translate(calc(var(--gacha-dx) - var(--gacha-roll) * 0.45), calc(var(--gacha-dy) - var(--gacha-hop)))
+            rotate(-115deg) scale(1);
+        opacity: 1;
+        animation-timing-function: ease-in;
+    }
+    /* 굴러가 멈춘다 */
+    84%,
+    100% {
+        transform: translate(calc(var(--gacha-dx) - var(--gacha-roll)), var(--gacha-dy)) rotate(-170deg) scale(1);
+        opacity: 1;
+    }
+}
+.gacha-handle {
+    animation: gacha-turn 1000ms cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+.gacha-shake {
+    animation: gacha-shake 1000ms linear both;
+}
+.gacha-capsule {
+    animation: gacha-drop 760ms linear 940ms both;
+}
+@media (prefers-reduced-motion: reduce) {
+    .gacha-handle,
+    .gacha-shake {
+        animation: none;
+    }
+    /* 돌지 않고, 캡슐이 나와 멈춘 모습만 보여 준다 */
+    .gacha-capsule {
+        animation: none;
+        transform: translate(calc(var(--gacha-dx) - var(--gacha-roll)), var(--gacha-dy)) rotate(-170deg);
+    }
+}
+
 /* 투명 배경 미리보기용 체커보드 (사진 등록 미리보기 맥락) */
 .checker {
     background-image: conic-gradient(#eceae5 0 25%, #ffffff 0 50%, #eceae5 0 75%, #ffffff 0);

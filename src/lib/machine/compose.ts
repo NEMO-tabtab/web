@@ -1,5 +1,5 @@
-import { roundRect } from "@/lib/nemo/path";
-import type { Drawing, Paint } from "@/lib/nemo/types";
+import { ellipse, roundRect } from "@/lib/nemo/path";
+import type { Drawing, Paint, Stroke } from "@/lib/nemo/types";
 
 import { MACHINE_MODEL_IDS, type MachineModelId } from "./models";
 import { KAN_PER_CM, Sketch, n, type Block, type Face, type MachineView, type Point } from "./sketch";
@@ -25,6 +25,14 @@ const WEIGHT = {
     fine: { ratio: 0.005, min: 0.8 },
 } as const;
 
+/** 움직이는 부품의 자리 — 손잡이와 캡슐이 나오는 곳. 단이 여럿이면 아래 단부터 */
+interface Marks {
+    /** 손잡이에서 돌아가는 획(꼭지와 가로대)이 strokes 의 어디부터 어디 앞까지인가, 그리고 도는 중심(칸) */
+    handles: { from: number; to: number; center: Point }[];
+    /** 캡슐이 나오는 곳의 가운데(칸) */
+    exits: Point[];
+}
+
 interface Pen {
     s: Sketch;
     detail: Detail;
@@ -32,6 +40,9 @@ interface Pen {
     out: number;
     in: number;
     fine: number;
+    /** 움직일 그림인가 — 그러면 작게 그려도 손잡이의 가로대를 긋는다. 돌아가는 것이 보여야 한다 */
+    play: boolean;
+    marks: Marks;
 }
 
 const SOLID = { front: "paper", side: "cream", top: "paper" } as const;
@@ -60,11 +71,13 @@ function capsules(
 function handle(pen: Pen, block: Block, along: number, z: number, radius: number, ring: Paint) {
     const { s, detail } = pen;
     s.roundOn(block, "front", along, z, radius, { fill: ring, w: pen.in });
+    const from = s.strokes.length;
     s.roundOn(block, "front", along, z, radius * 0.52, { fill: "cheek", w: detail === "low" ? undefined : pen.fine });
-    if (detail === "full") {
+    if (detail === "full" || pen.play) {
         const reach = (radius * 0.72) / block.w;
         s.lineOn(block, "front", [along - reach, z], [along + reach, z], pen.in);
     }
+    pen.marks.handles.push({ from, to: s.strokes.length, center: s.pointOn(block, "front", along, z) });
 }
 
 const BODY = 31;
@@ -106,6 +119,7 @@ function tier(pen: Pen, z0: number, w: number, d: number) {
     }
 
     s.rectOn(body, "front", [0.14, 0.56], [z0 + 2.6, z0 + 10.8], { fill: "ink" }, 1.6);
+    pen.marks.exits.push(s.pointOn(body, "front", 0.35, z0 + 6.7));
     handle(pen, body, 0.5, z0 + 18, 6, "paper");
     if (detail === "full") {
         s.rectOn(body, "front", [0.14, 0.5], [z0 + 25.6, z0 + 29.2], { fill: "cream", w: pen.fine }, 0.5);
@@ -155,6 +169,7 @@ function box(pen: Pen) {
     s.block(body, SOLID, pen.out);
     // 캡슐이 나오는 홈과, 그 위의 동전 장치
     s.rectOn(body, "front", [0.28, 0.72], [3.7, 7.6], { fill: "ink" }, 0.8);
+    pen.marks.exits.push(s.pointOn(body, "front", 0.5, 5.65));
     if (detail !== "low") s.rectOn(body, "front", [0.22, 0.78], [8.8, 16], { fill: "cream", w: pen.in }, 0.8);
     handle(pen, body, 0.5, 12.4, 2.7, "paper");
 
@@ -179,6 +194,7 @@ function cube(pen: Pen) {
     s.block({ x: 0, y: 0, z: 0, w, d, h: 4.5 }, TINTED, pen.out);
     s.block(body, SOLID, pen.out);
     s.rectOn(body, "front", [0.48, 0.9], [6.3, 15.2], { fill: "ink" }, 1.4);
+    pen.marks.exits.push(s.pointOn(body, "front", 0.69, 10.75));
     handle(pen, body, 0.27, 19.6, 5.4, "cream");
 
     // 몸통의 위쪽 절반이 속이 비치는 통이다
@@ -216,6 +232,7 @@ function spiral(pen: Pen) {
         ],
         { fill: "ink" },
     );
+    pen.marks.exits.push([exitTop[0], (exitTop[1] + exitBottom[1]) / 2]);
 
     s.cylinder(c, c, [33, 92], 11, { side: "paper", top: "paper" }, pen.in);
     if (detail !== "low") {
@@ -246,7 +263,13 @@ function spiral(pen: Pen) {
     s.cylinder(c, c, [92, 109], 14.5, { side: "cream", top: "paper" }, pen.out);
     const knob = s.frontOf(c, c, 14.5, 100.5);
     s.spot(knob, 5.2 * KAN_PER_CM, { fill: "paper", w: pen.in });
+    const turning = s.strokes.length;
     s.spot(knob, 2.7 * KAN_PER_CM, { fill: "cheek", w: detail === "low" ? undefined : pen.fine });
+    if (detail === "full" || pen.play) {
+        const reach = 3.7 * KAN_PER_CM;
+        s.path(`M${n(knob[0] - reach)} ${n(knob[1])} L${n(knob[0] + reach)} ${n(knob[1])}`, [knob], { w: pen.in });
+    }
+    pen.marks.handles.push({ from: turning, to: s.strokes.length, center: knob });
     if (detail === "full") {
         const slot: Point = [knob[0] + s.widthOf(14.5) * 0.56, knob[1] - 2.2 * KAN_PER_CM];
         s.path(roundRect(slot[0], slot[1], 1.5 * KAN_PER_CM, 4.4 * KAN_PER_CM, 0.2), [slot], { fill: "ink" });
@@ -293,11 +316,13 @@ const DRAW: Record<MachineModelId, (pen: Pen) => void> = {
 
 type Widths = { out: number; in: number; fine: number };
 
-const sketchOf = (id: MachineModelId, view: MachineView, detail: Detail, widths: Widths) => {
-    const pen: Pen = { s: new Sketch(view), detail, ...widths };
+const penFor = (id: MachineModelId, view: MachineView, detail: Detail, widths: Widths, play = false): Pen => {
+    const pen: Pen = { s: new Sketch(view), detail, ...widths, play, marks: { handles: [], exits: [] } };
     DRAW[id](pen);
-    return pen.s;
+    return pen;
 };
+const sketchOf = (id: MachineModelId, view: MachineView, detail: Detail, widths: Widths) =>
+    penFor(id, view, detail, widths).s;
 
 const VIEWS: readonly MachineView[] = ["solid", "front"];
 const spanKey = (id: MachineModelId, view: MachineView) => `${view}:${id}`;
@@ -335,12 +360,17 @@ export interface MachineOptions {
     view?: MachineView;
 }
 
+/** 선 굵기(칸) — 그림의 키(px)에 비례하고, 화면에서 정해 둔 굵기보다 가늘어지지 않는다 */
+const widthsFor = (size: number, unit: number): Widths => {
+    const pxPerKan = size / unit;
+    const weight = (line: keyof typeof WEIGHT) => Math.max(WEIGHT[line].min, size * WEIGHT[line].ratio) / pxPerKan;
+    return { out: weight("out"), in: weight("in"), fine: weight("fine") };
+};
+
 /** 기계 한 대의 그림. 캐릭터와 같은 자료형이라 같은 부품으로 그리고 같은 방법으로 내보낸다 */
 export function composeMachine(id: MachineModelId, { size = 160, view = "solid" }: MachineOptions = {}): Drawing {
     const unit = machineSpan(id, view);
-    const pxPerKan = size / unit;
-    const weight = (line: keyof typeof WEIGHT) => Math.max(WEIGHT[line].min, size * WEIGHT[line].ratio) / pxPerKan;
-    const widths = { out: weight("out"), in: weight("in"), fine: weight("fine") };
+    const widths = widthsFor(size, unit);
     const sketch = sketchOf(id, view, detailFor(id, size, view), widths);
     return {
         // 여백 — 테두리 굵기의 절반과 손떨림이 밀어내는 만큼
@@ -348,5 +378,92 @@ export function composeMachine(id: MachineModelId, { size = 160, view = "solid" 
         unit,
         filter: "rough-line-sm",
         layers: [{ strokes: sketch.strokes }],
+    };
+}
+
+/*
+ * 기계가 돌아가는 움직임(#244) — 손잡이가 돌고, 캡슐이 나오는 곳에서 캡슐이 굴러 나온다.
+ * 여기서는 그림을 움직일 조각으로 나누고 캡슐이 갈 길만 잰다. 움직임 자체는 CSS 다(globals.css 의 gacha-*).
+ * 정면 그림에만 얹는다 — 입체에서는 손잡이가 비스듬한 면에 누워 있어 화면 위에서 돌릴 수 없다.
+ */
+
+/** 굴러 나오는 캡슐의 획 — 가운데가 (0, 0) 이다. 아래 반쪽만 칠해서 구르는 것이 보인다 */
+function capsuleStrokes(radius: number, widths: Widths): Stroke[] {
+    const r = n(radius);
+    return [
+        { d: ellipse(0, 0, r, r), fill: "paper" },
+        { d: `M${-r} 0 A${r} ${r} 0 0 0 ${r} 0 Z`, fill: "cream" },
+        { d: ellipse(0, 0, r, r), w: widths.in },
+        { d: `M${-r} 0 L${r} 0`, w: widths.fine },
+    ];
+}
+
+export interface MachinePull {
+    /** 정면 그림. layers 는 손잡이 앞까지, 돌아가는 손잡이, 나머지, 캡슐 순서다 */
+    drawing: Drawing;
+    /** drawing.layers 에서 돌아가는 손잡이(꼭지와 가로대)의 자리 */
+    handleLayer: number;
+    /** drawing.layers 에서 캡슐의 자리. 그 층의 transform 이 캡슐이 나오는 곳이다 */
+    capsuleLayer: number;
+    /** 캡슐이 나오는 곳에서 바닥까지 옮겨 가는 만큼(칸) */
+    travel: { x: number; y: number };
+    /** 바닥에 닿은 뒤 왼쪽으로 굴러가는 만큼(칸) */
+    roll: number;
+    /** 바닥에서 한 번 튀는 높이(칸) */
+    hop: number;
+    /** 손잡이가 도는 중심(칸) */
+    pivot: { x: number; y: number };
+    /** 기계가 기우는 중심(칸) — 바닥에 닿은 아래쪽 가운데 */
+    foot: { x: number; y: number };
+}
+
+/**
+ * 움직일 수 있게 조각낸 기계 그림. size 는 `composeMachine` 과 같은 뜻(기계의 키)이고,
+ * 캡슐이 굴러가 멈추는 자리만큼 그림이 왼쪽으로 더 넓다.
+ * 단이 여럿이면 맨 위 단이 돈다 — 캡슐이 떨어지는 길이 길어 잘 보인다.
+ */
+export function composeMachinePull(id: MachineModelId, { size = 120 }: { size?: number } = {}): MachinePull {
+    const view: MachineView = "front";
+    const unit = machineSpan(id, view);
+    const widths = widthsFor(size, unit);
+    const pen = penFor(id, view, detailFor(id, size, view), widths, true);
+    const { strokes } = pen.s;
+    const turning = pen.marks.handles[pen.marks.handles.length - 1];
+    const exit = pen.marks.exits[pen.marks.exits.length - 1];
+
+    const radius = pen.s.widthOf(CAPSULE);
+    const ground = pen.s.at(0, 0, 0)[1];
+    const travel = { x: n(-radius * 0.6), y: n(ground - radius - exit[1]) };
+    const roll = n(radius * 1.4);
+
+    const margin = widths.out / 2 + 1.5;
+    const machine = pen.s.box(margin);
+    // 캡슐이 굴러가 멈추는 곳까지 그림의 칸에 담는다
+    const left = Math.min(machine.x, exit[0] + travel.x - roll - radius - margin);
+    const bottom = Math.max(machine.y + machine.height, ground + margin);
+    return {
+        drawing: {
+            box: {
+                x: n(left),
+                y: machine.y,
+                width: n(machine.x + machine.width - left),
+                height: n(bottom - machine.y),
+            },
+            unit,
+            filter: "rough-line-sm",
+            layers: [
+                { strokes: strokes.slice(0, turning.from) },
+                { strokes: strokes.slice(turning.from, turning.to) },
+                { strokes: strokes.slice(turning.to) },
+                { transform: `translate(${n(exit[0])} ${n(exit[1])})`, strokes: capsuleStrokes(radius, widths) },
+            ],
+        },
+        handleLayer: 1,
+        capsuleLayer: 3,
+        travel,
+        roll,
+        hop: n(radius * 0.9),
+        pivot: { x: n(turning.center[0]), y: n(turning.center[1]) },
+        foot: { x: n(machine.x + machine.width / 2), y: n(ground) },
     };
 }

@@ -90,6 +90,11 @@ export class Sketch {
             : this.at(block.x + block.w, block.y + block.d - across, z);
     }
 
+    /** 면 위의 한 점(칸). along 은 면의 왼쪽 0 → 오른쪽 1, z 는 바닥에서의 높이(cm) */
+    pointOn(block: Block, face: Face, along: number, z: number): Point {
+        return this.onFace(block, face, along * faceLength(block, face), z);
+    }
+
     /** 이 보기에서 그 면이 보이는가 */
     private shows(face: Face) {
         return face === "front" || !this.flat;

@@ -2,7 +2,7 @@ import React from "react";
 
 import { cn } from "@/lib/cn";
 import { COLORS } from "@/lib/nemo/geometry";
-import type { Drawing } from "@/lib/nemo/types";
+import type { Drawing, Stroke } from "@/lib/nemo/types";
 
 export interface NemoSvgProps {
     drawing: Drawing;
@@ -11,6 +11,24 @@ export interface NemoSvgProps {
     /** 주면 화면 낭독기가 읽는다. 없으면 장식으로 숨긴다 */
     title?: string;
     className?: string;
+}
+
+/** 획의 목록을 SVG 패스로 옮긴다. 그림의 층을 따로 감싸 움직여야 하는 곳(GachaPull)도 이것을 쓴다 */
+export function StrokePaths({ strokes }: { strokes: readonly Stroke[] }) {
+    return (
+        <>
+            {strokes.map((stroke, index) => (
+                <path
+                    key={index}
+                    d={stroke.d}
+                    fill={stroke.fill ? COLORS[stroke.fill] : "none"}
+                    fillOpacity={stroke.opacity}
+                    stroke={stroke.w ? COLORS.ink : "none"}
+                    strokeWidth={stroke.w}
+                />
+            ))}
+        </>
+    );
 }
 
 /**
@@ -35,16 +53,7 @@ export function NemoSvg({ drawing, size, title, className }: NemoSvgProps) {
             <g filter={`url(#${drawing.filter})`} strokeLinecap="round" strokeLinejoin="round">
                 {drawing.layers.map((layer, layerIndex) => (
                     <g key={layerIndex} transform={layer.transform}>
-                        {layer.strokes.map((stroke, index) => (
-                            <path
-                                key={index}
-                                d={stroke.d}
-                                fill={stroke.fill ? COLORS[stroke.fill] : "none"}
-                                fillOpacity={stroke.opacity}
-                                stroke={stroke.w ? COLORS.ink : "none"}
-                                strokeWidth={stroke.w}
-                            />
-                        ))}
+                        <StrokePaths strokes={layer.strokes} />
                     </g>
                 ))}
             </g>

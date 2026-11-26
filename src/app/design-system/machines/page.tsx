@@ -7,6 +7,7 @@ import { toSvgString } from "@/lib/nemo/exportSvg";
 
 import { ClassName, DocSection, ExamplePreview, PageHeader } from "../_components/DocSection";
 import { DownloadButtons } from "../character/_components/DownloadButtons";
+import { PullDemo } from "./_components/PullDemo";
 
 /** 내려받는 그림에서 기계의 키(px). PNG 는 이 두 배로 나온다 */
 const EXPORT_SIZE = 512;
@@ -23,6 +24,7 @@ const RULES = [
     "기계 그림은 이 부품으로만 그립니다. 화면에 기계 SVG 를 따로 그리지 않고, 없는 종류는 카탈로그(src/lib/machine)에 더합니다.",
     "보기는 둘입니다. 입체는 가게 장면처럼 여러 대를 세울 때, 정면은 앞면이 크게 보여야 하는 작은 자리와 움직임에 씁니다. 두 보기는 같은 부품을 다른 쪽에서 본 것이라 따로 그리지 않습니다.",
     "크기는 기계의 키입니다. 작게 그리면 캡슐과 동전 넣는 곳 같은 작은 부품부터 빠지고, 덩어리와 손잡이는 끝까지 남습니다.",
+    "움직임은 정면 그림에만 있습니다(GachaPull). 가챠를 기록한 순간처럼 뽑았다는 것을 알릴 때 한 번만 돌립니다. 움직임을 줄이도록 설정한 기기에서는 돌지 않고 캡슐이 나와 있는 모습만 보입니다.",
     "색은 먹·종이·cream 에 볼터치 한 점입니다. 볼터치는 손잡이에만 씁니다. 그림자와 그라디언트는 쓰지 않습니다.",
     "실제 기계의 생김새를 줄여 그린 것입니다. 제조사의 상표·글자·캐릭터는 그리지 않습니다.",
     "내부 지도의 기기는 예전 그림 그대로입니다. 매장 구조에 기계 종류를 적는 일은 내부 지도와 함께 미뤘습니다.",
@@ -194,6 +196,29 @@ export default function MachinesPage() {
                         ))}
                     </ExamplePreview>
                 ))}
+            </DocSection>
+
+            <DocSection
+                title="돌아가는 모습"
+                description="손잡이가 네 번 딸깍 돌고, 캡슐이 나오는 곳에서 캡슐이 떨어져 한 번 튀고 굴러갑니다. 1.7초쯤 걸리고 한 번만 돕니다. 단이 여럿이면 맨 위 단이 돕니다."
+            >
+                <ExamplePreview
+                    className="items-end justify-center gap-x-8 gap-y-6"
+                    caption={`정면 — 1cm 를 ${ROW_SCALE}px 로. 화면에 올라올 때 한 번 돈다`}
+                >
+                    {MACHINE_MODELS.map((model) => (
+                        <PullDemo
+                            key={model.id}
+                            model={model.id}
+                            size={sizeAtScale(model.id, ROW_SCALE, "front")}
+                            label={model.name}
+                        />
+                    ))}
+                </ExamplePreview>
+                <Text size="sm" tone="muted">
+                    <ClassName>{'<GachaPull model="half-1" size={96} />'}</ClassName> 처럼 씁니다. 다시 돌리려면{" "}
+                    <ClassName>key</ClassName> 를 바꿔 다시 올립니다.
+                </Text>
             </DocSection>
 
             <DocSection title="쓸 때" description="까닭은 docs/decisions/0009-indoor-map-on-hold.md 에 있습니다.">
