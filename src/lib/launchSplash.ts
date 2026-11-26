@@ -7,6 +7,8 @@
  * 늦추지 말라고 권한다(#149).
  */
 
+import { BODY, LINE, SYMBOL } from "./nemo/geometry";
+
 /** 페이지를 열기 시작한 뒤 로딩 화면을 최소한 보여 줄 시간 */
 export const SPLASH_MIN_MS = 700;
 /** 사라질 때 흐려지는 시간 */
@@ -18,6 +20,30 @@ export const SPLASH_MAX_WAIT_MS = 2_500;
 export function splashRemainingMs(elapsedMs: number): number {
     return Math.max(0, Math.round(SPLASH_MIN_MS - elapsedMs));
 }
+
+/*
+ * 로딩 화면의 네모 크기 (#149, #248).
+ *
+ * 그림은 앱 안의 로고와 같은 심볼(NemoSymbol, src/lib/nemo)이다. 크기는 몸의 폭으로 정한다 — 휴대폰에서 화면 폭의
+ * 약 25%인 96px, 태블릿(폭 600px 이상)에서 120px. 심볼의 size 는 캔버스의 한 변이라, 몸이 캔버스에서 차지하는
+ * 칸으로 나눠 size 를 구한다. 캐릭터의 치수가 바뀌어도 몸 폭은 그대로 남는다.
+ */
+
+/** 로딩 화면 네모의 몸 폭(px) — 선 바깥에서 선 바깥까지 */
+export const SPLASH_BODY_PX = 96;
+/** 태블릿에서 키우는 배율 — LaunchSplash 의 `min-[600px]:scale-125` 와 같아야 한다(몸 폭 120px) */
+export const SPLASH_TABLET_SCALE = 1.25;
+
+/** 심볼 캔버스에서 몸이 차지하는 칸 — 몸의 좌우 끝에 선 굵기(심볼은 한 단계 굵다)를 더한다 */
+const SYMBOL_BODY_UNITS = BODY.right - BODY.left + LINE.body * SYMBOL.lineScale;
+
+/** 몸 폭이 `bodyPx` 가 되는 심볼의 size */
+export function symbolSizeForBody(bodyPx: number): number {
+    return Math.round((bodyPx * SYMBOL.canvas) / SYMBOL_BODY_UNITS);
+}
+
+/** 로딩 화면에 그리는 심볼의 size — 몸 폭 96px */
+export const SPLASH_SYMBOL_SIZE = symbolSizeForBody(SPLASH_BODY_PX);
 
 /*
  * 앱을 켠 뒤 처음 연 페이지에서만 보인다(#246).
