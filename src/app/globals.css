@@ -212,7 +212,8 @@ nav[aria-label="주요 메뉴"] svg {
    - 모달(z-50)보다 위에서 화면 전체를 덮는다
    - JS 가 실패해도 남지 않도록 3초 뒤 저절로 걷힌다. 대기 시간 동안은 애니메이션이 아무 값도 덮어쓰지 않아
      (fill-mode: forwards), JS 가 data-phase 로 거는 흐려짐이 그대로 보인다
-   - 브라우저 탭에서는 보이지 않는다 — 설치한 앱(standalone·fullscreen)에서만 */
+   - 브라우저 탭에서는 보이지 않는다 — 설치한 앱(standalone·fullscreen)에서만
+   - 앱을 켠 뒤 처음 연 페이지에서만 보인다 (#246) */
 .launch-splash {
     position: fixed;
     inset: 0;
@@ -237,6 +238,11 @@ nav[aria-label="주요 메뉴"] svg {
     .launch-splash {
         display: none;
     }
+}
+/* 이번에 켠 앱에서 이미 보였으면 처음부터 숨긴다 — 새로고침·배포 뒤 이동으로 페이지가 다시 열려도 또 나오지 않게.
+   표시는 <head> 스크립트(src/lib/launchSplash.ts 의 LAUNCH_BOOT_SCRIPT)가 붙인다 (#246) */
+:root[data-splash-seen] .launch-splash {
+    display: none;
 }
 @media (prefers-reduced-motion: reduce) {
     .launch-splash {

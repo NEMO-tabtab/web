@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { SPLASH_FADE_MS, SPLASH_MAX_WAIT_MS, splashRemainingMs } from "@/lib/launchSplash";
+import { SPLASH_FADE_MS, SPLASH_MAX_WAIT_MS, SPLASH_SEEN_ATTR, splashRemainingMs } from "@/lib/launchSplash";
 
 type Phase = "shown" | "leaving" | "gone";
 
@@ -14,7 +14,9 @@ type Phase = "shown" | "leaving" | "gone";
  *
  * - 설치한 앱에서만 보인다. 브라우저 탭에서는 CSS(`display-mode: browser`)가 숨기고, 여기서도 바로 뺀다.
  * - JS 가 실패해도 남지 않도록 CSS 애니메이션이 3초 뒤 저절로 걷는다(globals.css 의 `.launch-splash`).
- * - 루트 레이아웃에 있어서 화면을 옮겨도 다시 나오지 않는다 — 앱을 처음 열 때만이다.
+ * - 앱을 켠 뒤 처음 연 페이지에서만 보인다(#246). 화면을 옮길 때는 루트 레이아웃이 그대로라 다시 나오지 않고,
+ *   새로고침·배포 뒤 이동처럼 페이지가 통째로 다시 열려도 같은 세션이면 `<head>` 스크립트(LAUNCH_BOOT_SCRIPT)가
+ *   `<html data-splash-seen>` 을 붙여 CSS 가 처음부터 숨긴다. 여기서도 바로 뺀다.
  *
  * 그림은 앱 아이콘(public/images/app-icon-maskable.svg)의 캐릭터 그대로다. Android 로딩 이미지(docs/android/splash/)와
  * 같은 그림·같은 크기여야 넘어갈 때 튀지 않는다. viewBox 를 캐릭터 경계로 잘라 두어 너비가 곧 캐릭터의 폭이다.
@@ -23,7 +25,10 @@ export default function LaunchSplash() {
     const [phase, setPhase] = useState<Phase>("shown");
 
     useEffect(() => {
-        if (window.matchMedia?.("(display-mode: browser)").matches) {
+        if (
+            window.matchMedia?.("(display-mode: browser)").matches ||
+            document.documentElement.hasAttribute(SPLASH_SEEN_ATTR)
+        ) {
             setPhase("gone");
             return;
         }

@@ -7,6 +7,7 @@ import StoragePersist from "./components/StoragePersist";
 import TintProvider from "./components/TintProvider";
 import BottomNavigation from "@/components/common/BottomNavigation";
 import { RegisterQuickMenu } from "@/components/product/RegisterQuickMenu";
+import { LAUNCH_BOOT_SCRIPT } from "@/lib/launchSplash";
 import { TINT_BOOT_SCRIPT } from "@/lib/tint/storage";
 import "./globals.css";
 
@@ -49,11 +50,14 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        // 앱 색(TINT_BOOT_SCRIPT)이 React 보다 먼저 <html> 의 style 과 data-tint 를 바꾼다 — 그 차이는 경고하지 않게 한다
+        // <head> 스크립트가 React 보다 먼저 <html> 의 style·data-tint(앱 색)와 data-splash-seen(로딩 화면)을 바꾼다
+        // — 그 차이는 경고하지 않게 한다
         <html lang="ko" className={`${hand.variable} ${noto.variable} antialiased`} suppressHydrationWarning>
             <head>
                 {/* 지난번에 칠한 앱 색을 첫 화면부터 — 흑백이 잠깐 보였다가 색이 드는 깜빡임을 막는다 */}
                 <script dangerouslySetInnerHTML={{ __html: TINT_BOOT_SCRIPT }} />
+                {/* 이번에 켠 앱에서 로딩 화면을 이미 보였으면 첫 프레임부터 숨긴다 (#246) */}
+                <script dangerouslySetInnerHTML={{ __html: LAUNCH_BOOT_SCRIPT }} />
             </head>
             <body className="font-sans">
 
@@ -81,7 +85,7 @@ export default function RootLayout({
                     </filter>
                 </svg>
 
-                {/* 앱을 켤 때의 로딩 화면 — 서버에서 그려 두어 첫 화면부터 덮는다 */}
+                {/* 앱을 켤 때의 로딩 화면 — 서버에서 그려 두어 첫 화면부터 덮는다. 켠 뒤 처음 연 페이지에서만 보인다 */}
                 <LaunchSplash />
 
                 {/* 좁은 화면은 하단 탭 바, 넓은 화면은 왼쪽 세로 레일.
