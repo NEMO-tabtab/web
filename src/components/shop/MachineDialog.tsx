@@ -38,7 +38,9 @@ export function MachineDialog({ info, onClose }: MachineDialogProps) {
                                     <div className="min-w-0 flex-1">
                                         <div className="flex items-baseline justify-between gap-3">
                                             <p className="break-keep text-sm font-bold">{each.series.name}</p>
-                                            <Price value={each.series.price} size="sm" className="shrink-0" />
+                                            {each.series.price !== undefined && (
+                                                <Price value={each.series.price} size="sm" className="shrink-0" />
+                                            )}
                                         </div>
                                         {each.lastVerifiedAt && (
                                             <p className="mt-1 text-[11px] text-ink-soft">

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { daysSince, describeFloor, isStale, seriesSummary, slotLabel } from "./contents";
 import { sampleLayout, sampleMachines, sampleSeries } from "./sample";
-import type { MachineList } from "./schema";
+import type { MachineList, SeriesList } from "./schema";
 
 const floor = sampleLayout.floors[0];
 
@@ -68,6 +68,23 @@ describe("층의 기기 정보", () => {
             machines: sampleMachines.machines.map((machine) => ({ ...machine, seriesId: "sample-cats" })),
         };
         expect(describeFloor(floor, sameTwice, sampleSeries)[0].seriesNames).toEqual(["예시 고양이 피규어"]);
+    });
+
+    it("한국 가격을 모르는 시리즈는 가격 범위에서 뺀다 — 0원으로 보이지 않는다", () => {
+        const without = (ids: string[]): SeriesList => ({
+            ...sampleSeries,
+            series: sampleSeries.series.map((each) => (ids.includes(each.id) ? { ...each, price: undefined } : each)),
+        });
+        const everyId = sampleSeries.series.map((each) => each.id);
+
+        // 모두 모르면 가격을 적지 않는다. 들어 있는 시리즈 이름은 그대로 나온다
+        const [unknown] = describeFloor(floor, sampleMachines, without(everyId));
+        expect(unknown.priceText).toBeNull();
+        expect(unknown.seriesNames).toEqual(["예시 빵 키링", "예시 고양이 피규어"]);
+
+        // 일부만 모르면 아는 값으로만 적는다
+        const [partly] = describeFloor(floor, sampleMachines, without(["sample-cats"]));
+        expect(partly.priceText).toBe("4,000원");
     });
 
     it("아무것도 모르는 기기는 가격 없이 그렇다고 말한다", () => {

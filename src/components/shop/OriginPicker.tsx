@@ -138,7 +138,9 @@ export function OriginPicker({ open, onClose, onPick }: OriginPickerProps) {
                                         <span className="font-normal text-ink-soft">비어 있거나 아직 몰라요</span>
                                     )}
                                 </span>
-                                {each.series && <Price value={each.series.price} size="sm" className="shrink-0" />}
+                                {each.series?.price !== undefined && (
+                                    <Price value={each.series.price} size="sm" className="shrink-0" />
+                                )}
                             </button>
                         </li>
                     ))}

@@ -54,7 +54,8 @@ export function describeFloor(floor: Floor, machines: MachineList, series: Serie
         });
 
         const filled = tiers.flatMap((each) => (each.series ? [each.series] : []));
-        const prices = filled.map((each) => each.price);
+        // 한국 가격을 모르는 시리즈는 범위를 셀 때 뺀다(#237)
+        const prices = filled.flatMap((each) => (each.price === undefined ? [] : [each.price]));
         const low = Math.min(...prices);
         const high = Math.max(...prices);
 

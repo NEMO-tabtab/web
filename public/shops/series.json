@@ -13,12 +13,31 @@
             "kind": "gacha",
             "releasedAt": "2026-11",
             "lineup": [
-                { "id": "nap", "name": "낮잠" },
-                { "id": "yawn", "name": "하품" },
-                { "id": "stretch", "name": "기지개" },
-                { "id": "loaf", "name": "식빵" },
-                { "id": "knead", "name": "꾹꾹이" },
-                { "id": "moon", "name": "달빛 고양이", "secret": true }
+                {
+                    "id": "nap",
+                    "name": "낮잠"
+                },
+                {
+                    "id": "yawn",
+                    "name": "하품"
+                },
+                {
+                    "id": "stretch",
+                    "name": "기지개"
+                },
+                {
+                    "id": "loaf",
+                    "name": "식빵"
+                },
+                {
+                    "id": "knead",
+                    "name": "꾹꾹이"
+                },
+                {
+                    "id": "moon",
+                    "name": "달빛 고양이",
+                    "secret": true
+                }
             ],
             "sources": ["(예시) 공식 페이지 주소나 '홍대 ○○샵 대지'처럼 확인한 곳을 적는다"],
             "checkedAt": "2026-11-23"
@@ -30,25 +49,4856 @@
             "titleId": "nemo-original",
             "kind": "gacha",
             "lineup": [
-                { "id": "croissant", "name": "크루아상" },
-                { "id": "melon", "name": "멜론빵" },
-                { "id": "baguette", "name": "바게트" },
-                { "id": "gold", "name": "황금 크루아상", "secret": true, "odds": 0.0417 }
+                {
+                    "id": "croissant",
+                    "name": "크루아상"
+                },
+                {
+                    "id": "melon",
+                    "name": "멜론빵"
+                },
+                {
+                    "id": "baguette",
+                    "name": "바게트"
+                },
+                {
+                    "id": "gold",
+                    "name": "황금 크루아상",
+                    "secret": true,
+                    "odds": 0.0417
+                }
             ]
         },
-        { "id": "virtual-chairs", "name": "(예시) 미니 의자 컬렉션", "price": 3000 },
-        { "id": "virtual-fish", "name": "(예시) 심해어 마스코트", "price": 5000 },
-        { "id": "virtual-signs", "name": "(예시) 골목 간판 미니어처", "price": 4000 },
-        { "id": "virtual-umbrellas", "name": "(예시) 비 오는 날 우산 참", "price": 3000 },
-        { "id": "virtual-bento", "name": "(예시) 한입 도시락 미니어처", "price": 4000 },
-        { "id": "virtual-frogs", "name": "(예시) 개구리 합창단", "price": 3000 },
-        { "id": "virtual-trams", "name": "(예시) 꼬마 전차 컬렉션", "price": 5000 },
-        { "id": "virtual-plants", "name": "(예시) 창가 화분 마스코트", "price": 3000 },
-        { "id": "virtual-ghosts", "name": "(예시) 수줍은 유령 키링", "price": 4000 },
-        { "id": "virtual-cameras", "name": "(예시) 필름 카메라 미니어처", "price": 5000 },
-        { "id": "virtual-sushi", "name": "(예시) 회전 초밥 자석", "price": 3000 },
-        { "id": "virtual-moons", "name": "(예시) 달 토끼 피규어", "price": 4000 },
-        { "id": "virtual-tools", "name": "(예시) 손바닥 공구함", "price": 6000 },
-        { "id": "virtual-socks", "name": "(예시) 짝짝이 양말 키링", "price": 2000 }
+        {
+            "id": "virtual-chairs",
+            "name": "(예시) 미니 의자 컬렉션",
+            "price": 3000
+        },
+        {
+            "id": "virtual-fish",
+            "name": "(예시) 심해어 마스코트",
+            "price": 5000
+        },
+        {
+            "id": "virtual-signs",
+            "name": "(예시) 골목 간판 미니어처",
+            "price": 4000
+        },
+        {
+            "id": "virtual-umbrellas",
+            "name": "(예시) 비 오는 날 우산 참",
+            "price": 3000
+        },
+        {
+            "id": "virtual-bento",
+            "name": "(예시) 한입 도시락 미니어처",
+            "price": 4000
+        },
+        {
+            "id": "virtual-frogs",
+            "name": "(예시) 개구리 합창단",
+            "price": 3000
+        },
+        {
+            "id": "virtual-trams",
+            "name": "(예시) 꼬마 전차 컬렉션",
+            "price": 5000
+        },
+        {
+            "id": "virtual-plants",
+            "name": "(예시) 창가 화분 마스코트",
+            "price": 3000
+        },
+        {
+            "id": "virtual-ghosts",
+            "name": "(예시) 수줍은 유령 키링",
+            "price": 4000
+        },
+        {
+            "id": "virtual-cameras",
+            "name": "(예시) 필름 카메라 미니어처",
+            "price": 5000
+        },
+        {
+            "id": "virtual-sushi",
+            "name": "(예시) 회전 초밥 자석",
+            "price": 3000
+        },
+        {
+            "id": "virtual-moons",
+            "name": "(예시) 달 토끼 피규어",
+            "price": 4000
+        },
+        {
+            "id": "virtual-tools",
+            "name": "(예시) 손바닥 공구함",
+            "price": 6000
+        },
+        {
+            "id": "virtual-socks",
+            "name": "(예시) 짝짝이 양말 키링",
+            "price": 2000
+        },
+        {
+            "id": "smiski-bath",
+            "name": "스미스키 욕실",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Bath Series", "スミスキー バス シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "shampooing",
+                    "name": "머리 감는 스미스키"
+                },
+                {
+                    "id": "shy",
+                    "name": "수줍어하는 스미스키"
+                },
+                {
+                    "id": "washing-each-other",
+                    "name": "서로 씻겨 주는 스미스키"
+                },
+                {
+                    "id": "with-duck",
+                    "name": "오리를 든 스미스키"
+                },
+                {
+                    "id": "dazed",
+                    "name": "더위 먹은 스미스키"
+                },
+                {
+                    "id": "looking",
+                    "name": "엿보는 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/products/bath-series/",
+                "https://www.sonnyangelstore.com/collections/smiski?page=2",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-bed",
+            "name": "스미스키 베드",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Bed Series", "スミスキー ベッド シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "before-rest",
+                    "name": "자기 전 스미스키"
+                },
+                {
+                    "id": "sleepy",
+                    "name": "졸린 스미스키"
+                },
+                {
+                    "id": "co-sleeping",
+                    "name": "같이 자는 스미스키"
+                },
+                {
+                    "id": "reading",
+                    "name": "책 읽는 스미스키"
+                },
+                {
+                    "id": "at-sleep",
+                    "name": "잠든 스미스키"
+                },
+                {
+                    "id": "fussing",
+                    "name": "칭얼대는 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/bed-series/",
+                "https://www.sonnyangelstore.com/collections/smiski",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-dressing",
+            "name": "스미스키 드레싱",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Dressing Series", "スミスキー ドレッシング シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "underpants",
+                    "name": "속옷 입는 스미스키"
+                },
+                {
+                    "id": "struggling",
+                    "name": "스웨터에 낀 스미스키"
+                },
+                {
+                    "id": "loose-pants",
+                    "name": "헐렁한 바지 스미스키"
+                },
+                {
+                    "id": "putting-on-socks",
+                    "name": "양말 신는 스미스키"
+                },
+                {
+                    "id": "sweater",
+                    "name": "스웨터 입는 스미스키"
+                },
+                {
+                    "id": "tight-pants",
+                    "name": "꽉 끼는 바지 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/dressing-series/",
+                "https://www.sonnyangelstore.com/collections/smiski?page=2",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-exercising",
+            "name": "스미스키 운동",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Exercising", "スミスキー エクササイジング シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "doing-crunches",
+                    "name": "윗몸 일으키기 스미스키"
+                },
+                {
+                    "id": "aerobics",
+                    "name": "에어로빅 스미스키"
+                },
+                {
+                    "id": "little-balance",
+                    "name": "밸런스볼 꼬마 스미스키"
+                },
+                {
+                    "id": "dumbbell",
+                    "name": "덤벨 스미스키"
+                },
+                {
+                    "id": "hoop",
+                    "name": "훌라후프 스미스키"
+                },
+                {
+                    "id": "stretch",
+                    "name": "스트레칭 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/exercising-series/",
+                "https://www.sonnyangelstore.com/collections/smiski",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-living",
+            "name": "스미스키 리빙",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Living Series", "スミスキー リビング シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "daydreaming",
+                    "name": "멍하니 있는 스미스키"
+                },
+                {
+                    "id": "playing",
+                    "name": "피리 부는 스미스키"
+                },
+                {
+                    "id": "hiding",
+                    "name": "숨는 스미스키"
+                },
+                {
+                    "id": "nap-time",
+                    "name": "낮잠 자는 스미스키"
+                },
+                {
+                    "id": "thinking",
+                    "name": "생각하는 스미스키"
+                },
+                {
+                    "id": "lifting",
+                    "name": "들어 올리는 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/living/",
+                "https://www.sonnyangelstore.com/collections/smiski",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-museum",
+            "name": "스미스키 뮤지엄",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Museum Series", "スミスキー ミュージアム シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "the-source",
+                    "name": "샘 스미스키"
+                },
+                {
+                    "id": "fuzin-raijin",
+                    "name": "풍신뇌신 스미스키"
+                },
+                {
+                    "id": "bacchus",
+                    "name": "바쿠스 스미스키"
+                },
+                {
+                    "id": "velazquez",
+                    "name": "벨라스케스 스미스키"
+                },
+                {
+                    "id": "dali",
+                    "name": "달리 스미스키"
+                },
+                {
+                    "id": "pearl-earring",
+                    "name": "진주 귀걸이 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/museumseries/",
+                "https://www.sonnyangelstore.com/collections/smiski?page=2",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-series-1",
+            "name": "스미스키 시리즈 1",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Series 1", "スミスキー シリーズ 1"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "hugging-knees",
+                    "name": "무릎 안은 스미스키"
+                },
+                {
+                    "id": "sitting",
+                    "name": "앉아 있는 스미스키"
+                },
+                {
+                    "id": "looking-back",
+                    "name": "뒤돌아보는 스미스키"
+                },
+                {
+                    "id": "lounging",
+                    "name": "뒹구는 스미스키"
+                },
+                {
+                    "id": "hiding",
+                    "name": "숨는 스미스키"
+                },
+                {
+                    "id": "peeking",
+                    "name": "엿보는 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/series-1/",
+                "https://www.sonnyangelstore.com/collections/smiski",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-series-2",
+            "name": "스미스키 시리즈 2",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Series 2", "SMISKI SERIES2 スミスキーシリーズ2"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "kneeling",
+                    "name": "무릎 꿇은 스미스키"
+                },
+                {
+                    "id": "climbing",
+                    "name": "기어오르는 스미스키"
+                },
+                {
+                    "id": "daydreaming",
+                    "name": "멍하니 있는 스미스키"
+                },
+                {
+                    "id": "pushing",
+                    "name": "미는 스미스키"
+                },
+                {
+                    "id": "peeking",
+                    "name": "다리 사이로 엿보는 스미스키"
+                },
+                {
+                    "id": "listening",
+                    "name": "벽에 귀 대는 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/series-2/",
+                "https://www.sonnyangelstore.com/collections/smiski",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-toilet",
+            "name": "스미스키 화장실",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Toilet Series", "スミスキー トイレ シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "peek-a-boo",
+                    "name": "까꿍 스미스키"
+                },
+                {
+                    "id": "little-smelly",
+                    "name": "코 막은 꼬마 스미스키"
+                },
+                {
+                    "id": "squatting",
+                    "name": "쪼그려 앉은 스미스키"
+                },
+                {
+                    "id": "helping-out",
+                    "name": "휴지 건네는 스미스키"
+                },
+                {
+                    "id": "resting",
+                    "name": "앉아 쉬는 스미스키"
+                },
+                {
+                    "id": "holding-in",
+                    "name": "참는 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/toilet-series/",
+                "https://www.sonnyangelstore.com/collections/smiski?page=2",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-work",
+            "name": "스미스키 워크",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI @Work", "スミスキー アットワーク シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "approving",
+                    "name": "칭찬하는 스미스키"
+                },
+                {
+                    "id": "researching",
+                    "name": "검색하는 스미스키"
+                },
+                {
+                    "id": "presenting",
+                    "name": "발표하는 스미스키"
+                },
+                {
+                    "id": "good-idea",
+                    "name": "좋은 생각이 난 스미스키"
+                },
+                {
+                    "id": "on-the-road",
+                    "name": "출근하는 스미스키"
+                },
+                {
+                    "id": "little-group-think",
+                    "name": "회의하는 꼬마 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/work-series/",
+                "https://www.sonnyangelstore.com/collections/smiski",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "smiski-yoga",
+            "name": "스미스키 요가",
+            "priceJpy": 1210,
+            "titleId": "smiski",
+            "aliases": ["SMISKI Yoga Series", "スミスキー ヨガ シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "lotus-pose",
+                    "name": "연꽃 자세 스미스키"
+                },
+                {
+                    "id": "twist-pose",
+                    "name": "비틀기 자세 스미스키"
+                },
+                {
+                    "id": "shoulderstand-pose",
+                    "name": "어깨서기 자세 스미스키"
+                },
+                {
+                    "id": "triangle-pose",
+                    "name": "삼각 자세 스미스키"
+                },
+                {
+                    "id": "tree-pose",
+                    "name": "나무 자세 스미스키"
+                },
+                {
+                    "id": "ship-pose",
+                    "name": "배 자세 스미스키"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://smiski.com/e/products/yoga-series/",
+                "https://www.sonnyangelstore.com/collections/smiski?page=2",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=215",
+                "https://en.wikipedia.org/wiki/Smiski"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-animal-1",
+            "name": "소니엔젤 애니멀 1",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Animal Series 1", "アニマル シリーズ 1"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "rabbit",
+                    "name": "토끼"
+                },
+                {
+                    "id": "elephant",
+                    "name": "코끼리"
+                },
+                {
+                    "id": "panda",
+                    "name": "판다"
+                },
+                {
+                    "id": "sloth",
+                    "name": "나무늘보"
+                },
+                {
+                    "id": "tiger",
+                    "name": "호랑이"
+                },
+                {
+                    "id": "white-bear",
+                    "name": "백곰"
+                },
+                {
+                    "id": "cockerel",
+                    "name": "수탉"
+                },
+                {
+                    "id": "dalmatian",
+                    "name": "달마시안"
+                },
+                {
+                    "id": "frog",
+                    "name": "개구리"
+                },
+                {
+                    "id": "koala",
+                    "name": "코알라"
+                },
+                {
+                    "id": "monkey",
+                    "name": "원숭이"
+                },
+                {
+                    "id": "owl",
+                    "name": "부엉이"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-animal-2",
+            "name": "소니엔젤 애니멀 2",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Animal Series 2", "アニマル シリーズ 2"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "mouse",
+                    "name": "생쥐"
+                },
+                {
+                    "id": "lesser-panda",
+                    "name": "레서판다"
+                },
+                {
+                    "id": "hedgehog",
+                    "name": "고슴도치"
+                },
+                {
+                    "id": "fawn",
+                    "name": "아기 사슴"
+                },
+                {
+                    "id": "duck",
+                    "name": "오리"
+                },
+                {
+                    "id": "cow",
+                    "name": "젖소"
+                },
+                {
+                    "id": "chameleon",
+                    "name": "카멜레온"
+                },
+                {
+                    "id": "uribou",
+                    "name": "아기 멧돼지"
+                },
+                {
+                    "id": "skunk",
+                    "name": "스컹크"
+                },
+                {
+                    "id": "sheep",
+                    "name": "양"
+                },
+                {
+                    "id": "reindeer",
+                    "name": "순록"
+                },
+                {
+                    "id": "pig",
+                    "name": "돼지"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-animal-3",
+            "name": "소니엔젤 애니멀 3",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Animal Series 3", "アニマル シリーズ 3"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "parrot",
+                    "name": "앵무새"
+                },
+                {
+                    "id": "rhinoceros",
+                    "name": "코뿔소"
+                },
+                {
+                    "id": "snake",
+                    "name": "뱀"
+                },
+                {
+                    "id": "toy-poodle",
+                    "name": "토이푸들"
+                },
+                {
+                    "id": "zebra",
+                    "name": "얼룩말"
+                },
+                {
+                    "id": "american-short-hair",
+                    "name": "아메리칸 쇼트헤어"
+                },
+                {
+                    "id": "chihuahua",
+                    "name": "치와와"
+                },
+                {
+                    "id": "crocodile",
+                    "name": "악어"
+                },
+                {
+                    "id": "french-bulldog",
+                    "name": "프렌치 불독"
+                },
+                {
+                    "id": "giraffe",
+                    "name": "기린"
+                },
+                {
+                    "id": "lop-ear-rabbit",
+                    "name": "롭이어 토끼"
+                },
+                {
+                    "id": "macaw",
+                    "name": "마코 앵무"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-animal-4",
+            "name": "소니엔젤 애니멀 4",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Animal Series 4", "アニマル シリーズ 4"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "hippopotamus",
+                    "name": "하마"
+                },
+                {
+                    "id": "horse",
+                    "name": "말"
+                },
+                {
+                    "id": "lion",
+                    "name": "사자"
+                },
+                {
+                    "id": "peacock",
+                    "name": "공작"
+                },
+                {
+                    "id": "shiba-inu",
+                    "name": "시바견"
+                },
+                {
+                    "id": "alpaca",
+                    "name": "알파카"
+                },
+                {
+                    "id": "anteater",
+                    "name": "개미핥기"
+                },
+                {
+                    "id": "buffalo",
+                    "name": "버팔로"
+                },
+                {
+                    "id": "calico-cat",
+                    "name": "삼색 고양이"
+                },
+                {
+                    "id": "cheetah",
+                    "name": "치타"
+                },
+                {
+                    "id": "goat",
+                    "name": "염소"
+                },
+                {
+                    "id": "gorilla",
+                    "name": "고릴라"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-cat-christmas",
+            "name": "소니엔젤 캣 크리스마스",
+            "priceJpy": 1540,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Cat Christmas Series", "Sonny Angel キャット クリスマス シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "calico",
+                    "name": "삼색 고양이"
+                },
+                {
+                    "id": "white",
+                    "name": "흰 고양이"
+                },
+                {
+                    "id": "black",
+                    "name": "검은 고양이"
+                },
+                {
+                    "id": "red-tabby",
+                    "name": "레드 태비"
+                },
+                {
+                    "id": "tuxedo",
+                    "name": "턱시도"
+                },
+                {
+                    "id": "siamese",
+                    "name": "샴"
+                },
+                {
+                    "id": "secret-silver-tabby",
+                    "name": "실버 태비 (시크릿)",
+                    "secret": true
+                },
+                {
+                    "id": "secret-tortoiseshell-robby-angel",
+                    "name": "토터셸 로비엔젤 (시크릿)",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/2026/11/04/sonny-angel-cat-christmas-series/",
+                "https://www.sonnyangel.com/renewal/en/products/mini-figure-limited/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-limited-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-flower",
+            "name": "소니엔젤 플라워",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Flower Series", "フラワー シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "rose",
+                    "name": "장미"
+                },
+                {
+                    "id": "cherry-blossom",
+                    "name": "벚꽃"
+                },
+                {
+                    "id": "poppy",
+                    "name": "양귀비"
+                },
+                {
+                    "id": "sunflower",
+                    "name": "해바라기"
+                },
+                {
+                    "id": "cactus",
+                    "name": "선인장"
+                },
+                {
+                    "id": "morning-glory",
+                    "name": "나팔꽃"
+                },
+                {
+                    "id": "lily-bell",
+                    "name": "은방울꽃"
+                },
+                {
+                    "id": "hydrangea",
+                    "name": "수국"
+                },
+                {
+                    "id": "pansy",
+                    "name": "팬지"
+                },
+                {
+                    "id": "carnation",
+                    "name": "카네이션"
+                },
+                {
+                    "id": "acorn",
+                    "name": "도토리"
+                },
+                {
+                    "id": "tulip",
+                    "name": "튤립"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-fruit",
+            "name": "소니엔젤 과일",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Fruit Series", "フルーツ シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "raspberry",
+                    "name": "라즈베리"
+                },
+                {
+                    "id": "peach",
+                    "name": "복숭아"
+                },
+                {
+                    "id": "orange",
+                    "name": "오렌지"
+                },
+                {
+                    "id": "pear",
+                    "name": "배"
+                },
+                {
+                    "id": "strawberry",
+                    "name": "딸기"
+                },
+                {
+                    "id": "grape",
+                    "name": "포도"
+                },
+                {
+                    "id": "watermelon",
+                    "name": "수박"
+                },
+                {
+                    "id": "melon",
+                    "name": "멜론"
+                },
+                {
+                    "id": "durian",
+                    "name": "두리안"
+                },
+                {
+                    "id": "dragon-fruit",
+                    "name": "용과"
+                },
+                {
+                    "id": "pineapple",
+                    "name": "파인애플"
+                },
+                {
+                    "id": "apple",
+                    "name": "사과"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-hippers-cherry-blossom",
+            "name": "소니엔젤 히퍼 체리블라썸",
+            "priceJpy": 1430,
+            "titleId": "sonny-angel",
+            "aliases": [
+                "Sonny Angel HIPPERS Cherry Blossom Series",
+                "Sonny Angel ヒッパーズ チェリーブロッサム シリーズ"
+            ],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "releasedAt": "2026-03",
+            "lineup": [
+                {
+                    "id": "fawn",
+                    "name": "아기 사슴"
+                },
+                {
+                    "id": "dalmatian",
+                    "name": "달마시안"
+                },
+                {
+                    "id": "peacock",
+                    "name": "공작"
+                },
+                {
+                    "id": "monkey",
+                    "name": "원숭이"
+                },
+                {
+                    "id": "rabbit",
+                    "name": "토끼"
+                },
+                {
+                    "id": "shiba-inu",
+                    "name": "시바견"
+                },
+                {
+                    "id": "duck",
+                    "name": "오리"
+                },
+                {
+                    "id": "reindeer",
+                    "name": "순록"
+                },
+                {
+                    "id": "frog",
+                    "name": "개구리"
+                },
+                {
+                    "id": "sheep",
+                    "name": "양"
+                },
+                {
+                    "id": "goat",
+                    "name": "염소"
+                },
+                {
+                    "id": "cat",
+                    "name": "고양이"
+                },
+                {
+                    "id": "secret-honey-bee",
+                    "name": "꿀벌 (시크릿)",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/2026/02/26/sonny-angel-hippers-cherry-blossom-series/",
+                "https://www.sonnyangel.com/renewal/ko/products/mini-figure-hippers/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-limited-series"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-hippers-looking-back",
+            "name": "소니엔젤 히퍼 루킹백",
+            "priceJpy": 1430,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel HIPPERS Looking Back Series", "Sonny Angel ヒッパーズ ルッキングバックシリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "monkey",
+                    "name": "원숭이"
+                },
+                {
+                    "id": "rabbit",
+                    "name": "토끼"
+                },
+                {
+                    "id": "fawn",
+                    "name": "아기 사슴"
+                },
+                {
+                    "id": "duck",
+                    "name": "오리"
+                },
+                {
+                    "id": "crocodile",
+                    "name": "악어"
+                },
+                {
+                    "id": "mouse",
+                    "name": "생쥐"
+                },
+                {
+                    "id": "sloth",
+                    "name": "나무늘보"
+                },
+                {
+                    "id": "hamster",
+                    "name": "햄스터"
+                },
+                {
+                    "id": "cat",
+                    "name": "고양이"
+                },
+                {
+                    "id": "koala",
+                    "name": "코알라"
+                },
+                {
+                    "id": "elephant",
+                    "name": "코끼리"
+                },
+                {
+                    "id": "french-bulldog",
+                    "name": "프렌치 불독"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/renewal/ko/products/mini-figure-hippers/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-limited-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-marine",
+            "name": "소니엔젤 마린",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Marine Series", "マリン シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "shark",
+                    "name": "상어"
+                },
+                {
+                    "id": "jellyfish",
+                    "name": "해파리"
+                },
+                {
+                    "id": "dolphin",
+                    "name": "돌고래"
+                },
+                {
+                    "id": "seal",
+                    "name": "물개"
+                },
+                {
+                    "id": "seahorse",
+                    "name": "해마"
+                },
+                {
+                    "id": "whale",
+                    "name": "고래"
+                },
+                {
+                    "id": "clownfish",
+                    "name": "흰동가리"
+                },
+                {
+                    "id": "shell",
+                    "name": "조개"
+                },
+                {
+                    "id": "penguin",
+                    "name": "펭귄"
+                },
+                {
+                    "id": "manta",
+                    "name": "만타가오리"
+                },
+                {
+                    "id": "blowfish",
+                    "name": "복어"
+                },
+                {
+                    "id": "starfish",
+                    "name": "불가사리"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-snack",
+            "name": "소니엔젤 스낵",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Snack Series", "スナック シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "hamburger",
+                    "name": "햄버거"
+                },
+                {
+                    "id": "sandwich",
+                    "name": "샌드위치"
+                },
+                {
+                    "id": "french-fries",
+                    "name": "감자튀김"
+                },
+                {
+                    "id": "ketchup",
+                    "name": "케첩"
+                },
+                {
+                    "id": "mustard",
+                    "name": "머스터드"
+                },
+                {
+                    "id": "milkshake",
+                    "name": "밀크셰이크"
+                },
+                {
+                    "id": "coffee",
+                    "name": "커피"
+                },
+                {
+                    "id": "sugar",
+                    "name": "설탕"
+                },
+                {
+                    "id": "donut",
+                    "name": "도넛"
+                },
+                {
+                    "id": "hot-dog",
+                    "name": "핫도그"
+                },
+                {
+                    "id": "fried-chicken",
+                    "name": "프라이드 치킨"
+                },
+                {
+                    "id": "fried-chicken-sandwich",
+                    "name": "치킨 샌드위치"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-summer-vacation-sun-kissed-style",
+            "name": "소니엔젤 썸머 베케이션 선키스드 스타일",
+            "priceJpy": 1540,
+            "titleId": "sonny-angel",
+            "aliases": [
+                "Sonny Angel Summer Vacation Series Sun-Kissed Style",
+                "サマーバケーション シリーズ サンキッスド スタイル"
+            ],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "releasedAt": "2026-06",
+            "lineup": [
+                {
+                    "id": "rabbit",
+                    "name": "토끼"
+                },
+                {
+                    "id": "manatee",
+                    "name": "매너티"
+                },
+                {
+                    "id": "octopus",
+                    "name": "문어"
+                },
+                {
+                    "id": "pineapple",
+                    "name": "파인애플"
+                },
+                {
+                    "id": "shell",
+                    "name": "조개"
+                },
+                {
+                    "id": "shark",
+                    "name": "상어"
+                },
+                {
+                    "id": "secret-unicorn",
+                    "name": "유니콘 (시크릿)",
+                    "secret": true
+                },
+                {
+                    "id": "secret-flamingo-robby-angel",
+                    "name": "플라밍고 로비엔젤 (시크릿)",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/2026/06/11/sonny-angel-summer-vacation-series-sun-kissed-style/",
+                "https://www.sonnyangel.com/renewal/en/products/mini-figure-limited/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-limited-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-sweets",
+            "name": "소니엔젤 스위츠",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Sweets Series", "スイーツ シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "cream-puff",
+                    "name": "슈크림"
+                },
+                {
+                    "id": "cupcake",
+                    "name": "컵케이크"
+                },
+                {
+                    "id": "fruit-tart",
+                    "name": "과일 타르트"
+                },
+                {
+                    "id": "ice-creams",
+                    "name": "아이스크림"
+                },
+                {
+                    "id": "jelly-beans",
+                    "name": "젤리빈"
+                },
+                {
+                    "id": "konpeito",
+                    "name": "별사탕"
+                },
+                {
+                    "id": "pancake",
+                    "name": "팬케이크"
+                },
+                {
+                    "id": "popcorn",
+                    "name": "팝콘"
+                },
+                {
+                    "id": "pudding",
+                    "name": "푸딩"
+                },
+                {
+                    "id": "candy",
+                    "name": "캔디"
+                },
+                {
+                    "id": "cookie",
+                    "name": "쿠키"
+                },
+                {
+                    "id": "strawberry-shortcake",
+                    "name": "딸기 쇼트케이크"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sonny-angel-vegetable",
+            "name": "소니엔젤 베지터블",
+            "priceJpy": 1210,
+            "titleId": "sonny-angel",
+            "aliases": ["Sonny Angel Mini Figure Vegetable Series", "ベジタブル シリーズ"],
+            "maker": "드림즈",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "carrot",
+                    "name": "당근"
+                },
+                {
+                    "id": "tomato",
+                    "name": "토마토"
+                },
+                {
+                    "id": "garlic",
+                    "name": "마늘"
+                },
+                {
+                    "id": "zucchini",
+                    "name": "주키니"
+                },
+                {
+                    "id": "onion",
+                    "name": "양파"
+                },
+                {
+                    "id": "radish",
+                    "name": "래디시"
+                },
+                {
+                    "id": "green-pepper",
+                    "name": "피망"
+                },
+                {
+                    "id": "eggplant",
+                    "name": "가지"
+                },
+                {
+                    "id": "bok-choy",
+                    "name": "청경채"
+                },
+                {
+                    "id": "corn",
+                    "name": "옥수수"
+                },
+                {
+                    "id": "cauliflower",
+                    "name": "콜리플라워"
+                },
+                {
+                    "id": "cabbage",
+                    "name": "양배추"
+                }
+            ],
+            "sources": [
+                "https://www.sonnyangel.com/en/products/",
+                "https://www.sonnyangelstore.com/collections/mini-figure-regular-series",
+                "http://www.dreamskorea.co.kr/product/list_thumb.html?cate_no=335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "re-ment-my-melody-kuromi-itazura-cosme",
+            "name": "리멘트 마이멜로디·쿠로미 장난꾸러기 코스메",
+            "priceJpy": 1210,
+            "titleId": "re-ment",
+            "aliases": ["My Melody・Kuromi いたずら コスメ"],
+            "maker": "리멘트",
+            "kind": "blindbox",
+            "releasedAt": "2026-02",
+            "lineup": [
+                {
+                    "id": "01-skincare-mirror",
+                    "name": "거울 앞에서 스킨케어"
+                },
+                {
+                    "id": "02-cheek",
+                    "name": "볼에 살포시 블러셔"
+                },
+                {
+                    "id": "03-lip",
+                    "name": "립으로 완벽하게"
+                },
+                {
+                    "id": "04-pink",
+                    "name": "핑크가 딱이지?"
+                },
+                {
+                    "id": "05-hair-arrange",
+                    "name": "헤어 스타일로 기분 전환"
+                },
+                {
+                    "id": "06-pouch",
+                    "name": "외출 파우치로 준비 완료"
+                },
+                {
+                    "id": "07-eye",
+                    "name": "또렷한 눈으로 대변신"
+                },
+                {
+                    "id": "08-fragrance",
+                    "name": "좋아하는 향으로 릴랙스"
+                }
+            ],
+            "sources": ["https://dengekionline.com/article/202511/59129"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "re-ment-pokemon-desq-relaxing-home",
+            "name": "리멘트 포켓몬 DesQ 릴랙싱 홈",
+            "priceJpy": 1430,
+            "titleId": "re-ment",
+            "aliases": ["ポケットモンスター DesQ Relaxing Home！"],
+            "maker": "리멘트",
+            "kind": "blindbox",
+            "releasedAt": "2026-02",
+            "lineup": [
+                {
+                    "id": "pichu",
+                    "name": "피츄"
+                },
+                {
+                    "id": "eevee",
+                    "name": "이브이"
+                },
+                {
+                    "id": "skitty",
+                    "name": "에나비"
+                },
+                {
+                    "id": "minccino",
+                    "name": "치라미"
+                },
+                {
+                    "id": "yamper",
+                    "name": "멍파치"
+                },
+                {
+                    "id": "fidough",
+                    "name": "쫀도기"
+                }
+            ],
+            "sources": ["https://dengekionline.com/article/202512/59376"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "re-ment-snoopy-mono-kitchen",
+            "name": "리멘트 스누피 모노 키친",
+            "titleId": "re-ment",
+            "aliases": ["スヌーピー Snoopy's MONO KITCHEN"],
+            "maker": "리멘트",
+            "kind": "blindbox",
+            "releasedAt": "2026-03",
+            "lineup": [
+                {
+                    "id": "01-breakfast",
+                    "name": "몸이 따뜻해지는 아침밥"
+                },
+                {
+                    "id": "02-spice-rack",
+                    "name": "스파이스 랙으로 깔끔하게"
+                },
+                {
+                    "id": "03-fresh-vegetables",
+                    "name": "신선한 채소"
+                },
+                {
+                    "id": "04-tomato-soup",
+                    "name": "푹 끓인 토마토 수프"
+                },
+                {
+                    "id": "05-storage-rack",
+                    "name": "수납은 랙에 맡겨요"
+                },
+                {
+                    "id": "06-oven-cooking",
+                    "name": "간단한 오븐 요리"
+                },
+                {
+                    "id": "07-holiday",
+                    "name": "휴일의 즐거움"
+                },
+                {
+                    "id": "08-coffee",
+                    "name": "커피로 한숨 돌리기"
+                }
+            ],
+            "sources": ["https://dengekionline.com/article/202512/61808"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sylvanian-families-baby-adventure",
+            "name": "실바니안 패밀리 아기 어드벤처 시리즈",
+            "titleId": "sylvanian-families",
+            "aliases": ["シルバニアファミリー 赤ちゃんアドベンチャーシリーズ"],
+            "maker": "에포크",
+            "kind": "blindbox",
+            "releasedAt": "2026-04",
+            "lineup": [
+                {
+                    "id": "tiger-baby-cowboy-hat",
+                    "name": "호랑이 아기와 카우보이 모자"
+                },
+                {
+                    "id": "chocolate-rabbit-baby-tiara",
+                    "name": "쇼콜라 토끼 아기 (티아라)"
+                },
+                {
+                    "id": "latte-cat-small-baby-helmet-trolley",
+                    "name": "라테 고양이 작은 아기와 헬멧·광차"
+                },
+                {
+                    "id": "seal-baby-crocodile-hood",
+                    "name": "물범 아기(기는 자세)와 악어 탈"
+                },
+                {
+                    "id": "panda-small-baby-bandage-costume",
+                    "name": "판다 작은 아기와 붕대 코스튬"
+                },
+                {
+                    "id": "husky-baby-pickaxe",
+                    "name": "허스키 아기와 곡괭이"
+                },
+                {
+                    "id": "milk-rabbit-small-baby-cactus-costume",
+                    "name": "밀크 토끼 작은 아기와 선인장 코스튬"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://dengekionline.com/article/202604/72640"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sylvanian-families-baby-cake-party",
+            "name": "실바니안 패밀리 아기 케이크 파티 시리즈",
+            "titleId": "sylvanian-families",
+            "aliases": [
+                "シルバニアファミリー 赤ちゃんコレクション -赤ちゃんケーキパーティーシリーズ-",
+                "Baking Baby Party Series"
+            ],
+            "maker": "에포크",
+            "kind": "blindbox",
+            "releasedAt": "2024-04",
+            "lineup": [
+                {
+                    "id": "latte-cat-baby-fork-stick",
+                    "name": "라테 고양이 아기와 포크 지팡이"
+                },
+                {
+                    "id": "latte-cat-small-baby-cream-hat",
+                    "name": "라테 고양이 작은 아기와 크림 모자"
+                },
+                {
+                    "id": "walnut-squirrel-baby-cake-hat",
+                    "name": "호두 다람쥐 아기(기는 자세)와 케이크 모자"
+                },
+                {
+                    "id": "chocolate-rabbit-small-baby-roll-cake-car",
+                    "name": "쇼콜라 토끼 작은 아기와 롤케이크 자동차"
+                },
+                {
+                    "id": "alpaca-baby-cupcake-hat",
+                    "name": "알파카 아기(기는 자세)와 컵케이크 모자"
+                },
+                {
+                    "id": "milk-rabbit-baby-pot-hat",
+                    "name": "밀크 토끼 아기와 포트 모자"
+                },
+                {
+                    "id": "striped-cat-baby-cup-hat",
+                    "name": "줄무늬 고양이 아기(앉은 자세)와 컵 모자"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://dengekionline.com/article/202404/1877",
+                "https://otakupopmall.com/blogs/news/complete-guide-sylvanian-families-baby-blind-bags"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "crybaby-crying-for-love",
+            "name": "크라이베이비 사랑의 눈물 시리즈",
+            "titleId": "crybaby",
+            "aliases": ["Crying For Love Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "red-rose-of-love",
+                    "name": "붉은 사랑의 장미"
+                },
+                {
+                    "id": "locked-heart",
+                    "name": "굳게 잠긴 마음"
+                },
+                {
+                    "id": "wounded-love",
+                    "name": "상처받은 사랑"
+                },
+                {
+                    "id": "heart-thief",
+                    "name": "마음을 훔치는 도둑"
+                },
+                {
+                    "id": "sweet-us",
+                    "name": "달콤한 우리"
+                },
+                {
+                    "id": "cat-like-lover",
+                    "name": "고양이 같은 연인"
+                },
+                {
+                    "id": "puppy-like-lover",
+                    "name": "강아지 같은 연인"
+                },
+                {
+                    "id": "foolish-cupid",
+                    "name": "어리석은 큐피드"
+                },
+                {
+                    "id": "sweet-treasure",
+                    "name": "달콤한 보물"
+                },
+                {
+                    "id": "wishing-bottle",
+                    "name": "진심을 담은 소원 병"
+                },
+                {
+                    "id": "devils-kiss",
+                    "name": "악마의 키스"
+                },
+                {
+                    "id": "angels-kiss",
+                    "name": "천사의 키스"
+                },
+                {
+                    "id": "pink-rose-of-love",
+                    "name": "분홍빛 사랑의 장미",
+                    "secret": true
+                },
+                {
+                    "id": "true-love-box",
+                    "name": "진정한 사랑의 상자",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://namu.wiki/w/%ED%81%AC%EB%9D%BC%EC%9D%B4%EB%B2%A0%EC%9D%B4%EB%B9%84%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "crybaby-leopard-cat",
+            "name": "크라이베이비 표범 냥이 시리즈",
+            "titleId": "crybaby",
+            "aliases": ["Leopard Cat Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "pink-cat",
+                    "name": "핑크 냥이"
+                },
+                {
+                    "id": "vanilla-cat",
+                    "name": "바닐라 냥이"
+                },
+                {
+                    "id": "neon-cat",
+                    "name": "네온 냥이"
+                },
+                {
+                    "id": "denim-cat",
+                    "name": "데님 냥이"
+                },
+                {
+                    "id": "camo-cat",
+                    "name": "카모 냥이"
+                },
+                {
+                    "id": "vintage-cat",
+                    "name": "빈티지 냥이"
+                },
+                {
+                    "id": "wild-cat",
+                    "name": "와일드 냥이",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://namu.wiki/w/%ED%81%AC%EB%9D%BC%EC%9D%B4%EB%B2%A0%EC%9D%B4%EB%B9%84%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "crybaby-powerpuff-girls",
+            "name": "크라이베이비 x 파워퍼프걸 시리즈",
+            "titleId": "crybaby",
+            "aliases": ["CRYBABY × Powerpuff Girls Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "bubbles",
+                    "name": "버블"
+                },
+                {
+                    "id": "blossom",
+                    "name": "블로섬"
+                },
+                {
+                    "id": "buttercup",
+                    "name": "버터컵"
+                },
+                {
+                    "id": "bunny-bubbles",
+                    "name": "토끼 버블"
+                },
+                {
+                    "id": "bunny-blossom",
+                    "name": "토끼 블로섬"
+                },
+                {
+                    "id": "bunny-buttercup",
+                    "name": "토끼 버터컵"
+                },
+                {
+                    "id": "bedtime-bubbles",
+                    "name": "잘 시간이야 버블"
+                },
+                {
+                    "id": "brushing-blossom",
+                    "name": "양치중인 블로섬"
+                },
+                {
+                    "id": "sleepy-buttercup",
+                    "name": "졸린 버터컵"
+                },
+                {
+                    "id": "mojo-jojo",
+                    "name": "모조조조"
+                },
+                {
+                    "id": "professor",
+                    "name": "교수님"
+                },
+                {
+                    "id": "mayor",
+                    "name": "시장"
+                },
+                {
+                    "id": "princess-morbucks",
+                    "name": "프린세스 모어벅스",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://namu.wiki/w/%ED%81%AC%EB%9D%BC%EC%9D%B4%EB%B2%A0%EC%9D%B4%EB%B9%84%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "dimoo-animal-kingdom",
+            "name": "디무 동물의 왕국 시리즈",
+            "titleId": "dimoo",
+            "aliases": ["DIMOO Animal Kingdom Series (Figures)"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "duckling-leader",
+                    "name": "날 따라와 오리"
+                },
+                {
+                    "id": "sleeping-bunny",
+                    "name": "노곤노곤 토끼"
+                },
+                {
+                    "id": "warm-polar-bear",
+                    "name": "포근한 북극곰"
+                },
+                {
+                    "id": "taichi-panda",
+                    "name": "태극권 판다"
+                },
+                {
+                    "id": "bear-dad",
+                    "name": "듬직한 곰돌이"
+                },
+                {
+                    "id": "baby-elephant-bubble",
+                    "name": "방울방울 아기 코끼리"
+                },
+                {
+                    "id": "foodie-giraffe",
+                    "name": "냠냠 기린"
+                },
+                {
+                    "id": "penguin-tango",
+                    "name": "펭귄 탱고"
+                },
+                {
+                    "id": "crocodile-cleaner",
+                    "name": "치카치카 악어"
+                },
+                {
+                    "id": "red-panda-with-apple",
+                    "name": "빨강사과 레서판다"
+                },
+                {
+                    "id": "tigers-learn-to-walk",
+                    "name": "아장아장 호랑이"
+                },
+                {
+                    "id": "sleepy-koala",
+                    "name": "쿨쿨 코알라"
+                },
+                {
+                    "id": "monkey-catches-the-moon",
+                    "name": "달 잡는 원숭이",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%94%94%EB%AC%B4"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "dimoo-shapes-in-nature",
+            "name": "디무 자연의 흐름 시리즈",
+            "titleId": "dimoo",
+            "aliases": ["DIMOO Shapes in Nature Series (Figures)", "Nature Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "seeing",
+                    "name": "눈을 뜨다"
+                },
+                {
+                    "id": "parting-clouds",
+                    "name": "구름이 걷히다"
+                },
+                {
+                    "id": "newborn-soul",
+                    "name": "태어나는 숨결"
+                },
+                {
+                    "id": "withering-flowers",
+                    "name": "시들어가는 꽃"
+                },
+                {
+                    "id": "hearing",
+                    "name": "귀를 기울이다"
+                },
+                {
+                    "id": "fallen-leaves",
+                    "name": "낙엽이 머무는 자리"
+                },
+                {
+                    "id": "the-raindrop",
+                    "name": "빗방울"
+                },
+                {
+                    "id": "melting-ice",
+                    "name": "녹아내리는 얼음"
+                },
+                {
+                    "id": "touching",
+                    "name": "손끝에 닿다"
+                },
+                {
+                    "id": "rising-wind",
+                    "name": "불어오는 바람"
+                },
+                {
+                    "id": "weathered-rock",
+                    "name": "깎여나간 바위"
+                },
+                {
+                    "id": "cloud-whisper",
+                    "name": "구름의 속삭임"
+                },
+                {
+                    "id": "upward-growth",
+                    "name": "피어오르다",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%94%94%EB%AC%B4"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "dimoo-the-missing-day",
+            "name": "디무 만약 월요일이 사라진다면? 시리즈",
+            "titleId": "dimoo",
+            "aliases": ["DIMOO The Missing Day Series (Figures)", "If Monday Disappears? Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "blooming-button",
+                    "name": "꽃 피는 단추"
+                },
+                {
+                    "id": "air-my-soul-in-the-sun",
+                    "name": "햇살에 스며든 마음"
+                },
+                {
+                    "id": "melt-into-me",
+                    "name": "나에게 녹아들다"
+                },
+                {
+                    "id": "puppy-sock",
+                    "name": "강아지 양말"
+                },
+                {
+                    "id": "a-call-between-worlds",
+                    "name": "세상과 세상 사이의 통화"
+                },
+                {
+                    "id": "a-story-only-i-can-tell",
+                    "name": "나만 할 수 있는 이야기"
+                },
+                {
+                    "id": "soaking-in-a-dream",
+                    "name": "꿈속의 목욕"
+                },
+                {
+                    "id": "quacky-stroll",
+                    "name": "오리와의 산책"
+                },
+                {
+                    "id": "my-pillow-beats",
+                    "name": "내 베개가 뛰는 소리"
+                },
+                {
+                    "id": "soul-trails",
+                    "name": "영혼의 발자취"
+                },
+                {
+                    "id": "dancing-on-clouds",
+                    "name": "구름 위에서 춤추기"
+                },
+                {
+                    "id": "unlocking-time",
+                    "name": "시간을 열다"
+                },
+                {
+                    "id": "where-days-dont-count",
+                    "name": "날짜가 세어지지 않는 곳",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%94%94%EB%AC%B4"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "hacipupu-the-constellation",
+            "name": "하치푸푸 별자리 시리즈",
+            "titleId": "hacipupu",
+            "aliases": ["The Constellation Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "aries",
+                    "name": "양자리"
+                },
+                {
+                    "id": "taurus",
+                    "name": "황소자리"
+                },
+                {
+                    "id": "gemini",
+                    "name": "쌍둥이자리"
+                },
+                {
+                    "id": "cancer",
+                    "name": "게자리"
+                },
+                {
+                    "id": "leo",
+                    "name": "사자자리"
+                },
+                {
+                    "id": "virgo",
+                    "name": "처녀자리"
+                },
+                {
+                    "id": "libra",
+                    "name": "천칭자리"
+                },
+                {
+                    "id": "scorpio",
+                    "name": "전갈자리"
+                },
+                {
+                    "id": "sagittarius",
+                    "name": "사수자리"
+                },
+                {
+                    "id": "capricorn",
+                    "name": "염소자리"
+                },
+                {
+                    "id": "aquarius",
+                    "name": "물병자리"
+                },
+                {
+                    "id": "pisces",
+                    "name": "물고기자리"
+                },
+                {
+                    "id": "constellation-angel",
+                    "name": "별자리 천사",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%ED%95%98%EC%B9%98%ED%91%B8%ED%91%B8"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "hacipupu-with-animals",
+            "name": "하치푸푸 동물들과 함께 시리즈",
+            "titleId": "hacipupu",
+            "aliases": ["With Animals Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "baa-baa-sheep",
+                    "name": "메에 메에 양"
+                },
+                {
+                    "id": "comfy-rabbit",
+                    "name": "편안한 토끼"
+                },
+                {
+                    "id": "charming-fox",
+                    "name": "매력적인 여우"
+                },
+                {
+                    "id": "lovely-piggy",
+                    "name": "사랑스러운 돼지"
+                },
+                {
+                    "id": "cute-tiger",
+                    "name": "귀여운 호랑이"
+                },
+                {
+                    "id": "ding-dong-reindeer",
+                    "name": "딩동 순록"
+                },
+                {
+                    "id": "grumpy-crocodile",
+                    "name": "심술궂은 악어"
+                },
+                {
+                    "id": "quirky-penguin",
+                    "name": "별난 펭귄"
+                },
+                {
+                    "id": "adorkable-koala",
+                    "name": "엉뚱한 코알라"
+                },
+                {
+                    "id": "cuddly-squirrel",
+                    "name": "안아주고 싶은 다람쥐"
+                },
+                {
+                    "id": "lucky-puppy",
+                    "name": "럭키 강아지"
+                },
+                {
+                    "id": "growling-polar-bear",
+                    "name": "으르렁 북극곰"
+                },
+                {
+                    "id": "kiss-penguin",
+                    "name": "뽀뽀 펭귄",
+                    "secret": true
+                },
+                {
+                    "id": "sweetie-pie",
+                    "name": "스위티 파이",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%ED%95%98%EC%B9%98%ED%91%B8%ED%91%B8"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "hirono-echo",
+            "name": "히로노 에코 시리즈",
+            "titleId": "hirono",
+            "aliases": ["Hirono Echo Series Figures"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2025-04",
+            "sources": [
+                "https://figpalace.com/blogs/guide/hirono-blind-boxes-guide",
+                "https://kream.co.kr/products/579335"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "hirono-shelter",
+            "name": "히로노 은신처 시리즈",
+            "titleId": "hirono",
+            "aliases": ["Hirono Shelter Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2024-07",
+            "sources": [
+                "https://figpalace.com/blogs/guide/hirono-blind-boxes-guide",
+                "https://namu.wiki/w/%ED%9E%88%EB%A1%9C%EB%85%B8%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "hirono-the-other-one",
+            "name": "히로노 디 아더 원 시리즈",
+            "titleId": "hirono",
+            "aliases": ["Hirono The Other One Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2021-10",
+            "sources": [
+                "https://stockx.com/pop-mart-hirono-the-other-one-series-sealed-case-12-blind-box",
+                "https://figpalace.com/blogs/guide/hirono-blind-boxes-guide",
+                "https://kream.co.kr/products/579339"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "molly-baby-molly-between-two-and-four",
+            "name": "베이비 몰리 두 살과 네 살 사이 시리즈",
+            "titleId": "molly",
+            "aliases": ["Baby Molly Between Two and Four Years Old Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "astronaut",
+                    "name": "우주 비행사가 될 거야"
+                },
+                {
+                    "id": "crown-too-big",
+                    "name": "내겐 너무 큰 왕관"
+                },
+                {
+                    "id": "lets-sing",
+                    "name": "노래 부르자"
+                },
+                {
+                    "id": "pianist-dream",
+                    "name": "내 꿈은 피아니스트"
+                },
+                {
+                    "id": "the-world-is-huge",
+                    "name": "세상은 거대해"
+                },
+                {
+                    "id": "house-too-small",
+                    "name": "집이 좀 좁지 않아?"
+                },
+                {
+                    "id": "one-bite",
+                    "name": "나 한 입만~"
+                },
+                {
+                    "id": "its-unfair",
+                    "name": "억울해!"
+                },
+                {
+                    "id": "wake-up",
+                    "name": "아침이야 일어나"
+                },
+                {
+                    "id": "how-old-are-you",
+                    "name": "너는 몇 살이야?"
+                },
+                {
+                    "id": "be-a-lady",
+                    "name": "숙녀가 될 거야"
+                },
+                {
+                    "id": "i-can-do-it",
+                    "name": "내가 할 수 있어!"
+                },
+                {
+                    "id": "i-am-the-king",
+                    "name": "내가 왕이야!",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%AA%B0%EB%A6%AC%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "molly-zootopia",
+            "name": "몰리 x 주토피아 시리즈",
+            "titleId": "molly",
+            "aliases": ["Molly × Zootopia Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "officer-judy-hopps",
+                    "name": "주디 홉스 경찰관"
+                },
+                {
+                    "id": "undercover-judy",
+                    "name": "잠입 임무 주디"
+                },
+                {
+                    "id": "officer-nick-wilde",
+                    "name": "닉 와일드 경찰관"
+                },
+                {
+                    "id": "undercover-nick",
+                    "name": "잠입 임무 닉"
+                },
+                {
+                    "id": "polar-bear-and-mr-big",
+                    "name": "북극곰&미스터 빅"
+                },
+                {
+                    "id": "clawhauser",
+                    "name": "클로하우저"
+                },
+                {
+                    "id": "gary",
+                    "name": "게리"
+                },
+                {
+                    "id": "russ",
+                    "name": "러스"
+                },
+                {
+                    "id": "gazelle",
+                    "name": "가젤"
+                },
+                {
+                    "id": "bellwether",
+                    "name": "벨웨더 부사장"
+                },
+                {
+                    "id": "nibbles",
+                    "name": "니블스"
+                },
+                {
+                    "id": "flash",
+                    "name": "플래시"
+                },
+                {
+                    "id": "finnick-in-stroller",
+                    "name": "유모차 탄 피닉",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%AA%B0%EB%A6%AC%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "pucky-fairies-market",
+            "name": "푸키 요정들의 마켓 시리즈",
+            "titleId": "pucky",
+            "aliases": ["Pucky Fairies’ Market Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "mushroom-farmer",
+                    "name": "버섯 농부"
+                },
+                {
+                    "id": "beekeeper",
+                    "name": "양봉가"
+                },
+                {
+                    "id": "doll-maker",
+                    "name": "인형 공예가"
+                },
+                {
+                    "id": "dairy-farmer",
+                    "name": "낙농 농부"
+                },
+                {
+                    "id": "chocolatier",
+                    "name": "쇼콜라티에"
+                },
+                {
+                    "id": "woodcutter",
+                    "name": "나무꾼"
+                },
+                {
+                    "id": "baker",
+                    "name": "제빵사"
+                },
+                {
+                    "id": "ice-cream-clerk",
+                    "name": "아이스크림 가게 점원"
+                },
+                {
+                    "id": "match-seller",
+                    "name": "성냥 파는 아이"
+                },
+                {
+                    "id": "egg-farmer-poko",
+                    "name": "달걀 농부 포코"
+                },
+                {
+                    "id": "florist",
+                    "name": "플로리스트"
+                },
+                {
+                    "id": "portrait-painter",
+                    "name": "초상화 화가"
+                },
+                {
+                    "id": "tarot-reader",
+                    "name": "타로 점술사",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%ED%91%B8%ED%82%A4%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "pucky-tap-tap-babies",
+            "name": "푸키 탭탭 베이비 시리즈",
+            "titleId": "pucky",
+            "aliases": ["Pucky Tap Tap Babies Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "wisdom",
+                    "name": "지혜"
+                },
+                {
+                    "id": "fate",
+                    "name": "운명"
+                },
+                {
+                    "id": "cleverness",
+                    "name": "영리함"
+                },
+                {
+                    "id": "luck",
+                    "name": "행운"
+                },
+                {
+                    "id": "wealth",
+                    "name": "재물"
+                },
+                {
+                    "id": "happiness",
+                    "name": "행복"
+                },
+                {
+                    "id": "success",
+                    "name": "성공",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%ED%91%B8%ED%82%A4%28%ED%8C%9D%EB%A7%88%ED%8A%B8%29"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "skullpanda-the-sound",
+            "name": "스컬판다 소리 시리즈",
+            "titleId": "skullpanda",
+            "aliases": ["SKULLPANDA The Sound Series (Figures)", "Sound Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "the-vigilance",
+                    "name": "경계"
+                },
+                {
+                    "id": "the-pensiveness",
+                    "name": "감수성"
+                },
+                {
+                    "id": "the-terror",
+                    "name": "공포"
+                },
+                {
+                    "id": "the-anger",
+                    "name": "분노"
+                },
+                {
+                    "id": "the-disgust",
+                    "name": "혐오"
+                },
+                {
+                    "id": "the-ecstasy",
+                    "name": "황홀"
+                },
+                {
+                    "id": "the-serenity",
+                    "name": "평온"
+                },
+                {
+                    "id": "the-admiration",
+                    "name": "감탄"
+                },
+                {
+                    "id": "the-grief",
+                    "name": "슬픔"
+                },
+                {
+                    "id": "the-trust",
+                    "name": "믿음"
+                },
+                {
+                    "id": "the-awe",
+                    "name": "경외"
+                },
+                {
+                    "id": "the-joy",
+                    "name": "즐거움"
+                },
+                {
+                    "id": "the-equilibrium",
+                    "name": "평정",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EC%8A%A4%EC%BB%AC%ED%8C%90%EB%8B%A4"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "skullpanda-warmth",
+            "name": "스컬판다 온도 시리즈",
+            "titleId": "skullpanda",
+            "aliases": ["SKULLPANDA Warmth Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "the-raining-day",
+                    "name": "비오는 날"
+                },
+                {
+                    "id": "the-encounter",
+                    "name": "라이벌 등장"
+                },
+                {
+                    "id": "the-day-off",
+                    "name": "쉬는 날"
+                },
+                {
+                    "id": "enjoy-oneself",
+                    "name": "여유 즐기기"
+                },
+                {
+                    "id": "mind-with-the-wind",
+                    "name": "바람쐬기"
+                },
+                {
+                    "id": "doodling",
+                    "name": "낙서"
+                },
+                {
+                    "id": "wandering",
+                    "name": "떠돌이"
+                },
+                {
+                    "id": "recall-the-past",
+                    "name": "추억에 잠기기"
+                },
+                {
+                    "id": "chirping",
+                    "name": "짹짹이"
+                },
+                {
+                    "id": "loosening",
+                    "name": "목욕하기"
+                },
+                {
+                    "id": "taste-from-the-memory",
+                    "name": "냠냠"
+                },
+                {
+                    "id": "the-scent",
+                    "name": "좋은 향기"
+                },
+                {
+                    "id": "the-warmth",
+                    "name": "따뜻한 날",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EC%8A%A4%EC%BB%AC%ED%8C%90%EB%8B%A4"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "skullpanda-winter-symphony",
+            "name": "스컬판다 겨울 교향곡 시리즈 인형 키링",
+            "titleId": "skullpanda",
+            "aliases": ["SKULLPANDA Winter Symphony Series (Plush)"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "rock-on",
+                    "name": "록 음악"
+                },
+                {
+                    "id": "rhapsody",
+                    "name": "랩소디"
+                },
+                {
+                    "id": "partita",
+                    "name": "변주곡"
+                },
+                {
+                    "id": "wanderers-tune",
+                    "name": "자유로운 선율"
+                },
+                {
+                    "id": "ode-to-cocoa",
+                    "name": "초콜릿 찬송가"
+                },
+                {
+                    "id": "song-of-snow",
+                    "name": "하얀 눈의 노래"
+                },
+                {
+                    "id": "symphony-of-wishes",
+                    "name": "소망의 교향곡",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://namu.wiki/w/%EC%8A%A4%EC%BB%AC%ED%8C%90%EB%8B%A4",
+                "https://kream.co.kr/products/514750"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "skullpanda-you-found-me",
+            "name": "스컬판다 날 찾아봐! 시리즈 봉제 인형 펜던트",
+            "titleId": "skullpanda",
+            "aliases": ["SKULLPANDA You Found Me! Series (Plush Doll Pendant)"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "darkness",
+                    "name": "별빛의 어둠"
+                },
+                {
+                    "id": "ratty-bear",
+                    "name": "잊혀진 작은 곰"
+                },
+                {
+                    "id": "sneaky-chestnut",
+                    "name": "교활한 밤톨"
+                },
+                {
+                    "id": "moldy-muffin",
+                    "name": "시무룩 머핀"
+                },
+                {
+                    "id": "pranky-peanut",
+                    "name": "꾸러기 땅콩"
+                },
+                {
+                    "id": "cerberus",
+                    "name": "케르베로스"
+                },
+                {
+                    "id": "ghostie",
+                    "name": "유령 친구"
+                },
+                {
+                    "id": "chomp",
+                    "name": "탐식귀"
+                },
+                {
+                    "id": "sandman",
+                    "name": "잠의 사신"
+                },
+                {
+                    "id": "buddy-doggie",
+                    "name": "꿈을 지키는 강아지",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://namu.wiki/w/%EC%8A%A4%EC%BB%AC%ED%8C%90%EB%8B%A4",
+                "https://kream.co.kr/products/605368"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "the-monsters-10th-anniversary",
+            "name": "더 몬스터즈 10주년 기념 시리즈",
+            "titleId": "the-monsters",
+            "aliases": ["The Monsters 10th Aniversary"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2026-01",
+            "lineup": [
+                {
+                    "id": "labubu-zimomo",
+                    "name": "라부부&지모모"
+                },
+                {
+                    "id": "labubu-tycoco",
+                    "name": "라부부&타이코코"
+                },
+                {
+                    "id": "labubu-kowawa",
+                    "name": "라부부&코와와"
+                },
+                {
+                    "id": "labubu-spooky",
+                    "name": "라부부&스포키"
+                },
+                {
+                    "id": "labubu-pippo",
+                    "name": "라부부&삐뽀"
+                },
+                {
+                    "id": "labubu-mokoko",
+                    "name": "라부부&모코코"
+                },
+                {
+                    "id": "labubu-yaya",
+                    "name": "라부부&야야"
+                },
+                {
+                    "id": "labubu-pato",
+                    "name": "라부부&파토"
+                },
+                {
+                    "id": "labubu-pouka",
+                    "name": "라부부&푸카"
+                },
+                {
+                    "id": "monsters-by-monsters",
+                    "name": "몬스터즈 바이 몬스터즈",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%9D%BC%EB%B6%80%EB%B6%80"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "the-monsters-big-into-energy",
+            "name": "라부부 더 몬스터즈 하이라이트 시리즈",
+            "titleId": "the-monsters",
+            "aliases": ["Big into Energy Series", "THE MONSTERS Big into Energy"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2025-04",
+            "lineup": [
+                {
+                    "id": "love",
+                    "name": "사랑"
+                },
+                {
+                    "id": "happiness",
+                    "name": "행복"
+                },
+                {
+                    "id": "loyalty",
+                    "name": "충성"
+                },
+                {
+                    "id": "serenity",
+                    "name": "평온"
+                },
+                {
+                    "id": "hope",
+                    "name": "희망"
+                },
+                {
+                    "id": "luck",
+                    "name": "행운"
+                },
+                {
+                    "id": "id",
+                    "name": "자아",
+                    "secret": true,
+                    "odds": 0.0139
+                }
+            ],
+            "sources": [
+                "https://namu.wiki/w/%EB%9D%BC%EB%B6%80%EB%B6%80",
+                "https://gulfnews.com/amp/story/best-buys%2Flabubu-blind-box-review-the-bag-charm-everyone-is-chasing-1.500637384",
+                "https://kream.co.kr/products/525452"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "the-monsters-exciting-macaron",
+            "name": "더 몬스터즈 라부부 테이스티 마카롱 시리즈",
+            "titleId": "the-monsters",
+            "aliases": [
+                "Labubu Exciting Macaron Vinyl Face Blind Box",
+                "Exciting Macaron Series",
+                "Tasty Macarons Face Series",
+                "心動馬卡龍"
+            ],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2023-10",
+            "lineup": [
+                {
+                    "id": "soymilk",
+                    "name": "두유"
+                },
+                {
+                    "id": "lychee-berry",
+                    "name": "리치베리"
+                },
+                {
+                    "id": "green-grape",
+                    "name": "청포도"
+                },
+                {
+                    "id": "sea-salt-coconut",
+                    "name": "소금 코코넛"
+                },
+                {
+                    "id": "toffee",
+                    "name": "캐러멜 사탕"
+                },
+                {
+                    "id": "sesame-bean",
+                    "name": "참깨콩콩"
+                },
+                {
+                    "id": "chestnut-cocoa",
+                    "name": "밤 코코아",
+                    "secret": true
+                }
+            ],
+            "sources": [
+                "https://snkrdunk.com/en/magazine/2025/03/07/pop-mart-the-monsters-labubu-exciting-macaron-series-why-is-it-so-popular",
+                "https://namu.wiki/w/%EB%9D%BC%EB%B6%80%EB%B6%80",
+                "https://kream.co.kr/products/514742",
+                "https://en.wikipedia.org/wiki/Labubu"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "the-monsters-have-a-seat",
+            "name": "더 몬스터즈 라부부 해브 어 시트 시리즈",
+            "titleId": "the-monsters",
+            "aliases": ["POP MART THE MONSTERS Have a Seat Plush series", "Have a Seat", "坐坐派對"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2024-07",
+            "sources": [
+                "https://snkrdunk.com/en/magazine/2025/03/12/labubu-have-a-seat-series-7-things-we-bet-you-didnt-know/",
+                "https://en.wikipedia.org/wiki/Labubu"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "the-monsters-sanrio-characters",
+            "name": "라부부 더 몬스터즈 x 산리오 캐릭터 시리즈 인형 키링",
+            "titleId": "the-monsters",
+            "aliases": ["The Monsters x Sanrio Characters Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "releasedAt": "2026-03",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로 키티"
+                },
+                {
+                    "id": "my-melody",
+                    "name": "마이 멜로디"
+                },
+                {
+                    "id": "kuromi",
+                    "name": "쿠로미"
+                },
+                {
+                    "id": "pompompurin",
+                    "name": "폼폼푸린"
+                },
+                {
+                    "id": "pochacco",
+                    "name": "포차코"
+                },
+                {
+                    "id": "cinnamoroll",
+                    "name": "시나모롤"
+                },
+                {
+                    "id": "classic-hello-kitty",
+                    "name": "클래식 헬로 키티",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%9D%BC%EB%B6%80%EB%B6%80", "https://kream.co.kr/products/826527"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "the-monsters-strange-taste-convenience-store",
+            "name": "더 몬스터즈 수상한 편의점 시리즈",
+            "titleId": "the-monsters",
+            "aliases": ["Strange Taste Convenience Store Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "potato-chips",
+                    "name": "감자칩"
+                },
+                {
+                    "id": "grilled-sausage",
+                    "name": "구운 소시지"
+                },
+                {
+                    "id": "yakitori",
+                    "name": "야키토리"
+                },
+                {
+                    "id": "samgak-gimbap",
+                    "name": "삼각김밥"
+                },
+                {
+                    "id": "corn",
+                    "name": "옥수수"
+                },
+                {
+                    "id": "milk",
+                    "name": "우유"
+                },
+                {
+                    "id": "microwave",
+                    "name": "전자레인지",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://namu.wiki/w/%EB%9D%BC%EB%B6%80%EB%B6%80"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "twinkle-twinkle-we-are-twinkle-twinkle",
+            "name": "트윙클 트윙클 위 아 트윙클 트윙클 시리즈",
+            "titleId": "twinkle-twinkle",
+            "aliases": ["Twinkle Twinkle : We are Twinkle Twinkle Series"],
+            "maker": "팝마트",
+            "kind": "blindbox",
+            "lineup": [
+                {
+                    "id": "dream-catcher",
+                    "name": "드림 캐처"
+                },
+                {
+                    "id": "heartbreak-harmony",
+                    "name": "하트브레이크 하모니"
+                },
+                {
+                    "id": "just-a-tad-sweeter",
+                    "name": "저스트 어 태드 스위터"
+                },
+                {
+                    "id": "magic",
+                    "name": "매직"
+                },
+                {
+                    "id": "moon-gelato",
+                    "name": "문 젤라또"
+                },
+                {
+                    "id": "nighty-night",
+                    "name": "나이티 나이트"
+                },
+                {
+                    "id": "waiting-for-you",
+                    "name": "웨이팅 포 유"
+                },
+                {
+                    "id": "where-is-my-brain",
+                    "name": "웨어 이즈 마이 브레인"
+                },
+                {
+                    "id": "you-equal-sunshine",
+                    "name": "유 이퀄 선샤인"
+                },
+                {
+                    "id": "master-of-chill",
+                    "name": "마스터 오브 칠",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://thetoypool.com/pop-mart/series/twinkle-twinkle/we-are-twinkle-twinkle-series/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sota-livingdead-marshmallow",
+            "name": "리빙데드 마시멜로",
+            "priceJpy": 400,
+            "aliases": ["LIVINGDEAD MARSHMALLOW"],
+            "maker": "SO-TA",
+            "kind": "gacha",
+            "releasedAt": "2026-02",
+            "lineup": [
+                {
+                    "id": "green",
+                    "name": "그린"
+                },
+                {
+                    "id": "purple",
+                    "name": "퍼플"
+                },
+                {
+                    "id": "pink",
+                    "name": "핑크"
+                },
+                {
+                    "id": "plain",
+                    "name": "플레인"
+                },
+                {
+                    "id": "choco-pink",
+                    "name": "초코 코팅 핑크"
+                },
+                {
+                    "id": "toasted-stripe-glow",
+                    "name": "구운 줄무늬 축광"
+                },
+                {
+                    "id": "soda-clear",
+                    "name": "소다 (클리어)"
+                },
+                {
+                    "id": "toasted-plain",
+                    "name": "구운 플레인"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000158.000140527.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "chiikawa-capsule-stick",
+            "name": "치이카와 캡슐 스틱",
+            "priceJpy": 400,
+            "titleId": "chiikawa",
+            "aliases": ["ちいかわ カプセルステッキ"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "chiikawa",
+                    "name": "치이카와"
+                },
+                {
+                    "id": "hachiware",
+                    "name": "하치와레"
+                },
+                {
+                    "id": "usagi",
+                    "name": "우사기"
+                },
+                {
+                    "id": "momonga",
+                    "name": "모몽가"
+                }
+            ],
+            "sources": [
+                "https://collabo-cafe.com/events/collabo/chiikawa-capsule-stick-2026/",
+                "https://news.mynavi.jp/article/20261009-5100938/"
+            ],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "chiikawa-fuwafuwa-flocky-doll",
+            "name": "치이카와 후와후와 플로키 돌",
+            "priceJpy": 300,
+            "titleId": "chiikawa",
+            "aliases": ["ちいかわ ふわふわフロッキードール"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "chiikawa",
+                    "name": "치이카와"
+                },
+                {
+                    "id": "hachiware",
+                    "name": "하치와레"
+                },
+                {
+                    "id": "usagi",
+                    "name": "우사기"
+                },
+                {
+                    "id": "momonga",
+                    "name": "모몽가"
+                }
+            ],
+            "sources": ["https://news.mynavi.jp/article/20261025-5122654/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "chiikawa-ponde-couleur-multi-color-powder",
+            "name": "퐁데쿨뢰르 치이카와 멀티컬러 파우더",
+            "priceJpy": 500,
+            "titleId": "chiikawa",
+            "aliases": ["ポンデクルール ちいかわ マルチカラーパウダー"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "chiikawa",
+                    "name": "치이카와"
+                },
+                {
+                    "id": "hachiware",
+                    "name": "하치와레"
+                },
+                {
+                    "id": "usagi",
+                    "name": "우사기"
+                },
+                {
+                    "id": "momonga",
+                    "name": "모몽가"
+                },
+                {
+                    "id": "chiikawa-hachiware",
+                    "name": "치이카와·하치와레"
+                },
+                {
+                    "id": "nakayoshi-trio",
+                    "name": "사이좋은 트리오"
+                }
+            ],
+            "sources": ["https://www.inside-games.jp/article/2026/11/15/190979.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "doraemon-light-mascot",
+            "name": "도라에몽 라이트 마스코트",
+            "priceJpy": 500,
+            "titleId": "doraemon",
+            "aliases": ["ドラえもん ライトマスコット"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "doraemon-nonbiri",
+                    "name": "도라에몽 (느긋)"
+                },
+                {
+                    "id": "doraemon-osuwari",
+                    "name": "도라에몽 (앉은 자세)"
+                },
+                {
+                    "id": "dorami-oyasumi",
+                    "name": "도라미 (잘 자요)"
+                },
+                {
+                    "id": "small-light",
+                    "name": "스몰라이트"
+                }
+            ],
+            "sources": ["https://www.inside-games.jp/article/2026/09/13/187680.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "ginga-narabundesu",
+            "name": "나라분데스. 은아 -유성 은-",
+            "priceJpy": 400,
+            "titleId": "ginga",
+            "aliases": ["ならぶんです。 銀牙―流れ星 銀―"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-01",
+            "lineup": [
+                {
+                    "id": "gin",
+                    "name": "긴"
+                },
+                {
+                    "id": "ben",
+                    "name": "벤"
+                },
+                {
+                    "id": "john",
+                    "name": "존"
+                },
+                {
+                    "id": "benizakura",
+                    "name": "베니자쿠라"
+                },
+                {
+                    "id": "akame",
+                    "name": "아카메"
+                },
+                {
+                    "id": "riki",
+                    "name": "리키"
+                }
+            ],
+            "sources": ["https://hobby.watch.impress.co.jp/docs/news/2078302.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "gundam-narabundesu-zaku",
+            "name": "기동전사 건담 나라분데스. 자쿠",
+            "priceJpy": 400,
+            "titleId": "gundam",
+            "aliases": ["機動戦士ガンダム ならぶんです。ザク"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-01",
+            "lineup": [
+                {
+                    "id": "char-zaku-ii",
+                    "name": "샤아 전용 자쿠II"
+                },
+                {
+                    "id": "zaku-ii-commander",
+                    "name": "자쿠II (지휘관기)"
+                },
+                {
+                    "id": "zaku-ii-a",
+                    "name": "자쿠II (A)"
+                },
+                {
+                    "id": "zaku-ii-b",
+                    "name": "자쿠II (B)"
+                },
+                {
+                    "id": "zaku-ii-c",
+                    "name": "자쿠II (C)"
+                }
+            ],
+            "sources": ["https://hobby.watch.impress.co.jp/docs/news/2080133.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "hunterxhunter-hg-vol-1",
+            "name": "HG 헌터×헌터 Vol.1",
+            "priceJpy": 500,
+            "titleId": "hunterxhunter",
+            "aliases": ["HG HUNTER×HUNTER Vol.1"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "gon",
+                    "name": "곤"
+                },
+                {
+                    "id": "killua",
+                    "name": "키르아"
+                },
+                {
+                    "id": "kurapika",
+                    "name": "크라피카"
+                },
+                {
+                    "id": "leorio",
+                    "name": "레오리오"
+                }
+            ],
+            "sources": ["https://hjweb.jp/article/2863545/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "ikimono-advance-dangomushi",
+            "name": "생물 대도감 어드밴스 공벌레",
+            "priceJpy": 1500,
+            "aliases": ["いきもの大図鑑アドバンス ダンゴムシ"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "lineup": [
+                {
+                    "id": "dangomushi",
+                    "name": "공벌레"
+                },
+                {
+                    "id": "irido-dangomushi",
+                    "name": "이리도 공벌레"
+                },
+                {
+                    "id": "zebra-dangomushi",
+                    "name": "제브라 공벌레"
+                }
+            ],
+            "sources": ["https://hjweb.jp/article/2484968/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "ikimono-display-model-wild-cats",
+            "name": "생물 대도감 디스플레이 모델 컬렉션 야생 고양잇과 동물",
+            "priceJpy": 1000,
+            "aliases": ["いきもの大図鑑ディスプレイモデルコレクション 野生のネコ科動物"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "lineup": [
+                {
+                    "id": "bengal-tiger",
+                    "name": "벵골호랑이"
+                },
+                {
+                    "id": "white-tiger",
+                    "name": "백호"
+                },
+                {
+                    "id": "snow-leopard",
+                    "name": "눈표범"
+                },
+                {
+                    "id": "manul",
+                    "name": "마눌들고양이"
+                }
+            ],
+            "sources": ["https://hjweb.jp/article/2570187/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "jujutsu-5th-capsule-figure-collection",
+            "name": "애니메이션 주술회전 5주년 캡슐 피규어 컬렉션",
+            "priceJpy": 500,
+            "titleId": "jujutsu",
+            "aliases": ["アニメ『呪術廻戦』5周年 カプセルフィギュアコレクション"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "itadori-yuji",
+                    "name": "이타도리 유지"
+                },
+                {
+                    "id": "fushiguro-megumi",
+                    "name": "후시구로 메구미"
+                },
+                {
+                    "id": "okkotsu-yuta",
+                    "name": "옷코츠 유타 (극장판 0)"
+                },
+                {
+                    "id": "inumaki-toge",
+                    "name": "이누마키 토게 (극장판 0)"
+                },
+                {
+                    "id": "gojo-satoru",
+                    "name": "고죠 사토루 (회옥·옥절)"
+                },
+                {
+                    "id": "geto-suguru",
+                    "name": "게토 스구루 (회옥·옥절)"
+                }
+            ],
+            "sources": ["https://news.mynavi.jp/article/20260922-4976496/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "pokemon-tsumande-tsunagete-mascot-15",
+            "name": "포켓몬스터 집어서 연결하는 마스코트 15",
+            "priceJpy": 300,
+            "titleId": "pokemon",
+            "aliases": ["ポケットモンスター つまんでつなげてマスコット15"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-06",
+            "lineup": [
+                {
+                    "id": "charmander-ballchain",
+                    "name": "파이리 (볼체인)"
+                },
+                {
+                    "id": "charmeleon-ballchain",
+                    "name": "리자드 (볼체인)"
+                },
+                {
+                    "id": "charizard-ballchain",
+                    "name": "리자몽 (볼체인)"
+                },
+                {
+                    "id": "munchlax-ballchain",
+                    "name": "먹고자 (볼체인)"
+                },
+                {
+                    "id": "snorlax-ballchain",
+                    "name": "잠만보 (볼체인)"
+                },
+                {
+                    "id": "charmander-kanikan",
+                    "name": "파이리 (카니칸)"
+                },
+                {
+                    "id": "charmeleon-kanikan",
+                    "name": "리자드 (카니칸)"
+                },
+                {
+                    "id": "charizard-kanikan",
+                    "name": "리자몽 (카니칸)"
+                },
+                {
+                    "id": "munchlax-kanikan",
+                    "name": "먹고자 (카니칸)"
+                },
+                {
+                    "id": "snorlax-kanikan",
+                    "name": "잠만보 (카니칸)"
+                }
+            ],
+            "sources": ["https://news.mynavi.jp/article/20260618-4588982/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-ballerina-mejirushi",
+            "name": "산리오 캐릭터즈 발레리나 메지루시 액세서리",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ バレリーナめじるしアクセサリー"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "kuromi",
+                    "name": "쿠로미"
+                },
+                {
+                    "id": "my-melody",
+                    "name": "마이멜로디"
+                },
+                {
+                    "id": "usahana",
+                    "name": "우사하나"
+                },
+                {
+                    "id": "shirousa",
+                    "name": "시로우사"
+                },
+                {
+                    "id": "kurousa",
+                    "name": "쿠로우사"
+                }
+            ],
+            "sources": ["https://www.sanrio.co.jp/news/goods/mx-bandai-gashapon-20261105/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-hugcot-pearl",
+            "name": "허그콧 산리오 캐릭터즈 펄 Ver.",
+            "priceJpy": 200,
+            "titleId": "sanrio",
+            "aliases": ["ハグコット サンリオキャラクターズ パールVer."],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2025-09",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "cinnamoroll",
+                    "name": "시나모롤"
+                },
+                {
+                    "id": "pompompurin",
+                    "name": "폼폼푸린"
+                },
+                {
+                    "id": "tuxedosam",
+                    "name": "턱시도샘"
+                },
+                {
+                    "id": "my-melody",
+                    "name": "마이멜로디"
+                },
+                {
+                    "id": "pochacco",
+                    "name": "포차코"
+                }
+            ],
+            "sources": ["https://www.sanrio.co.jp/news/goods/mx-gashapon-hugcot-20250908/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-nagomi-matcha-figure",
+            "name": "산리오 캐릭터즈 나고미 말차 피규어",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["さんりおきゃらくたぁず 和みの抹茶ふぃぎゅあ"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "chococat",
+                    "name": "초코캣"
+                },
+                {
+                    "id": "kuromi",
+                    "name": "쿠로미"
+                },
+                {
+                    "id": "cinnamoroll",
+                    "name": "시나모롤"
+                },
+                {
+                    "id": "pochacco",
+                    "name": "포차코"
+                }
+            ],
+            "sources": ["https://www.sanrio.co.jp/news/goods/mx-bandai-gashapon-20261105/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-solid-cool-style-mejirushi",
+            "name": "산리오 캐릭터즈 Solid & Cool style 메지루시 액세서리",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ Solid & Cool style めじるしアクセサリー"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-08",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "my-melody",
+                    "name": "마이멜로디"
+                },
+                {
+                    "id": "kuromi",
+                    "name": "쿠로미"
+                },
+                {
+                    "id": "pochacco",
+                    "name": "포차코"
+                },
+                {
+                    "id": "pompompurin",
+                    "name": "폼폼푸린"
+                }
+            ],
+            "sources": ["https://hobby.watch.impress.co.jp/docs/news/2132130.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "shinchan-gyukotto",
+            "name": "짱구는 못말려 규콧토",
+            "priceJpy": 400,
+            "titleId": "shinchan",
+            "aliases": ["クレヨンしんちゃん ぎゅーこっと"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-03",
+            "lineup": [
+                {
+                    "id": "shinchan",
+                    "name": "짱구"
+                },
+                {
+                    "id": "kazama",
+                    "name": "철수"
+                },
+                {
+                    "id": "nene",
+                    "name": "유리"
+                },
+                {
+                    "id": "masao",
+                    "name": "훈이"
+                },
+                {
+                    "id": "bo",
+                    "name": "맹구"
+                }
+            ],
+            "sources": ["https://news.mynavi.jp/article/20260311-4200325/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "shinchan-idol-stage-swing-mascot",
+            "name": "짱구는 못말려 아이돌 스테이지 스윙 마스코트",
+            "priceJpy": 400,
+            "titleId": "shinchan",
+            "aliases": ["クレヨンしんちゃん なりきり！？アイドルステージ スイングマスコット"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "shinchan",
+                    "name": "짱구"
+                },
+                {
+                    "id": "nene",
+                    "name": "유리"
+                },
+                {
+                    "id": "buriburizaemon",
+                    "name": "부리부리자에몽"
+                },
+                {
+                    "id": "himawari",
+                    "name": "짱아"
+                },
+                {
+                    "id": "shiro",
+                    "name": "흰둥이"
+                }
+            ],
+            "sources": ["https://news.mynavi.jp/article/20261026-5197530/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "shinchan-yurayura-face-mini-charm",
+            "name": "짱구는 못말려 흔들흔들 페이스 미니 참",
+            "priceJpy": 300,
+            "titleId": "shinchan",
+            "aliases": ["クレヨンしんちゃん ゆらゆらフェイスミニチャーム"],
+            "maker": "반다이",
+            "kind": "gacha",
+            "releasedAt": "2026-08",
+            "lineup": [
+                {
+                    "id": "shinchan-a",
+                    "name": "짱구 A"
+                },
+                {
+                    "id": "shinchan-b",
+                    "name": "짱구 B"
+                },
+                {
+                    "id": "himawari",
+                    "name": "짱아"
+                },
+                {
+                    "id": "shiro",
+                    "name": "흰둥이"
+                },
+                {
+                    "id": "waniyama",
+                    "name": "와니야마 씨"
+                },
+                {
+                    "id": "buriburizaemon",
+                    "name": "부리부리자에몽"
+                }
+            ],
+            "sources": ["https://collabo-cafe.com/events/collabo/crayon-shinchan-yurayura-face-mini-charm-2026/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-retro-lesson-bag-mini-keyholder",
+            "name": "산리오 캐릭터즈 레트로 레슨백 미니 키홀더",
+            "priceJpy": 400,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ レトロレッスンバッグミニキーホルダー"],
+            "maker": "베네릭",
+            "kind": "gacha",
+            "releasedAt": "2026-02",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "little-twin-stars",
+                    "name": "리틀트윈스타"
+                },
+                {
+                    "id": "pochacco",
+                    "name": "포차코"
+                },
+                {
+                    "id": "marron-cream",
+                    "name": "마론크림"
+                },
+                {
+                    "id": "sanrio-characters",
+                    "name": "산리오 캐릭터즈"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000001988.000022901.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-retro-wall-clock-clip-keyholder",
+            "name": "산리오 캐릭터즈 레트로 벽시계풍 클립 키홀더",
+            "priceJpy": 400,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ レトロ壁掛け時計風クリップキーホルダー"],
+            "maker": "베네릭",
+            "kind": "gacha",
+            "releasedAt": "2026-02",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "my-melody",
+                    "name": "마이멜로디"
+                },
+                {
+                    "id": "pompompurin",
+                    "name": "폼폼푸린"
+                },
+                {
+                    "id": "little-twin-stars",
+                    "name": "리틀트윈스타"
+                },
+                {
+                    "id": "badtz-maru",
+                    "name": "배드바츠마루"
+                },
+                {
+                    "id": "kerokerokeroppi",
+                    "name": "케로케로케로피"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000001988.000022901.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "bushiroad-osuwarichans-book",
+            "name": "오스와리짱즈 BOOK",
+            "priceJpy": 400,
+            "aliases": ["おすわりちゃんズ　BOOK"],
+            "maker": "부시로드 크리에이티브",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "red",
+                    "name": "레드"
+                },
+                {
+                    "id": "blue",
+                    "name": "블루"
+                },
+                {
+                    "id": "green",
+                    "name": "그린"
+                },
+                {
+                    "id": "black",
+                    "name": "블랙"
+                },
+                {
+                    "id": "brown",
+                    "name": "브라운"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000009825.000014827.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "bushiroad-shineiroku",
+            "name": "신영록",
+            "priceJpy": 500,
+            "aliases": ["神影録"],
+            "maker": "부시로드 크리에이티브",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "ken-i",
+                    "name": "켄이 (件異)"
+                },
+                {
+                    "id": "kisen",
+                    "name": "키센 (祈蝉)"
+                },
+                {
+                    "id": "kuzou",
+                    "name": "쿠조 (駆像)"
+                },
+                {
+                    "id": "muganroku",
+                    "name": "무간로쿠 (無顔鹿)"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000009747.000014827.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "stasto-banzai-neko-mejirushi-mascot",
+            "name": "만세 고양이와 차렷 고양이 표식 마스코트",
+            "priceJpy": 300,
+            "aliases": ["バンザイ猫ときをつけ猫のめじるしマスコット"],
+            "maker": "스탠드 스톤즈",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "sources": ["https://stasto.co.jp/products_ss/banzaineko/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "ip4-nandemo-ikimono-assort-collection",
+            "name": "난데모 이키모노 어소트 컬렉션",
+            "priceJpy": 400,
+            "aliases": ["なんでもいきもの　アソートコレクション"],
+            "maker": "아이피포",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "fluffy-kinchaku-nori-onigiri",
+                    "name": "폭신 복주머니 (김 주먹밥)"
+                },
+                {
+                    "id": "fluffy-kinchaku-yaki-onigiri",
+                    "name": "폭신 복주머니 (구운 주먹밥)"
+                },
+                {
+                    "id": "wide-pouch",
+                    "name": "가로형 파우치"
+                },
+                {
+                    "id": "bandana",
+                    "name": "반다나"
+                },
+                {
+                    "id": "big-kinchaku",
+                    "name": "BIG 복주머니"
+                },
+                {
+                    "id": "box-pouch",
+                    "name": "BOX 파우치"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000481.000134693.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "kanahei-tote-pouch-collection",
+            "name": "카나헤이의 작은 동물 토트 & 파우치 컬렉션",
+            "priceJpy": 400,
+            "titleId": "kanahei",
+            "aliases": ["カナヘイの小動物　トート＆ポーチコレクション"],
+            "maker": "아이피포",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "die-cut-pouch-usagi",
+                    "name": "다이컷 파우치 토끼"
+                },
+                {
+                    "id": "die-cut-pouch-piske",
+                    "name": "다이컷 파우치 피스케"
+                },
+                {
+                    "id": "square-pouch-a",
+                    "name": "스퀘어 파우치 A"
+                },
+                {
+                    "id": "square-pouch-b",
+                    "name": "스퀘어 파우치 B"
+                },
+                {
+                    "id": "tote-bag-a",
+                    "name": "토트백 A"
+                },
+                {
+                    "id": "tote-bag-b",
+                    "name": "토트백 B"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000501.000134693.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "moomin-strap-collection-3",
+            "name": "무민 스트랩 컬렉션 3",
+            "priceJpy": 400,
+            "titleId": "moomin",
+            "aliases": ["ムーミン　ストラップコレクション3"],
+            "maker": "아이피포",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "moomin",
+                    "name": "무민"
+                },
+                {
+                    "id": "snufkin",
+                    "name": "스너프킨"
+                },
+                {
+                    "id": "moominpappa",
+                    "name": "무민파파"
+                },
+                {
+                    "id": "little-my",
+                    "name": "리틀 미"
+                },
+                {
+                    "id": "hattifatteners",
+                    "name": "뇨로뇨로"
+                },
+                {
+                    "id": "moominmamma",
+                    "name": "무민마마"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000484.000134693.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-hello-kitty-cushion-keyring",
+            "name": "헬로키티 쿠션 키링",
+            "priceJpy": 400,
+            "titleId": "sanrio",
+            "aliases": ["ハローキティ　クッションキーリング"],
+            "maker": "아이피포",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "ribbons",
+                    "name": "리본이 가득"
+                },
+                {
+                    "id": "ice-cream",
+                    "name": "아이스크림"
+                },
+                {
+                    "id": "back",
+                    "name": "뒷모습"
+                },
+                {
+                    "id": "gamaguchi",
+                    "name": "똑딱이 지갑"
+                },
+                {
+                    "id": "tennis",
+                    "name": "테니스"
+                },
+                {
+                    "id": "apple",
+                    "name": "사과"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000493.000134693.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "kenele-kaigen-goods-collection",
+            "name": "가이겐 굿즈 컬렉션",
+            "priceJpy": 400,
+            "aliases": ["改源 グッズコレクション"],
+            "maker": "켄엘리펀트",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "acrylic-charm",
+                    "name": "아크릴 참"
+                },
+                {
+                    "id": "coin-case-kaigen",
+                    "name": "동전 지갑 <가이겐>"
+                },
+                {
+                    "id": "coin-case-kaigen-tablet",
+                    "name": "동전 지갑 <가이겐정>"
+                },
+                {
+                    "id": "metal-keyholder",
+                    "name": "메탈 키홀더"
+                },
+                {
+                    "id": "signboard-eco-bag",
+                    "name": "간판 에코백"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000134.000166988.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "munyu-kemuchan-flocky-figure",
+            "name": "무뉴네 '케무짱' 플로키 피규어",
+            "priceJpy": 400,
+            "titleId": "munyu",
+            "aliases": ["むにゅ家の「けむちゃん」フロッキーフィギュア"],
+            "maker": "켄엘리펀트",
+            "kind": "gacha",
+            "releasedAt": "2026-07",
+            "lineup": [
+                {
+                    "id": "nani",
+                    "name": "뭐~?"
+                },
+                {
+                    "id": "motto-asonde",
+                    "name": "더 놀아줘"
+                },
+                {
+                    "id": "mukiryoku",
+                    "name": "무기력"
+                },
+                {
+                    "id": "unyo-unyo-time",
+                    "name": "꿈틀꿈틀 타임"
+                },
+                {
+                    "id": "papi-kemu",
+                    "name": "파피케무"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000105.000166988.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "munyu-pouch-autumn-winter",
+            "name": "무뉴 파우치 푸쿠오텀 & 푸쿠윈터",
+            "priceJpy": 500,
+            "titleId": "munyu",
+            "aliases": ["むにゅポーチ プクオータム＆プクウィンター"],
+            "maker": "켄엘리펀트",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "hokuhoku-chan",
+                    "name": "호쿠호쿠짱"
+                },
+                {
+                    "id": "puku-ghost",
+                    "name": "푸쿠 고스트"
+                },
+                {
+                    "id": "puku-christmas-tree",
+                    "name": "푸쿠리스마스 트리"
+                },
+                {
+                    "id": "puku-daruma",
+                    "name": "푸쿠 다루마"
+                },
+                {
+                    "id": "melting-choco-puku",
+                    "name": "녹아내리는 초코푸쿠"
+                }
+            ],
+            "sources": ["https://prtimes.jp/main/html/rd/p/000000147.000166988.html"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "qualia-natsukanai-neko-plush-3",
+            "name": "따르지 않는 고양이 인형 3",
+            "priceJpy": 500,
+            "aliases": ["なつかない猫 ぬいぐるみ 3"],
+            "maker": "퀄리아",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "sources": ["https://www.qualia-45.jp/product/view/2109"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "kitan-noppo-chan-plush-rabbit",
+            "name": "놋포짱 인형 토끼",
+            "priceJpy": 500,
+            "aliases": ["のっぽちゃんぬいぐるみ うさぎ"],
+            "maker": "키탄클럽",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "white",
+                    "name": "화이트"
+                },
+                {
+                    "id": "brown",
+                    "name": "브라운"
+                },
+                {
+                    "id": "gray",
+                    "name": "그레이"
+                }
+            ],
+            "sources": ["https://kitan.jp/products/noppo_usagi/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "kitan-osanpo-kaeru-fit-jewel-box",
+            "name": "산책 개구리 Fit 보석함",
+            "priceJpy": 300,
+            "aliases": ["おさんぽカエル Fit 宝石箱"],
+            "maker": "키탄클럽",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "ruby",
+                    "name": "루비"
+                },
+                {
+                    "id": "yellow-tourmaline",
+                    "name": "옐로 투르말린"
+                },
+                {
+                    "id": "emerald",
+                    "name": "에메랄드"
+                },
+                {
+                    "id": "amethyst",
+                    "name": "자수정"
+                },
+                {
+                    "id": "onyx",
+                    "name": "오닉스"
+                },
+                {
+                    "id": "turquoise",
+                    "name": "터키석"
+                },
+                {
+                    "id": "secret",
+                    "name": "시크릿",
+                    "secret": true
+                }
+            ],
+            "sources": ["https://kitan.jp/products/osanpokaeru_fithouseki/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "kitan-peace-animals-marker-charm",
+            "name": "브이 하는 동물 마커 참",
+            "priceJpy": 300,
+            "aliases": ["ピースするどうぶつ　マーカーチャーム"],
+            "maker": "키탄클럽",
+            "kind": "gacha",
+            "releasedAt": "2026-10",
+            "lineup": [
+                {
+                    "id": "dog",
+                    "name": "강아지"
+                },
+                {
+                    "id": "cat",
+                    "name": "고양이"
+                },
+                {
+                    "id": "gorilla",
+                    "name": "고릴라"
+                },
+                {
+                    "id": "frog",
+                    "name": "개구리"
+                },
+                {
+                    "id": "rabbit",
+                    "name": "토끼"
+                }
+            ],
+            "sources": ["https://kitan.jp/products/peaceanimals_mc/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "kitan-touch-koneko-marker-charm",
+            "name": "터치 Touch ~아기 고양이~ 마커 참",
+            "priceJpy": 300,
+            "aliases": ["たっちTouch～こねこ～ マーカーチャーム"],
+            "maker": "키탄클럽",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "mike",
+                    "name": "삼색이"
+                },
+                {
+                    "id": "tora",
+                    "name": "줄무늬"
+                },
+                {
+                    "id": "kuro",
+                    "name": "검정"
+                },
+                {
+                    "id": "hachiware",
+                    "name": "턱시도"
+                },
+                {
+                    "id": "shiro",
+                    "name": "하양"
+                }
+            ],
+            "sources": ["https://kitan.jp/products/touchkoneko_mc/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-putitto-aquarium-1",
+            "name": "PUTITTO 산리오 캐릭터즈 수족관 1",
+            "priceJpy": 500,
+            "titleId": "sanrio",
+            "aliases": ["PUTITTO サンリオキャラクターズ 水族館１"],
+            "maker": "키탄클럽",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "hello-kitty-dolphin",
+                    "name": "헬로키티 / 돌고래"
+                },
+                {
+                    "id": "little-twin-stars-ray",
+                    "name": "리틀트윈스타 / 가오리"
+                },
+                {
+                    "id": "pochacco-otter",
+                    "name": "포차코 / 수달"
+                },
+                {
+                    "id": "badtz-maru-baby-seal",
+                    "name": "배드바츠마루 / 아기 물범"
+                },
+                {
+                    "id": "cinnamoroll-jellyfish",
+                    "name": "시나모롤 / 해파리"
+                }
+            ],
+            "sources": ["https://kitan.jp/products/sanrio_suizokukan/"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "oribbon-nyanko",
+            "name": "리본 냥이",
+            "priceJpy": 300,
+            "aliases": ["おりぼんにゃんこ"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "shironeko-blue",
+                    "name": "흰 고양이 블루"
+                },
+                {
+                    "id": "hachiware-red",
+                    "name": "하치와레 레드"
+                },
+                {
+                    "id": "kuroneko-purple",
+                    "name": "검은 고양이 퍼플"
+                },
+                {
+                    "id": "cream-pink",
+                    "name": "크림 핑크"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y908538"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "panda-no-ana-maccho-bou",
+            "name": "판다의 구멍 맛초봉(근육 성냥개비)",
+            "priceJpy": 300,
+            "aliases": ["パンダの穴 マッチョ棒"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "king",
+                    "name": "킹 맛초봉"
+                },
+                {
+                    "id": "mega",
+                    "name": "메가 맛초봉"
+                },
+                {
+                    "id": "yancha",
+                    "name": "장난꾸러기 맛초봉"
+                },
+                {
+                    "id": "interi",
+                    "name": "인텔리 맛초봉"
+                },
+                {
+                    "id": "garigari-brothers",
+                    "name": "말라깽이 브라더스"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y905841"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "panda-no-ana-miniature-neko-special-color",
+            "name": "판다의 구멍 미니어처 고양이 SPECIAL COLOR Ver.",
+            "priceJpy": 300,
+            "aliases": ["パンダの穴 ミニチュアねこ SPECIAL COLOR Ver."],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "mint-tablet",
+                    "name": "미니어처 민트 태블릿 고양이"
+                },
+                {
+                    "id": "spoon",
+                    "name": "미니어처 스푼 고양이"
+                },
+                {
+                    "id": "paint",
+                    "name": "미니어처 물감 고양이"
+                },
+                {
+                    "id": "popcorn",
+                    "name": "미니어처 팝콘 고양이"
+                },
+                {
+                    "id": "caviar",
+                    "name": "미니어처 캐비아 고양이"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y911248"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "panda-no-ana-pet-hood",
+            "name": "판다의 구멍 PET HOOD",
+            "priceJpy": 400,
+            "aliases": ["パンダの穴 PET HOOD"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-03",
+            "lineup": [
+                {
+                    "id": "shiba",
+                    "name": "시바견"
+                },
+                {
+                    "id": "corn-snake",
+                    "name": "콘스네이크"
+                },
+                {
+                    "id": "cat",
+                    "name": "고양이"
+                },
+                {
+                    "id": "hedgehog",
+                    "name": "고슴도치"
+                },
+                {
+                    "id": "cockatiel",
+                    "name": "왕관앵무"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y092824"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "panda-no-ana-wanwan-oden",
+            "name": "판다의 구멍 멍멍 오뎅",
+            "priceJpy": 300,
+            "aliases": ["パンダの穴 わんわんおでん"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-06",
+            "lineup": [
+                {
+                    "id": "mochikin",
+                    "name": "떡 유부주머니"
+                },
+                {
+                    "id": "tamago",
+                    "name": "달걀"
+                },
+                {
+                    "id": "daikon",
+                    "name": "무"
+                },
+                {
+                    "id": "chikuwa",
+                    "name": "치쿠와"
+                },
+                {
+                    "id": "konnyaku",
+                    "name": "곤약"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y902185"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "pokemon-30th-metal-charm-eevee-friends",
+            "name": "포켓몬 30주년 메탈 참 마스코트 이브이 프렌즈",
+            "priceJpy": 300,
+            "titleId": "pokemon",
+            "aliases": ["ポケモン 30周年 メタルチャームマスコット イーブイフレンズ"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "eevee",
+                    "name": "이브이"
+                },
+                {
+                    "id": "vaporeon",
+                    "name": "샤미드"
+                },
+                {
+                    "id": "jolteon",
+                    "name": "쥬피썬더"
+                },
+                {
+                    "id": "flareon",
+                    "name": "부스터"
+                },
+                {
+                    "id": "espeon",
+                    "name": "에브이"
+                },
+                {
+                    "id": "umbreon",
+                    "name": "블래키"
+                },
+                {
+                    "id": "leafeon",
+                    "name": "리피아"
+                },
+                {
+                    "id": "glaceon",
+                    "name": "글레이시아"
+                },
+                {
+                    "id": "sylveon",
+                    "name": "님피아"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y905575"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "pokemon-diorama-collect-aku-dragon",
+            "name": "포켓몬 디오라마 컬렉트 악&드래곤",
+            "priceJpy": 300,
+            "titleId": "pokemon",
+            "aliases": ["ポケモン ジオラマコレクト あく＆ドラゴン"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-03",
+            "lineup": [
+                {
+                    "id": "mega-absol",
+                    "name": "메가앱솔"
+                },
+                {
+                    "id": "umbreon",
+                    "name": "블래키"
+                },
+                {
+                    "id": "dragonite",
+                    "name": "망나뇽"
+                },
+                {
+                    "id": "axew",
+                    "name": "터검니"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y097188"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "pokemon-manpuku-pakupaku-mascot-4",
+            "name": "포켓몬 배불리 냠냠 마스코트 4",
+            "priceJpy": 300,
+            "titleId": "pokemon",
+            "aliases": ["ポケモン まんぷくぱくぱくマスコット4"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-06",
+            "lineup": [
+                {
+                    "id": "eevee",
+                    "name": "이브이"
+                },
+                {
+                    "id": "riolu",
+                    "name": "리오르"
+                },
+                {
+                    "id": "snorlax",
+                    "name": "잠만보"
+                },
+                {
+                    "id": "morpeko-hangry",
+                    "name": "모르페코(배고픈 모양)"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y099588"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "pokemon-shabon-time-mascot",
+            "name": "포켓몬 비눗방울 타임 마스코트",
+            "priceJpy": 400,
+            "titleId": "pokemon",
+            "aliases": ["ポケモン しゃぼんたいむマスコット"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "pikachu",
+                    "name": "피카츄"
+                },
+                {
+                    "id": "marill",
+                    "name": "마릴"
+                },
+                {
+                    "id": "piplup",
+                    "name": "팽도리"
+                },
+                {
+                    "id": "mew",
+                    "name": "뮤"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y903304"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-hello-kitty-natsukashi-item-miniature",
+            "name": "헬로키티 추억의 아이템 미니어처 컬렉션",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["ハローキティ なつかしアイテムミニチュアコレクション"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2023-11",
+            "lineup": [
+                {
+                    "id": "calculator",
+                    "name": "전자계산기"
+                },
+                {
+                    "id": "petit-purse",
+                    "name": "쁘띠 지갑"
+                },
+                {
+                    "id": "camera",
+                    "name": "카메라"
+                },
+                {
+                    "id": "boston-bag",
+                    "name": "보스턴백"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y077906"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-omimi-de-burarin-mimi-heart",
+            "name": "산리오 캐릭터즈 귀로 대롱대롱 마스코트 귀 하트 컬렉션",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ おみみでぶらりんマスコット みみハートコレクション"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-06",
+            "lineup": [
+                {
+                    "id": "hanamaruobake",
+                    "name": "하나마루오바케"
+                },
+                {
+                    "id": "my-melody",
+                    "name": "마이멜로디"
+                },
+                {
+                    "id": "cinnamoroll",
+                    "name": "시나모롤"
+                },
+                {
+                    "id": "pompompurin",
+                    "name": "폼폼푸린"
+                },
+                {
+                    "id": "pochacco",
+                    "name": "포차코"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y903069"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-pompompurin-wanwan-paradise",
+            "name": "폼폼푸린 멍멍 파라다이스 마스코트",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["ポムポムプリン わんわんパラダイスマスコット"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-06",
+            "lineup": [
+                {
+                    "id": "suyasuya",
+                    "name": "새근새근"
+                },
+                {
+                    "id": "kururi",
+                    "name": "빙글"
+                },
+                {
+                    "id": "kakikaki",
+                    "name": "개헤엄"
+                },
+                {
+                    "id": "naninani",
+                    "name": "뭐야뭐야"
+                },
+                {
+                    "id": "mattari",
+                    "name": "느긋"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y903915"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-shumai",
+            "name": "산리오 캐릭터즈 슈마이",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ シュウマイ"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-03",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "my-melody",
+                    "name": "마이멜로디"
+                },
+                {
+                    "id": "pekkle",
+                    "name": "아히루노페클"
+                },
+                {
+                    "id": "cinnamoroll",
+                    "name": "시나모롤"
+                },
+                {
+                    "id": "keroppi",
+                    "name": "케로케로케로피"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y099854"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-tsunagaru-oden-charm",
+            "name": "산리오 캐릭터즈 이어지는 오뎅 참",
+            "priceJpy": 300,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ つながるおでんチャーム"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "lineup": [
+                {
+                    "id": "tamago-cinnamoroll",
+                    "name": "달걀(시나모롤)"
+                },
+                {
+                    "id": "mochikinchaku-pompompurin",
+                    "name": "떡 유부주머니(폼폼푸린)"
+                },
+                {
+                    "id": "daikon-hello-kitty",
+                    "name": "무(헬로키티)"
+                },
+                {
+                    "id": "konnyaku-badtz-maru",
+                    "name": "곤약(배드바츠마루)"
+                },
+                {
+                    "id": "hanpen-pekkle",
+                    "name": "한펜(아히루노페클)"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y908842"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "sanrio-wanko-figure",
+            "name": "산리오 캐릭터즈 일본풍 강아지 피규어",
+            "priceJpy": 400,
+            "titleId": "sanrio",
+            "aliases": ["サンリオキャラクターズ 和んこフィギュア"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "lineup": [
+                {
+                    "id": "hello-kitty",
+                    "name": "헬로키티"
+                },
+                {
+                    "id": "cinnamoroll",
+                    "name": "시나모롤"
+                },
+                {
+                    "id": "pekkle",
+                    "name": "아히루노페클"
+                },
+                {
+                    "id": "pochacco",
+                    "name": "포차코"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y904288"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "shibainugaoka",
+            "name": "시바이누가오카(잔디 시바견 언덕)",
+            "priceJpy": 300,
+            "aliases": ["芝犬ヶ丘"],
+            "maker": "타카라토미아츠",
+            "kind": "gacha",
+            "releasedAt": "2026-06",
+            "lineup": [
+                {
+                    "id": "1chome-shinryoku",
+                    "name": "1초메 잔디견(신록)"
+                },
+                {
+                    "id": "1chome-kouyou",
+                    "name": "1초메 잔디견(단풍)"
+                },
+                {
+                    "id": "2chome-shinryoku",
+                    "name": "2초메 잔디견(신록)"
+                },
+                {
+                    "id": "2chome-kouyou",
+                    "name": "2초메 잔디견(단풍)"
+                },
+                {
+                    "id": "3chome-shinryoku",
+                    "name": "3초메 잔디견(신록)"
+                },
+                {
+                    "id": "3chome-kouyou",
+                    "name": "3초메 잔디견(단풍)"
+                }
+            ],
+            "sources": ["https://www.takaratomy-arts.co.jp/items/item.html?n=Y904813"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "toyscabin-neko-pants",
+            "name": "고양이 팬티",
+            "priceJpy": 400,
+            "aliases": ["ねこぱんつ"],
+            "maker": "토이즈캐빈",
+            "kind": "gacha",
+            "releasedAt": "2026-09",
+            "sources": ["https://www.toyscabin.com/product/20260609_1436.php"],
+            "checkedAt": "2026-11-25"
+        },
+        {
+            "id": "toyscabin-sachishiba",
+            "name": "사치시바 (행운의 시바)",
+            "priceJpy": 400,
+            "aliases": ["幸柴"],
+            "maker": "토이즈캐빈",
+            "kind": "gacha",
+            "releasedAt": "2026-11",
+            "sources": ["https://www.toyscabin.com/product/20260803_1467.php"],
+            "checkedAt": "2026-11-25"
+        }
     ]
 }
