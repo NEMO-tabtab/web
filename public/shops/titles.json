@@ -1,4 +1,135 @@
 {
     "schemaVersion": 1,
-    "titles": [{ "id": "nemo-original", "name": "(예시) 네모 오리지널", "aliases": ["NEMO ORIGINAL"] }]
+    "titles": [
+        {
+            "id": "nemo-original",
+            "name": "(예시) 네모 오리지널",
+            "aliases": ["NEMO ORIGINAL"]
+        },
+        {
+            "id": "chiikawa",
+            "name": "치이카와",
+            "aliases": ["ちいかわ", "먼작귀", "Chiikawa"]
+        },
+        {
+            "id": "crybaby",
+            "name": "크라이베이비",
+            "aliases": ["CRYBABY"]
+        },
+        {
+            "id": "dimoo",
+            "name": "디무",
+            "aliases": ["DIMOO"]
+        },
+        {
+            "id": "doraemon",
+            "name": "도라에몽",
+            "aliases": ["ドラえもん", "Doraemon"]
+        },
+        {
+            "id": "ginga",
+            "name": "은아 -유성 은-",
+            "aliases": ["銀牙―流れ星 銀―"]
+        },
+        {
+            "id": "gundam",
+            "name": "기동전사 건담",
+            "aliases": ["機動戦士ガンダム", "Gundam"]
+        },
+        {
+            "id": "hacipupu",
+            "name": "하치푸푸",
+            "aliases": ["HACIPUPU"]
+        },
+        {
+            "id": "hirono",
+            "name": "히로노",
+            "aliases": ["Hirono"]
+        },
+        {
+            "id": "hunterxhunter",
+            "name": "헌터×헌터",
+            "aliases": ["HUNTER×HUNTER"]
+        },
+        {
+            "id": "jujutsu",
+            "name": "주술회전",
+            "aliases": ["呪術廻戦", "Jujutsu Kaisen"]
+        },
+        {
+            "id": "kanahei",
+            "name": "카나헤이의 작은 동물",
+            "aliases": ["カナヘイの小動物"]
+        },
+        {
+            "id": "molly",
+            "name": "몰리",
+            "aliases": ["MOLLY", "Baby Molly", "베이비 몰리"]
+        },
+        {
+            "id": "moomin",
+            "name": "무민",
+            "aliases": ["ムーミン"]
+        },
+        {
+            "id": "munyu",
+            "name": "무뉴",
+            "aliases": ["むにゅ"]
+        },
+        {
+            "id": "pokemon",
+            "name": "포켓몬",
+            "aliases": ["ポケモン", "Pokémon", "ポケットモンスター"]
+        },
+        {
+            "id": "pucky",
+            "name": "푸키",
+            "aliases": ["PUCKY"]
+        },
+        {
+            "id": "re-ment",
+            "name": "리멘트",
+            "aliases": ["Re-ment", "リーメント"]
+        },
+        {
+            "id": "sanrio",
+            "name": "산리오",
+            "aliases": ["サンリオ", "Sanrio", "サンリオキャラクターズ"]
+        },
+        {
+            "id": "shinchan",
+            "name": "짱구는 못말려",
+            "aliases": ["クレヨンしんちゃん", "Crayon Shin-chan"]
+        },
+        {
+            "id": "skullpanda",
+            "name": "스컬판다",
+            "aliases": ["SKULLPANDA"]
+        },
+        {
+            "id": "smiski",
+            "name": "스미스키",
+            "aliases": ["Smiski", "スミスキー"]
+        },
+        {
+            "id": "sonny-angel",
+            "name": "소니엔젤",
+            "aliases": ["Sonny Angel", "ソニーエンジェル"]
+        },
+        {
+            "id": "sylvanian-families",
+            "name": "실바니안 패밀리",
+            "aliases": ["Sylvanian Families", "シルバニアファミリー"]
+        },
+        {
+            "id": "the-monsters",
+            "name": "더 몬스터즈(라부부)",
+            "aliases": ["THE MONSTERS", "Labubu", "라부부"]
+        },
+        {
+            "id": "twinkle-twinkle",
+            "name": "트윙클 트윙클(작은별)",
+            "aliases": ["TWINKLE TWINKLE", "작은별"]
+        }
+    ]
 }

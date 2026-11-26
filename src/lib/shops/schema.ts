@@ -158,8 +158,11 @@ const variantSchema = z.object({
 const seriesSchema = z.object({
     id,
     name: z.string().min(1),
-    /** 한 번 돌리는 값(원). 가게마다 달라서 여러 가게에서 본 값의 평균을 적는다 */
-    price: z.number().int().nonnegative(),
+    /**
+     * 한 번 돌리는 값(원). 가게마다 달라서 여러 가게에서 본 값의 평균을 적는다.
+     * 한국 가격을 아직 모르면 비운다 — 0 을 넣으면 화면에 0원으로 보인다(#237)
+     */
+    price: z.number().int().nonnegative().optional(),
     /** price 를 평균 낸 가게 수. 모르면 비운다 */
     priceShops: z.number().int().min(1).optional(),
     /** 공식 일본 가격(엔, 세금 포함) */
