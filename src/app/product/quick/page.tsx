@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button, Card, Icon, Input, PageHeader, PageShell, Section, Text } from "@/components/common";
 import { cn } from "@/lib/cn";
@@ -13,6 +14,7 @@ import { PullResultCard } from "@/components/product/PullResultCard";
 import { productListHref } from "@/lib/productSearch";
 import { placeAll, type Placement } from "@/lib/pullResult";
 import { QUICK_CATEGORY, QUICK_MAX, localDay, quickDefaults, quickInputs } from "@/lib/quickAdd";
+import { canGoBackInApp, hasMoved } from "@/lib/navTrail";
 import { mySeries } from "@/lib/series";
 import { SeriesField } from "../components/SeriesField";
 
@@ -41,6 +43,7 @@ const pickButton = cn(
  * 매장에서 서서 한 손으로 쓰는 화면이라 꼭 적어야 하는 칸을 두지 않는다.
  */
 export default function QuickAddPage() {
+    const router = useRouter();
     const products = useProducts();
     const cameraRef = useRef<HTMLInputElement>(null);
     const galleryRef = useRef<HTMLInputElement>(null);
@@ -83,6 +86,13 @@ export default function QuickAddPage() {
         const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         resultRef.current?.scrollIntoView({ block: "start", behavior: calm ? "auto" : "smooth" });
     }, [resultSeq]);
+
+    // + 버튼은 홈·제품·지도·분석 어디서든 뜬다 — 들어온 화면으로 돌아가고, 주소를 바로 열었으면 제품 목록으로 간다(#250)
+    const handleBack = () => {
+        const navigation = (window as { navigation?: { canGoBack?: boolean } }).navigation;
+        if (canGoBackInApp(navigation, hasMoved())) router.back();
+        else router.replace(productListHref());
+    };
 
     const room = QUICK_MAX - drafts.length;
     const canOfferLast = useMemo(
@@ -155,7 +165,7 @@ export default function QuickAddPage() {
             <PageHeader
                 title="빠른 등록"
                 description="사진만 찍어 두고, 이름은 나중에 적어도 돼요."
-                backHref={productListHref()}
+                onBack={handleBack}
             />
 
             {result && (
@@ -206,6 +216,11 @@ export default function QuickAddPage() {
                         <Icon name="image" className="text-2xl" />
                         <span className="text-[13px] font-bold">앨범에서 고르기</span>
                     </button>
+                    {/* 사진이 없거나 바코드·메모까지 적고 싶을 때의 길 — 자세한 등록으로 간다(#250) */}
+                    <Link href="/product/add" className={pickButton}>
+                        <Icon name="pencil" className="text-2xl" />
+                        <span className="text-[13px] font-bold">직접 적기</span>
+                    </Link>
                 </div>
 
                 {drafts.length > 0 && (
@@ -303,14 +318,6 @@ export default function QuickAddPage() {
                 >
                     {drafts.length > 0 ? `${drafts.length}개 기록하기` : "사진을 먼저 넣어 주세요"}
                 </Button>
-                <div className="flex justify-center">
-                    <Link
-                        href="/product/add"
-                        className="text-ink-soft px-3 py-2 text-[13px] font-bold underline underline-offset-4"
-                    >
-                        사진 없이, 또는 자세히 적기
-                    </Link>
-                </div>
             </div>
         </PageShell>
     );
