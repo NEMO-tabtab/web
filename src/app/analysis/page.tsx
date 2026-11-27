@@ -209,7 +209,7 @@ export default function AnalysisPage() {
                     description="물건을 등록하면 가치와 카테고리 비중을 여기서 보여줘요."
                     action={
                         <Link
-                            href="/product/add"
+                            href="/product/quick"
                             className="sticker sticker-press bg-ink font-display text-paper rounded-full px-5 py-2.5"
                         >
                             + 물건 등록

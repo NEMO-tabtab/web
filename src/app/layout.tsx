@@ -6,6 +6,7 @@ import LaunchSplash from "./components/LaunchSplash";
 import StoragePersist from "./components/StoragePersist";
 import TintProvider from "./components/TintProvider";
 import BottomNavigation from "@/components/common/BottomNavigation";
+import { NavTrail } from "@/components/common/NavTrail";
 import { RegisterQuickMenu } from "@/components/product/RegisterQuickMenu";
 import { LAUNCH_BOOT_SCRIPT } from "@/lib/launchSplash";
 import { TINT_BOOT_SCRIPT } from "@/lib/tint/storage";
@@ -90,6 +91,7 @@ export default function RootLayout({
 
                 {/* 좁은 화면은 하단 탭 바, 넓은 화면은 왼쪽 세로 레일.
                     전환은 뷰포트 리사이즈라 CSS만으로 즉시 따라간다. */}
+                <NavTrail />
                 <TintProvider>
                     <div className="mx-auto flex min-h-dvh w-full max-w-[1600px]">
                         <AppChrome>

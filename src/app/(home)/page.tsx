@@ -97,7 +97,7 @@ export default function Home() {
                             )}
                             {/* 금액(인라인)과 같은 줄에 붙어 겹치지 않도록 버튼은 다음 줄에 둔다 */}
                             <Link
-                                href="/product/add"
+                                href="/product/quick"
                                 className="sticker sticker-press bg-ink text-paper mt-2 block w-fit rounded-full px-4 py-1.5 text-[13px] font-bold"
                             >
                                 + 물건 등록
