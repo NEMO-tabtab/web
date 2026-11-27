@@ -89,9 +89,11 @@ export default function RootLayout({
                 {/* 앱을 켤 때의 로딩 화면 — 서버에서 그려 두어 첫 화면부터 덮는다. 켠 뒤 처음 연 페이지에서만 보인다 */}
                 <LaunchSplash />
 
+                {/* 화면을 옮긴 적이 있는지 적어 둔다 — 등록 화면의 뒤로 가기가 쓴다(#250) */}
+                <NavTrail />
+
                 {/* 좁은 화면은 하단 탭 바, 넓은 화면은 왼쪽 세로 레일.
                     전환은 뷰포트 리사이즈라 CSS만으로 즉시 따라간다. */}
-                <NavTrail />
                 <TintProvider>
                     <div className="mx-auto flex min-h-dvh w-full max-w-[1600px]">
                         <AppChrome>
