@@ -116,6 +116,12 @@ export default function ApiLive() {
                 <Button onClick={() => void runAll()} disabled={runningAll || !API_CONFIGURED} fullWidth>
                     {runningAll ? "확인하는 중…" : "모두 확인"}
                 </Button>
+                <Text size="xs" tone="muted">
+                    실험:{" "}
+                    <Link href="/dev/cutout" className="underline">
+                        배경 지우기(#215)
+                    </Link>
+                </Text>
             </Card>
 
             <ul className="mt-4 space-y-3">
